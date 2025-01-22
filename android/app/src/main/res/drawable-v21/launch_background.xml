@@ -1,0 +1,8 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Your logo or background image -->
+    <item>
+        <bitmap
+            android:gravity="center"
+            android:src="@drawable/logo1" />
+    </item>
+</layer-list>
