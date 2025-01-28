@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_literals_to_create_immutables
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:suzanne_podcast_app/screens/onboarding/onboarding_screen.dart';
@@ -16,7 +18,7 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-    Future.delayed(Duration(seconds: 5), () {
+    Future.delayed(Duration(seconds: 1), () {
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => OnboardingScreen()));
     });
@@ -33,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.primaryColor,
-      body: Container(
+      body: SizedBox(
         width: double.infinity,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

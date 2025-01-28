@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:suzanne_podcast_app/navigation_menu.dart';
+import 'package:suzanne_podcast_app/screens/authentification/login/login_screen.dart';
+import 'package:suzanne_podcast_app/screens/authentification/signup/signup_screen.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
 class WelcomeScreen extends StatelessWidget {
@@ -33,7 +35,10 @@ class WelcomeScreen extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: OutlinedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) => LoginScreen()));
+                    },
                     child: Text(
                       "Login",
                       style: TextStyle(color: AppColors.secondaryColor),
@@ -46,7 +51,10 @@ class WelcomeScreen extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: OutlinedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) => SignUpScreen()));
+                    },
                     child: Text(
                       "Sign up",
                       style: TextStyle(color: AppColors.secondaryColor),

@@ -27,10 +27,17 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
         title: Center(
           child: Text(
             "Discover",
-            style: TextStyle(
-              color: AppColors.secondaryColor,
-              fontSize: 22,
-              fontWeight: FontWeight.w500,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w600,
+              fontSize: 24,
+              color: Color(0xFFFFF8F0),
+              shadows: [
+                Shadow(
+                  color: Color(0xFFFFF1F1), // Drop shadow color (light pink)
+                  offset: Offset(1.0, 1.0), // Shadow position
+                  blurRadius: 3.0, // Blur effect for the shadow
+                ),
+              ],
             ),
           ),
         ),

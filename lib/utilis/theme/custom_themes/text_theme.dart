@@ -8,67 +8,67 @@ class TtextTheme {
       fontFamily: 'Poppins', // Use locally bundled Poppins font
       fontSize: 32.0,
       fontWeight: FontWeight.bold,
-      color: Colors.black,
+      color: Color(0xFFFFF8F0),
     ),
     headlineMedium: TextStyle(
       fontFamily: 'Poppins', // Use locally bundled Poppins font
       fontSize: 24.0,
       fontWeight: FontWeight.w600,
-      color: Colors.black,
+      color: Color(0xFFFFF8F0),
     ),
     headlineSmall: TextStyle(
       fontFamily: 'Poppins', // Use locally bundled Poppins font
       fontSize: 18.0,
       fontWeight: FontWeight.w600,
-      color: Colors.black,
+      color: Color(0xFFFFF8F0),
     ),
     titleLarge: TextStyle(
       fontFamily: 'Poppins', // Use locally bundled Poppins font
       fontSize: 16.0,
       fontWeight: FontWeight.w600,
-      color: Colors.black,
+      color: Color(0xFFFFF8F0),
     ),
     titleMedium: TextStyle(
       fontFamily: 'Poppins', // Use locally bundled Poppins font
       fontSize: 16.0,
       fontWeight: FontWeight.w500,
-      color: Colors.black,
+      color: Color(0xFFFFF8F0),
     ),
     titleSmall: TextStyle(
       fontFamily: 'Poppins', // Use locally bundled Poppins font
       fontSize: 16.0,
       fontWeight: FontWeight.w400,
-      color: Colors.black,
+      color: Color(0xFFFFF8F0),
     ),
     bodyLarge: TextStyle(
       fontFamily: 'Poppins', // Use locally bundled Poppins font
       fontSize: 14.0,
       fontWeight: FontWeight.w500,
-      color: Colors.black,
+      color: Color(0xFFFFF8F0),
     ),
     bodyMedium: TextStyle(
       fontFamily: 'Poppins', // Use locally bundled Poppins font
       fontSize: 14.0,
       fontWeight: FontWeight.normal,
-      color: Colors.black,
+      color: Color(0xFFFFF8F0),
     ),
     bodySmall: TextStyle(
       fontFamily: 'Poppins', // Use locally bundled Poppins font
       fontSize: 14.0,
       fontWeight: FontWeight.w500,
-      color: Colors.black.withOpacity(0.5),
+      color: Colors.white.withOpacity(0.5),
     ),
     labelLarge: TextStyle(
       fontFamily: 'Poppins', // Use locally bundled Poppins font
       fontSize: 12.0,
       fontWeight: FontWeight.normal,
-      color: Colors.black,
+      color: Color(0xFFFFF8F0),
     ),
     labelMedium: TextStyle(
       fontFamily: 'Poppins', // Use locally bundled Poppins font
       fontSize: 12.0,
       fontWeight: FontWeight.normal,
-      color: Colors.black.withOpacity(0.5),
+      color: Color(0xFFFFF8F0),
     ),
   );
 

@@ -6,45 +6,75 @@ import 'package:suzanne_podcast_app/provider/onboarding_provider.dart';
 import 'package:suzanne_podcast_app/screens/onboarding/widget/onboarding_next_button.dart';
 import 'package:suzanne_podcast_app/screens/onboarding/widget/onboarding_page.dart';
 
-class OnboardingScreen extends ConsumerWidget {
+class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
+}
+
+class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
+  final List<String> images = [
+    'assets/onboarding/1.png',
+    'assets/onboarding/3.png',
+    'assets/onboarding/2.png',
+  ];
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Preload all onboarding images
+    for (var image in images) {
+      precacheImage(AssetImage(image), context);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final controller = ref.read(OnboardingStateProvider.notifier);
 
     return Scaffold(
       backgroundColor: Color(0xFFFC2221),
       body: Stack(
         children: [
-          PageView(
+          PageView.builder(
             controller: controller.pageController,
-            onPageChanged: controller.updatePageIndicator,
-            children: const [
-              // Page 1: Highlight "Suzanne"
-              OnBoardingPage(
-                image: 'assets/onboarding/1.png',
-                title: 'Tune into the Suzanne Podcast',
-                highlightedText: 'Suzanne',
-                subTitle:
-                    'Stories, discussions, and empowerment for women everywhere.',
-              ),
-              // Page 2: Highlight "Just for You"
-              OnBoardingPage(
-                image: 'assets/onboarding/3.png',
-                title: 'Curated Events Just for You',
-                highlightedText: 'Just for You',
-                subTitle: 'Find and attend the best events in your region.',
-              ),
-              // Page 3: Highlight "Empower"
-              OnBoardingPage(
-                image: 'assets/onboarding/2.png',
-                title: 'Discover, engage, and Empower',
-                highlightedText: 'Empower',
-                subTitle:
-                    'Your go-to platform for local events, podcasts and creative industries.',
-              ),
-            ],
+            onPageChanged: (index) {
+              controller.updatePageIndicator(index);
+
+              // Lazy preload the next image
+              if (index + 1 < images.length) {
+                precacheImage(AssetImage(images[index + 1]), context);
+              }
+            },
+            itemCount: images.length,
+            itemBuilder: (context, index) {
+              final titles = [
+                'Tune into the Suzanne Podcast',
+                'Curated Events Just for You',
+                'Discover, engage, and Empower',
+              ];
+
+              final highlightedTexts = [
+                'Suzanne',
+                'Just for You',
+                'Empower',
+              ];
+
+              final subtitles = [
+                'Stories, discussions, and empowerment for women everywhere.',
+                'Find and attend the best events in your region.',
+                'Your go-to platform for local events, podcasts, and creative industries.',
+              ];
+
+              return OnBoardingPage(
+                image: images[index],
+                title: titles[index],
+                highlightedText: highlightedTexts[index],
+                subTitle: subtitles[index],
+              );
+            },
           ),
 
           // Skip Button

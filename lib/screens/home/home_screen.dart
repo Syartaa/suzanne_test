@@ -7,6 +7,7 @@ import 'package:suzanne_podcast_app/provider/schedules_provider.dart';
 import 'package:suzanne_podcast_app/screens/home/widget/featured_podcast.dart';
 import 'package:suzanne_podcast_app/screens/home/widget/scheculed_slider.dart';
 import 'package:suzanne_podcast_app/screens/home/widget/upcomming.dart';
+import 'package:suzanne_podcast_app/screens/profile/profile_screen.dart';
 import 'package:suzanne_podcast_app/screens/schedules/monday_marks_screen.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
@@ -39,9 +40,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             width: 100,
           ),
         ),
+        iconTheme: const IconThemeData(
+          color: Colors.white, // Change the back icon color to white
+        ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (_) => ProfileScreen()));
+            },
             icon: Icon(
               Iconsax.profile_circle,
               color: Colors.white,
@@ -59,7 +66,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(15.0),
                 child: Image(
-                  image: AssetImage("assets/images/banner2.png"),
+                  image: AssetImage("assets/images/banner.jpg"),
                   width: double.infinity,
                   fit: BoxFit.cover,
                 ),

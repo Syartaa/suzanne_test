@@ -8,8 +8,15 @@ class PodcastNotifier extends StateNotifier<AsyncValue<List<dynamic>>> {
   final ApiService apiService;
 
   Future<void> loadPodcasts() async {
+    // Check if the data is already loaded and return early if so
+    if (state is AsyncData<List<dynamic>> &&
+        (state as AsyncData<List<dynamic>>).value.isNotEmpty) {
+      print("Podcasts already loaded, skipping fetch.");
+      return; // Skip fetching if data is already loaded
+    }
+
     try {
-      state = const AsyncValue.loading(); // Set the loading state
+      state = const AsyncValue.loading(); // Set loading state
       final response = await apiService.fetchPodcasts();
       state = AsyncValue.data(response); // Update with fetched data
     } catch (e, stackTrace) {

@@ -65,10 +65,18 @@ class _PodcastDetailsScreenState extends State<PodcastDetailsScreen> {
         backgroundColor: const Color.fromARGB(198, 243, 18, 18),
         title: Text(
           widget.podcast['title'],
-          style: TextStyle(
-              color: AppColors.secondaryColor,
-              fontSize: 20,
-              fontWeight: FontWeight.w500),
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w500,
+            fontSize: 20,
+            color: Color(0xFFFFF8F0),
+            shadows: [
+              Shadow(
+                color: Color(0xFFFFF1F1), // Drop shadow color (light pink)
+                offset: Offset(1.0, 1.0), // Shadow position
+                blurRadius: 3.0, // Blur effect for the shadow
+              ),
+            ],
+          ),
         ),
       ),
       body: SingleChildScrollView(
@@ -92,7 +100,7 @@ class _PodcastDetailsScreenState extends State<PodcastDetailsScreen> {
                 children: [
                   Text(
                     _formatDuration(_currentPosition),
-                    style: const TextStyle(color: Colors.black),
+                    style: const TextStyle(color: Color(0xFFFFDBB5)),
                   ),
                   Expanded(
                     child: _videoDuration != null &&
@@ -114,7 +122,7 @@ class _PodcastDetailsScreenState extends State<PodcastDetailsScreen> {
                   ),
                   Text(
                     _formatDuration(_videoDuration),
-                    style: const TextStyle(color: Colors.black),
+                    style: const TextStyle(color: Color(0xFFFFDBB5)),
                   ),
                 ],
               ),
@@ -125,7 +133,7 @@ class _PodcastDetailsScreenState extends State<PodcastDetailsScreen> {
                 children: [
                   IconButton(
                     icon: const Icon(Icons.replay_10),
-                    color: Colors.black,
+                    color: Color(0xFFFFF8F0),
                     onPressed: () {
                       final currentPosition = _currentPosition ?? Duration.zero;
                       _controller.seekTo(
@@ -150,7 +158,7 @@ class _PodcastDetailsScreenState extends State<PodcastDetailsScreen> {
                   ),
                   IconButton(
                     icon: const Icon(Icons.forward_10),
-                    color: Colors.black,
+                    color: Color(0xFFFFF8F0),
                     onPressed: () {
                       final currentPosition = _currentPosition ?? Duration.zero;
                       _controller.seekTo(
@@ -180,6 +188,7 @@ class _PodcastDetailsScreenState extends State<PodcastDetailsScreen> {
                   filled: true,
                   fillColor: const Color.fromARGB(204, 233, 55, 55),
                   hintText: "Leave a comment here",
+                  hintStyle: TextStyle(color: Color(0xFFFFF8F0), fontSize: 15),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: BorderSide.none,

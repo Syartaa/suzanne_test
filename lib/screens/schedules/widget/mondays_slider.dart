@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:suzanne_podcast_app/provider/schedules_provider.dart';
 
 class MondaysSlider extends ConsumerWidget {
@@ -25,24 +27,27 @@ class MondaysSlider extends ConsumerWidget {
                   padding: const EdgeInsets.only(right: 16.0),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(15.0),
-                    child: Image.network(
-                      schedule.images,
+                    child: CachedNetworkImage(
+                      imageUrl: schedule.images,
                       width: 340,
                       height: 230,
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) =>
-                          const Icon(Icons.broken_image, size: 50),
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return Center(
-                          child: CircularProgressIndicator(
-                            value: loadingProgress.expectedTotalBytes != null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                    (loadingProgress.expectedTotalBytes ?? 1)
-                                : null,
+                      placeholder: (context, url) => Shimmer.fromColors(
+                        baseColor: Colors.grey[300]!,
+                        highlightColor: Colors.grey[100]!,
+                        child: Container(
+                          width: 340,
+                          height: 230,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            borderRadius: BorderRadius.circular(15.0),
                           ),
-                        );
-                      },
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => const Icon(
+                        Icons.broken_image,
+                        size: 50,
+                      ),
                     ),
                   ),
                 );
@@ -50,7 +55,26 @@ class MondaysSlider extends ConsumerWidget {
             ),
           ),
           loading: () => SizedBox(
-            child: Center(child: CircularProgressIndicator()),
+            height: 250,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: 3, // Number of shimmer placeholders
+              itemBuilder: (context, index) => Padding(
+                padding: const EdgeInsets.only(right: 16.0),
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: Colors.grey[100]!,
+                  child: Container(
+                    width: 340,
+                    height: 230,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
           error: (error, stackTrace) => Center(
             child: Text(

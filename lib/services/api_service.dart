@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:suzanne_podcast_app/models/events.dart';
 import 'package:suzanne_podcast_app/models/schedule.dart';
+import 'package:suzanne_podcast_app/models/user.dart';
 
 class ApiService {
   final Dio _dio = Dio(
@@ -10,6 +11,39 @@ class ApiService {
       receiveTimeout: const Duration(milliseconds: 3000),
     ),
   );
+
+  Future<User> registerUser(User user) async {
+    try {
+      final response = await _dio.post(
+        '/register',
+        data: user.toJson(),
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+      return User.fromJson(response.data);
+    } catch (e) {
+      if (e is DioException) {
+        // Log the response data for better error handling
+        print("Dio error response: ${e.response?.data}");
+      }
+      throw Exception("Failed to register user: $e");
+    }
+  }
+
+  Future<Map<String, dynamic>> loginUser(String email, String password) async {
+    try {
+      final response = await _dio.post('/login', data: {
+        'email': email,
+        'password': password,
+      });
+      return response.data;
+    } catch (e) {
+      throw Exception("Failed to login: $e");
+    }
+  }
 
   Future<List<dynamic>> fetchPodcasts() async {
     try {

@@ -16,10 +16,18 @@ class MyLibraryScreen extends StatelessWidget {
           title: Center(
             child: Text(
               "My Library",
-              style: TextStyle(
-                  color: AppColors.secondaryColor,
-                  fontSize: 22,
-                  fontWeight: FontWeight.w500),
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w600,
+                fontSize: 24,
+                color: Color(0xFFFFF8F0),
+                shadows: [
+                  Shadow(
+                    color: Color(0xFFFFF1F1), // Drop shadow color (light pink)
+                    offset: Offset(1.0, 1.0), // Shadow position
+                    blurRadius: 3.0, // Blur effect for the shadow
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -36,7 +44,9 @@ class MyLibraryScreen extends StatelessWidget {
                 //       BorderRadius.circular(.0), // Rounded indicator
                 // ),
                 labelColor: AppColors.secondaryColor,
-                unselectedLabelColor: Colors.black,
+                unselectedLabelColor: Color(0xFFFFF8F0),
+                indicatorColor: AppColors.secondaryColor,
+                indicatorWeight: 3.0,
 
                 tabs: const [
                   Tab(text: 'Favorites'),
@@ -94,7 +104,7 @@ class FavoritesTab extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: const Color.fromARGB(255, 37, 37, 37),
+                  color: Color.fromARGB(242, 255, 248, 240),
                 ),
               ),
               subtitle: const Text(

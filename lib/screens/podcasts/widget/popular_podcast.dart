@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:suzanne_podcast_app/provider/podcast_provider.dart';
+import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
 class PopularPodcastsWidget extends ConsumerWidget {
   const PopularPodcastsWidget({
@@ -21,9 +22,17 @@ class PopularPodcastsWidget extends ConsumerWidget {
             Text(
               "Most popular podcast",
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 24,
-                  color: const Color.fromARGB(197, 0, 0, 0)),
+                fontWeight: FontWeight.w500,
+                fontSize: 22,
+                color: Color(0xFFFFF8F0),
+                shadows: [
+                  Shadow(
+                    color: Color(0xFFFFF1F1), // Drop shadow color (light pink)
+                    offset: Offset(1.0, 1.0), // Shadow position
+                    blurRadius: 3.0, // Blur effect for the shadow
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -65,7 +74,7 @@ class PopularPodcastsWidget extends ConsumerWidget {
                           child: Text(
                             podcast['title'] ?? 'No Title',
                             style: const TextStyle(
-                              color: Colors.black,
+                              color: Color(0xFFFFF8F0),
                               fontWeight: FontWeight.bold,
                               fontSize: 14,
                             ),
@@ -78,7 +87,7 @@ class PopularPodcastsWidget extends ConsumerWidget {
                           child: Text(
                             podcast['host_name'] ?? 'Unknown',
                             style: const TextStyle(
-                              color: Color(0xFFFFF748),
+                              color: AppColors.secondaryColor,
                               fontSize: 12,
                             ),
                             maxLines: 1,

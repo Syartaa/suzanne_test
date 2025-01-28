@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:suzanne_podcast_app/provider/podcast_provider.dart';
+import 'package:suzanne_podcast_app/screens/podcasts/podcast_details_screen.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
 class UpcomingWidget extends ConsumerWidget {
@@ -18,10 +19,17 @@ class UpcomingWidget extends ConsumerWidget {
         children: [
           Text(
             "Upcoming",
-            style: TextStyle(
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w700,
               fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: AppColors.secondaryColor,
+              color: Color(0xFFFFF8F0),
+              shadows: [
+                Shadow(
+                  color: Color(0xFFFFF1F1), // Drop shadow color (light pink)
+                  offset: Offset(1.0, 1.0), // Shadow position
+                  blurRadius: 3.0, // Blur effect for the shadow
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 16),
@@ -34,8 +42,15 @@ class UpcomingWidget extends ConsumerWidget {
                 itemCount: podcasts.length,
                 itemBuilder: (context, index) {
                   final podcast = podcasts[index];
-                  return _buildPodcastTile(podcast['title'],
-                      podcast['host_name'], podcast['thumbnail'], true);
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (_) =>
+                              PodcastDetailsScreen(podcast: podcast)));
+                    },
+                    child: _buildPodcastTile(podcast['title'],
+                        podcast['host_name'], podcast['thumbnail'], true),
+                  );
                 },
               );
             },
@@ -85,7 +100,7 @@ class UpcomingWidget extends ConsumerWidget {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: const Color.fromARGB(255, 37, 37, 37),
+                    color: Colors.white,
                   ),
                 ),
                 Text(

@@ -157,10 +157,9 @@ class CustomTabBarWidget extends ConsumerWidget {
                                                               fontSize: 14,
                                                               fontWeight:
                                                                   FontWeight
-                                                                      .bold,
-                                                              color: Color
-                                                                  .fromARGB(174,
-                                                                      0, 0, 0),
+                                                                      .w600,
+                                                              color: Color(
+                                                                  0xFFFFF8F0),
                                                             ),
                                                           ),
                                                           const SizedBox(
@@ -176,8 +175,11 @@ class CustomTabBarWidget extends ConsumerWidget {
                                                                 const TextStyle(
                                                               fontSize: 12,
                                                               color: Color
-                                                                  .fromARGB(179,
-                                                                      36, 3, 3),
+                                                                  .fromARGB(
+                                                                      179,
+                                                                      0,
+                                                                      255,
+                                                                      195),
                                                             ),
                                                           ),
                                                         ],

@@ -22,11 +22,19 @@ class OnBoardingPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          // Image with fade-in animation
           Image(
             width: MediaQuery.of(context).size.width * 0.7,
             height: MediaQuery.of(context).size.height * 0.4,
             image: AssetImage(image),
             fit: BoxFit.contain,
+            frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+              return AnimatedOpacity(
+                opacity: frame == null ? 0 : 1,
+                duration: const Duration(milliseconds: 500),
+                child: child,
+              );
+            },
           ),
           const SizedBox(height: 20),
           // Title with highlighted text, split into two parts

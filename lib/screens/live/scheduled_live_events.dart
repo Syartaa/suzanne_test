@@ -31,10 +31,21 @@ class _ScheduledLiveEventsState extends State<ScheduledLiveEvents> {
         backgroundColor: const Color.fromARGB(198, 243, 18, 18),
         title: Text(
           "Scheduled Live Events",
-          style: TextStyle(
-              color: AppColors.secondaryColor,
-              fontSize: 22,
-              fontWeight: FontWeight.w500),
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w600,
+            fontSize: 24,
+            color: Color(0xFFFFF8F0),
+            shadows: [
+              Shadow(
+                color: Color(0xFFFFF1F1), // Drop shadow color (light pink)
+                offset: Offset(1.0, 1.0), // Shadow position
+                blurRadius: 3.0, // Blur effect for the shadow
+              ),
+            ],
+          ),
+        ),
+        iconTheme: const IconThemeData(
+          color: Colors.white, // Change the back icon color to white
         ),
       ),
       body: SingleChildScrollView(

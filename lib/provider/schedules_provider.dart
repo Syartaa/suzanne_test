@@ -9,8 +9,15 @@ class SchedulesNotifier extends StateNotifier<AsyncValue<List<Schedule>>> {
   final ApiService apiService;
 
   Future<void> loadSchedules() async {
+    // Only fetch data if it hasn't been loaded already
+    if (state is AsyncData<List<Schedule>> &&
+        (state as AsyncData<List<Schedule>>).value.isNotEmpty) {
+      print("Schedules already loaded, skipping fetch.");
+      return; // Skip fetching if data is already loaded
+    }
+
     try {
-      state = const AsyncValue.loading(); // Set the loading state
+      state = const AsyncValue.loading(); // Set loading state
       print("Fetching schedules..."); // Debug log
       final schedules = await apiService.fetchSchedules();
       state = AsyncValue.data(schedules); // Update with fetched data

@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:suzanne_podcast_app/provider/podcast_provider.dart';
+import 'package:suzanne_podcast_app/screens/podcasts/podcast_details_screen.dart';
 import 'package:suzanne_podcast_app/screens/podcasts/podcast_screen.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
@@ -24,9 +26,17 @@ class FeaturedPodcastsWidget extends ConsumerWidget {
             Text(
               "Featured Podcasts",
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 24,
-                  color: const Color.fromARGB(197, 0, 0, 0)),
+                fontWeight: FontWeight.w700,
+                fontSize: 24,
+                color: Color(0xFFFFF8F0),
+                shadows: [
+                  Shadow(
+                    color: Color(0xFFFFF1F1), // Drop shadow color (light pink)
+                    offset: Offset(1.0, 1.0), // Shadow position
+                    blurRadius: 3.0, // Blur effect for the shadow
+                  ),
+                ],
+              ),
             ),
             TextButton(
               onPressed: () {
@@ -58,49 +68,69 @@ class FeaturedPodcastsWidget extends ConsumerWidget {
                   final podcast = podcasts[index];
                   return Padding(
                     padding: const EdgeInsets.only(right: 16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(10.0),
-                          child: podcast['thumbnail'] != null
-                              ? Image.network(
-                                  podcast['thumbnail'].startsWith('http')
-                                      ? podcast['thumbnail']
-                                      : 'https://suzanne-podcast.laratest-app.com/${podcast['thumbnail']}',
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) =>
+                                PodcastDetailsScreen(podcast: podcast)));
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10.0),
+                            child: CachedNetworkImage(
+                              imageUrl: podcast['thumbnail']
+                                          ?.startsWith('http') ==
+                                      true
+                                  ? podcast['thumbnail']
+                                  : 'https://suzanne-podcast.laratest-app.com/${podcast['thumbnail']}',
+                              width: 140,
+                              height: 140,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => Shimmer.fromColors(
+                                baseColor: AppColors.primaryColor,
+                                highlightColor: Colors.grey[100]!,
+                                child: Container(
                                   width: 140,
                                   height: 140,
-                                  fit: BoxFit.cover,
-                                )
-                              : const Icon(Icons.podcasts, size: 50),
-                        ),
-                        const SizedBox(height: 5),
-                        SizedBox(
-                          width: 140,
-                          child: Text(
-                            podcast['title'] ?? 'No Title',
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
+                                  color: Colors.grey[300],
+                                ),
+                              ),
+                              errorWidget: (context, url, error) => const Icon(
+                                Icons.broken_image,
+                                size: 50,
+                              ),
                             ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
                           ),
-                        ),
-                        SizedBox(
-                          width: 140,
-                          child: Text(
-                            podcast['host_name'] ?? 'Unknown',
-                            style: const TextStyle(
-                              color: AppColors.secondaryColor,
-                              fontSize: 12,
+                          const SizedBox(height: 5),
+                          SizedBox(
+                            width: 140,
+                            child: Text(
+                              podcast['title'] ?? 'No Title',
+                              style: const TextStyle(
+                                color: Color(0xFFFFDBB5),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
                           ),
-                        ),
-                      ],
+                          SizedBox(
+                            width: 140,
+                            child: Text(
+                              podcast['host_name'] ?? 'Unknown',
+                              style: const TextStyle(
+                                color: AppColors.secondaryColor,
+                                fontSize: 12,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },
@@ -127,51 +157,21 @@ class FeaturedPodcastsSkeleton extends StatelessWidget {
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: 5, // Skeleton placeholders count
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Thumbnail Skeleton
-                Shimmer.fromColors(
-                  baseColor: Color(0xFFFC2221),
-                  highlightColor: Color.fromARGB(255, 245, 80, 80),
-                  child: Container(
-                    width: 140,
-                    height: 140,
-                    decoration: BoxDecoration(
-                      color: Color(0xFFFC2221),
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 5),
-                // Title Skeleton
-                Shimmer.fromColors(
-                  baseColor: Color(0xFFFC2221),
-                  highlightColor: Color.fromARGB(255, 245, 80, 80),
-                  child: Container(
-                    width: 140,
-                    height: 14,
-                    color: Color(0xFFFC2221),
-                  ),
-                ),
-                const SizedBox(height: 5),
-                // Host Name Skeleton
-                Shimmer.fromColors(
-                  baseColor: Color(0xFFFC2221),
-                  highlightColor: Color.fromARGB(255, 245, 80, 80),
-                  child: Container(
-                    width: 100,
-                    height: 12,
-                    color: Color(0xFFFC2221),
-                  ),
-                ),
-              ],
+        itemBuilder: (context, index) => Padding(
+          padding: const EdgeInsets.only(right: 16.0),
+          child: Shimmer.fromColors(
+            baseColor: AppColors.primaryColor,
+            highlightColor: Colors.grey[100]!,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(15.0),
+              child: Container(
+                width: 140,
+                height: 140,
+                color: Colors.grey[300],
+              ),
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }

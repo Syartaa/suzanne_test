@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:suzanne_podcast_app/models/user.dart';
 import 'package:suzanne_podcast_app/screens/discover/discover_screen.dart';
 import 'package:suzanne_podcast_app/screens/home/home_screen.dart';
 import 'package:suzanne_podcast_app/screens/live/live_screen.dart';
@@ -31,8 +32,8 @@ class NavigationMenu extends ConsumerWidget {
           },
           type: BottomNavigationBarType.fixed,
           backgroundColor: AppColors.secondaryColor,
-          selectedItemColor: const Color.fromARGB(255, 0, 0, 0),
-          unselectedItemColor: const Color.fromARGB(148, 0, 0, 0),
+          selectedItemColor: Color(0xFF791110),
+          unselectedItemColor: Color.fromARGB(255, 175, 53, 51),
           showSelectedLabels: false, // Disable labels
           showUnselectedLabels: false, // Disable labels
           items: const [
