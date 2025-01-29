@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:suzanne_podcast_app/constants/podcast_slider_widget.dart';
+import 'package:suzanne_podcast_app/provider/podcast_provider.dart';
 import 'package:suzanne_podcast_app/screens/podcasts/widget/costum_tab_bar.dart';
-import 'package:suzanne_podcast_app/screens/podcasts/widget/popular_podcast.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
-class PodcastScreen extends StatelessWidget {
+class PodcastScreen extends ConsumerWidget {
   const PodcastScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final podcastsAsyncValue = ref.watch(podcastProvider);
     return Scaffold(
       backgroundColor: AppColors.primaryColor,
       appBar: AppBar(
@@ -50,7 +53,12 @@ class PodcastScreen extends StatelessWidget {
                 SizedBox(
                   height: 35,
                 ),
-                PopularPodcastsWidget(),
+                PodcastSliderWidget(
+                  title: "Most Popular",
+                  seeMoreText: "",
+                  routeBuilder: (ctx) => PodcastScreen(),
+                  podcastsAsyncValue: podcastsAsyncValue,
+                ),
                 // Add some space before the TabBar
                 const SizedBox(height: 20),
                 const CustomTabBarWidget(),

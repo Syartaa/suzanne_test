@@ -3,10 +3,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:suzanne_podcast_app/constants/podcast_slider_widget.dart';
+import 'package:suzanne_podcast_app/provider/podcast_provider.dart';
 import 'package:suzanne_podcast_app/provider/schedules_provider.dart';
-import 'package:suzanne_podcast_app/screens/home/widget/featured_podcast.dart';
 import 'package:suzanne_podcast_app/screens/home/widget/scheculed_slider.dart';
 import 'package:suzanne_podcast_app/screens/home/widget/upcomming.dart';
+import 'package:suzanne_podcast_app/screens/podcasts/podcast_screen.dart';
 import 'package:suzanne_podcast_app/screens/profile/profile_screen.dart';
 import 'package:suzanne_podcast_app/screens/schedules/monday_marks_screen.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
@@ -30,6 +32,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final podcastsAsyncValue = ref.watch(podcastProvider);
     return Scaffold(
       backgroundColor: AppColors.primaryColor,
       appBar: AppBar(
@@ -85,7 +88,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               SizedBox(
                 height: 35,
               ),
-              FeaturedPodcastsWidget(),
+              PodcastSliderWidget(
+                title: "Featured Podcasts",
+                seeMoreText: "See more",
+                routeBuilder: (ctx) => PodcastScreen(),
+                podcastsAsyncValue: podcastsAsyncValue,
+              ),
               SizedBox(
                 height: 35,
               ),

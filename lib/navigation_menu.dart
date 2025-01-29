@@ -31,9 +31,9 @@ class NavigationMenu extends ConsumerWidget {
             ref.read(selectedIndexProvider.notifier).state = index;
           },
           type: BottomNavigationBarType.fixed,
-          backgroundColor: AppColors.secondaryColor,
-          selectedItemColor: Color(0xFF791110),
-          unselectedItemColor: Color.fromARGB(255, 175, 53, 51),
+          backgroundColor: const Color.fromARGB(255, 0, 0, 0),
+          selectedItemColor: Color.fromARGB(255, 131, 128, 128),
+          unselectedItemColor: Color.fromARGB(255, 255, 255, 255),
           showSelectedLabels: false, // Disable labels
           showUnselectedLabels: false, // Disable labels
           items: const [
