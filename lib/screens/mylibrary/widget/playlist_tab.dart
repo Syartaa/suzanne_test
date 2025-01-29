@@ -1,0 +1,111 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:suzanne_podcast_app/provider/podcast_provider.dart';
+import 'package:suzanne_podcast_app/provider/playlist_provider.dart';
+import 'package:suzanne_podcast_app/provider/user_provider.dart';
+import 'package:suzanne_podcast_app/screens/mylibrary/widget/playlist_details.dart';
+import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
+
+class PlaylistsTab extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final playlists =
+        ref.watch(playlistProvider); // Get playlists from provider
+    final userState = ref.watch(userProvider); // Watch the user state
+    final podcastState = ref.watch(podcastProvider); // Get podcast list
+
+    // Trigger reload of playlists when user state changes
+    if (userState.value != null) {
+      ref.read(playlistProvider.notifier).loadPlaylists();
+    }
+
+    return Scaffold(
+      backgroundColor: AppColors.primaryColor,
+      body: podcastState.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (err, stack) => Center(child: Text("Error: $err")),
+        data: (allPodcasts) {
+          if (playlists.isEmpty) {
+            return const Center(
+              child: Text(
+                "No playlists available yet!",
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              ),
+            );
+          }
+
+          return ListView.builder(
+            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            itemCount: playlists.keys.length,
+            itemBuilder: (context, index) {
+              final playlistName = playlists.keys.elementAt(index);
+              final playlistPodcasts = playlists[playlistName]!
+                  .map((podcastId) => allPodcasts.firstWhere((podcast) =>
+                      podcast['id'].toString() == podcastId.toString()))
+                  .toList();
+
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 231, 32, 32),
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.all(10),
+                    leading: Container(
+                      width: 70,
+                      height: 70,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: AppColors.secondaryColor,
+                      ),
+                      child: const Icon(
+                        Icons.headset,
+                        color: Colors.black,
+                        size: 30,
+                      ),
+                    ),
+                    title: Text(
+                      playlistName,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(242, 255, 248, 240),
+                      ),
+                    ),
+                    subtitle: Text(
+                      '${playlistPodcasts.length} Podcasts',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.white70,
+                      ),
+                    ),
+                    trailing: const Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.white70,
+                      size: 16,
+                    ),
+                    onTap: () {
+                      // Navigate to playlist detail screen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PlaylistDetailScreen(
+                            playlistName: playlistName,
+                            playlistPodcasts: playlistPodcasts,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}

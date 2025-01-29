@@ -138,8 +138,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             .loginUser(email, password);
 
                         // Navigate to NavigationMenu if login is successful
-                        final loggedInUser = ref.read(userProvider).value;
-                        if (loggedInUser != null) {
+                        final userState =
+                            ref.watch(userProvider); // use watch() instead
+
+                        if (userState.value != null) {
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(builder: (_) => NavigationMenu()),

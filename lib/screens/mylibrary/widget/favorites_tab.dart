@@ -8,9 +8,9 @@ import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart
 class FavoritesTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final favoriteIds = ref.watch(favoriteProvider);
-    final podcastState = ref.watch(
-        podcastProvider); // Assuming podcastProvider returns AsyncValue<List>
+    final favoriteIds =
+        ref.watch(favoriteProvider); // List of favorite podcast IDs
+    final podcastState = ref.watch(podcastProvider); // List of all podcasts
 
     print('Favorite IDs: $favoriteIds'); // Debugging
 
@@ -36,6 +36,9 @@ class FavoritesTab extends ConsumerWidget {
                 itemCount: favoritePodcasts.length,
                 itemBuilder: (context, index) {
                   final podcast = favoritePodcasts[index];
+                  final podcastId = podcast['id'].toString();
+                  final isFavorited =
+                      favoriteIds.contains(podcastId); // Corrected
 
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -73,9 +76,7 @@ class FavoritesTab extends ConsumerWidget {
                         ),
                         trailing: IconButton(
                           icon: Icon(
-                            ref
-                                    .read(favoriteProvider.notifier)
-                                    .isFavorited(podcast['id'].toString())
+                            isFavorited
                                 ? Icons.favorite
                                 : Icons.favorite_border,
                             color: AppColors.secondaryColor,
@@ -83,7 +84,7 @@ class FavoritesTab extends ConsumerWidget {
                           onPressed: () {
                             ref
                                 .read(favoriteProvider.notifier)
-                                .toggleFavorite(podcast['id'].toString());
+                                .toggleFavorite(podcastId);
                           },
                         ),
                       ),

@@ -3,13 +3,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suzanne_podcast_app/models/user.dart';
 import 'package:suzanne_podcast_app/provider/api_service_provider.dart';
+import 'package:suzanne_podcast_app/provider/favorite_provider.dart';
+import 'package:suzanne_podcast_app/provider/playlist_provider.dart';
 import 'package:suzanne_podcast_app/services/api_service.dart';
 
 class UserNotifier extends StateNotifier<AsyncValue<User?>> {
   final ApiService apiService;
+  final StateNotifierProviderRef<UserNotifier, AsyncValue<User?>>
+      ref; // Add ref
 
-  UserNotifier(this.apiService) : super(const AsyncValue.data(null)) {
-    _loadUserFromPreferences(); // Load user data on initialization
+  UserNotifier(this.apiService, this.ref) : super(const AsyncValue.data(null)) {
+    _loadUserFromPreferences();
   }
 
   /// Function to load user data from SharedPreferences
@@ -59,26 +63,51 @@ class UserNotifier extends StateNotifier<AsyncValue<User?>> {
     state = const AsyncValue.loading();
     try {
       final response = await apiService.loginUser(email, password);
-      final loggedInUser = User.fromJson(response);
+      print("API Login Response: $response");
 
-      // Save user data to SharedPreferences for persistence
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('user_data', jsonEncode(response));
+      if (response is Map<String, dynamic> && response.containsKey('user')) {
+        final loggedInUser = User.fromJson(response['user']);
 
-      state = AsyncValue.data(loggedInUser);
+        // Save only the correct user data
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString(
+            'user_data', jsonEncode({'user': response['user']}));
+
+        state = AsyncValue.data(loggedInUser);
+        print("User logged in successfully: ${loggedInUser.firstName}");
+      } else {
+        print("Invalid login response format: $response");
+        state = const AsyncValue.data(null);
+      }
     } catch (error, stackTrace) {
       state = AsyncValue.error(error, stackTrace);
+      print("Error during login: $error");
     }
   }
 
-  /// Function to log out the user
+  /// Function to log out the user and clear all related data
   Future<void> logoutUser() async {
     state = const AsyncValue.loading();
     try {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.remove('user_data'); // Remove user data
+      await prefs.remove('user_data');
 
-      state = const AsyncValue.data(null); // Reset the state to null
+      state.whenData((user) {
+        if (user != null) {
+          final userId = user.id;
+          prefs.remove('favorite_podcasts_$userId');
+          prefs.remove('user_playlists_$userId');
+          print("Cleared favorites and playlists for user $userId.");
+        }
+      });
+
+      // ✅ Pass the current user explicitly to avoid ref.read issues
+      final user = state.value;
+      ref.read(playlistProvider.notifier).resetPlaylists(user);
+      ref.read(favoriteProvider.notifier).resetFavorites(user);
+
+      state = const AsyncValue.data(null);
+      print("User logged out successfully.");
     } catch (error, stackTrace) {
       print("Error during logout: $error");
       state = AsyncValue.error(error, stackTrace);
@@ -89,5 +118,5 @@ class UserNotifier extends StateNotifier<AsyncValue<User?>> {
 final userProvider =
     StateNotifierProvider<UserNotifier, AsyncValue<User?>>((ref) {
   final apiService = ref.read(apiServiceProvider);
-  return UserNotifier(apiService);
+  return UserNotifier(apiService, ref); // ✅ Pass ref
 });
