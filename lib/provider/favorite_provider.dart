@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suzanne_podcast_app/models/user.dart';
@@ -17,15 +16,17 @@ class FavoriteNotifier extends StateNotifier<List<String>> {
     final prefs = await SharedPreferences.getInstance();
 
     if (userState.value != null) {
-      // Ensure user data is available
       final userId = userState.value!.id;
-      final favoritesJson = prefs.getString('favorite_podcasts_$userId');
 
-      if (favoritesJson != null) {
-        state = List<String>.from(json.decode(favoritesJson));
+      // Use getStringList instead of getString
+      final favoritesList = prefs.getStringList('favorite_podcasts_$userId');
+
+      if (favoritesList != null) {
+        state = favoritesList; // Directly assign as it's already a List<String>
         print("Loaded favorites for user $userId: $state");
       } else {
         print("No favorites found for user $userId.");
+        state = [];
       }
     } else {
       print("User not loaded yet or is null.");

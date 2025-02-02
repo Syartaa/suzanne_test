@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:suzanne_podcast_app/screens/mylibrary/widget/download_tab.dart';
 import 'package:suzanne_podcast_app/screens/mylibrary/widget/favorites_tab.dart';
 import 'package:suzanne_podcast_app/screens/mylibrary/widget/playlist_tab.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
@@ -70,18 +71,6 @@ class MyLibraryScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class DownloadsTab extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        "Downloads Content",
-        style: TextStyle(color: Colors.white),
       ),
     );
   }

@@ -153,7 +153,6 @@ class ProfileScreen extends ConsumerWidget {
                         )
                       ],
                     ),
-                    const SizedBox(height: 10),
                     const SizedBox(height: 20),
                     ClipRRect(
                       borderRadius: BorderRadius.circular(15.0),
@@ -165,6 +164,32 @@ class ProfileScreen extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: 20),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton(
+                        onPressed: () {},
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Icon(
+                              Iconsax.notification,
+                              color: Colors.white,
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              'Notifications',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20),
                     SizedBox(
                       width: double.infinity,
                       child: OutlinedButton(
@@ -198,32 +223,6 @@ class ProfileScreen extends ConsumerWidget {
                             Text(
                               user == null ? "Login" : "Logout",
                               style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton(
-                        onPressed: () {},
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Icon(
-                              Iconsax.notification,
-                              color: Colors.white,
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Text(
-                              'Notifications',
-                              style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w500,
                               ),

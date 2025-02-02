@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:suzanne_podcast_app/provider/podcast_provider.dart';
+import 'package:suzanne_podcast_app/provider/download_provider.dart';
 import 'package:suzanne_podcast_app/screens/podcasts/podcast_details_screen.dart';
 import 'package:suzanne_podcast_app/utilis/constants/popup_utils.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
+import 'package:suzanne_podcast_app/models/podcasts.dart';
 
 class UpcomingWidget extends ConsumerWidget {
   const UpcomingWidget({Key? key}) : super(key: key);
@@ -11,6 +13,7 @@ class UpcomingWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final podcastsAsyncValue = ref.watch(podcastProvider);
+    final downloads = ref.watch(downloadProvider);
 
     return Container(
       color: Colors.red,
@@ -48,12 +51,10 @@ class UpcomingWidget extends ConsumerWidget {
                               PodcastDetailsScreen(podcast: podcast)));
                     },
                     child: _buildPodcastTile(
-                      podcast['id'].toString(), // Pass podcast ID
-                      podcast['title'],
-                      podcast['host_name'],
-                      podcast['thumbnail'],
+                      podcast,
                       context,
                       ref,
+                      downloads.any((d) => d.id == podcast['id'].toString()),
                     ),
                   );
                 },
@@ -68,12 +69,10 @@ class UpcomingWidget extends ConsumerWidget {
   }
 
   Widget _buildPodcastTile(
-    String podcastId,
-    String title,
-    String subtitle,
-    String imagePath,
+    Map<String, dynamic> podcast,
     BuildContext context,
     WidgetRef ref,
+    bool isDownloaded,
   ) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -82,20 +81,15 @@ class UpcomingWidget extends ConsumerWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(8.0),
-            child: imagePath != null
-                ? imagePath.startsWith('http')
-                    ? Image.network(
-                        imagePath,
-                        width: 70,
-                        height: 70,
-                        fit: BoxFit.cover,
-                      )
-                    : Image.network(
-                        'https://suzanne-podcast.laratest-app.com/$imagePath',
-                        width: 70,
-                        height: 70,
-                        fit: BoxFit.cover,
-                      )
+            child: podcast['thumbnail'] != null
+                ? Image.network(
+                    podcast['thumbnail'].startsWith('http')
+                        ? podcast['thumbnail']
+                        : 'https://suzanne-podcast.laratest-app.com/${podcast['thumbnail']}',
+                    width: 70,
+                    height: 70,
+                    fit: BoxFit.cover,
+                  )
                 : const Icon(
                     Icons.podcasts,
                     size: 50,
@@ -107,7 +101,7 @@ class UpcomingWidget extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
+                  podcast['title'],
                   style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
@@ -116,7 +110,7 @@ class UpcomingWidget extends ConsumerWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
-                  subtitle,
+                  podcast['host_name'],
                   style: const TextStyle(
                     fontSize: 12,
                     color: AppColors.secondaryColor,
@@ -130,9 +124,29 @@ class UpcomingWidget extends ConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
-                icon:
-                    const Icon(Icons.download, color: AppColors.secondaryColor),
-                onPressed: () {},
+                icon: Icon(
+                  isDownloaded ? Icons.download_done : Icons.download,
+                  color: AppColors.secondaryColor,
+                ),
+                onPressed: () {
+                  if (!isDownloaded) {
+                    final podcastObj = Podcast(
+                      id: podcast['id'].toString(),
+                      title: podcast['title'],
+                      shortDescription: podcast['short_description'],
+                      longDescription: podcast['long_description'],
+                      hostName: podcast['host_name'],
+                      categoryId: podcast['category_id'],
+                      thumbnail: podcast['thumbnail'],
+                      audioUrl: podcast['audio_url'],
+                      status: podcast['status'],
+                    );
+
+                    ref
+                        .read(downloadProvider.notifier)
+                        .downloadPodcast(podcastObj);
+                  }
+                },
               ),
               IconButton(
                 icon: const Icon(Icons.more_vert,
@@ -141,7 +155,7 @@ class UpcomingWidget extends ConsumerWidget {
                   showFavoritePlaylistPopup(
                     context,
                     ref, // Pass ref for Riverpod
-                    podcastId, // Pass podcast ID
+                    podcast['id'].toString(), // Pass podcast ID
                   );
                 },
               ),

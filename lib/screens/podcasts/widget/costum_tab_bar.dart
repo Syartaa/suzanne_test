@@ -3,10 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:suzanne_podcast_app/provider/categories_provider.dart';
 import 'package:suzanne_podcast_app/provider/podcast_provider.dart';
 import 'package:suzanne_podcast_app/screens/podcasts/podcast_details_screen.dart';
+import 'package:suzanne_podcast_app/utilis/constants/popup_utils.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
 class CustomTabBarWidget extends ConsumerWidget {
   const CustomTabBarWidget({Key? key}) : super(key: key);
+
+  // Function to show the popup menu
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -185,6 +188,7 @@ class CustomTabBarWidget extends ConsumerWidget {
                                                         ],
                                                       ),
                                                     ),
+
                                                     IconButton(
                                                       onPressed: () {
                                                         Navigator.push(
@@ -203,6 +207,20 @@ class CustomTabBarWidget extends ConsumerWidget {
                                                             .secondaryColor,
                                                         size: 40,
                                                       ),
+                                                    ),
+                                                    // 3 Dots IconButton to show the popup
+                                                    IconButton(
+                                                      icon: const Icon(
+                                                        Icons.more_vert,
+                                                        color: Colors.white,
+                                                      ),
+                                                      onPressed: () {
+                                                        showFavoritePlaylistPopup(
+                                                            context,
+                                                            ref,
+                                                            podcast['id']
+                                                                .toString());
+                                                      },
                                                     ),
                                                   ],
                                                 ),

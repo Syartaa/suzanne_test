@@ -107,13 +107,13 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   // Logo and Welcome Text
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 15),
                   const Image(
                     image: AssetImage("assets/logo/logo1.png"),
                     width: 150,
                     height: 150,
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 15),
                   const Text(
                     'Sign Up!',
                     textAlign: TextAlign.center,
@@ -251,6 +251,32 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                               fontSize: 18,
                             ),
                           ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  // Sign Up Link
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Have an account? ",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (_) => LoginScreen()));
+                        },
+                        child: Text(
+                          'Login',
+                          style: TextStyle(
+                            color: AppColors.secondaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

@@ -1,30 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:suzanne_podcast_app/provider/events_provider.dart';
+import 'package:suzanne_podcast_app/models/events.dart';
 
-class ScheduledLiveEvents extends StatefulWidget {
+class ScheduledLiveEvents extends ConsumerStatefulWidget {
   const ScheduledLiveEvents({super.key});
 
   @override
-  State<ScheduledLiveEvents> createState() => _ScheduledLiveEventsState();
+  _ScheduledLiveEventsState createState() => _ScheduledLiveEventsState();
 }
 
-class _ScheduledLiveEventsState extends State<ScheduledLiveEvents> {
+class _ScheduledLiveEventsState extends ConsumerState<ScheduledLiveEvents> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
 
-  // Example events map: DateTime -> List of Events
-  final Map<DateTime, List<String>> _events = {
-    DateTime.now(): ["Event 1", "Event 2"],
-    DateTime.now().add(const Duration(days: 1)): ["Event 3"],
-  };
-
-  List<String> _getEventsForDay(DateTime day) {
-    return _events[DateTime(day.year, day.month, day.day)] ?? [];
-  }
-
   @override
   Widget build(BuildContext context) {
+    // Watch the events from EventNotifier
+    final eventsAsyncValue = ref.watch(EventProvider);
+
     return Scaffold(
       backgroundColor: AppColors.primaryColor,
       appBar: AppBar(
@@ -50,11 +46,11 @@ class _ScheduledLiveEventsState extends State<ScheduledLiveEvents> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
               Padding(
-                padding: EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
                 child: TableCalendar(
                   focusedDay: _focusedDay,
                   firstDay: DateTime.utc(2025, 1, 1),
@@ -90,7 +86,53 @@ class _ScheduledLiveEventsState extends State<ScheduledLiveEvents> {
                     ),
                   ),
                 ),
-              )
+              ),
+              eventsAsyncValue.when(
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (error, stackTrace) =>
+                    Center(child: Text('Error: $error')),
+                data: (events) {
+                  // Filter events based on the selected day
+                  final filteredEvents = events.where((event) {
+                    final eventDate = DateTime.parse(event.eventDate);
+                    return isSameDay(eventDate, _selectedDay);
+                  }).toList();
+
+                  // Display the filtered events
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: filteredEvents.length,
+                    itemBuilder: (context, index) {
+                      final event = filteredEvents[index];
+                      return Card(
+                        color: const Color.fromARGB(
+                            234, 218, 29, 29), // Background color
+                        elevation: 5,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: ListTile(
+                          leading: Image.network(event.image),
+                          title: Text(event.title,
+                              style: const TextStyle(color: Colors.white)),
+                          subtitle: Text(event.description,
+                              style: const TextStyle(color: Colors.white70)),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.more_vert,
+                                color: Colors.white),
+                            onPressed: () {
+                              // Handle the 3 dots actions, like viewing details
+                            },
+                          ),
+                          onTap: () {
+                            // Handle event tap (e.g., navigate to event details page)
+                          },
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
             ],
           ),
         ),
