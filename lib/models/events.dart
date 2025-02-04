@@ -7,6 +7,8 @@ class Event {
   final String location;
   final String image;
   final int status;
+  final int scheduleId; // Added to link it to a schedule
+  final String? link;
 
   Event({
     required this.id,
@@ -17,6 +19,8 @@ class Event {
     required this.location,
     required this.image,
     required this.status,
+    required this.scheduleId,
+    this.link,
   });
 
   factory Event.fromJson(Map<String, dynamic> json) {
@@ -28,7 +32,9 @@ class Event {
       eventTime: json['event_time'] ?? '',
       location: json['location'] ?? '',
       image: json['image'] ?? '',
+      link: json['event_link'] ?? '',
       status: json['status'] ?? 0,
+      scheduleId: json['schedule_id'] ?? 0,
     );
   }
 }

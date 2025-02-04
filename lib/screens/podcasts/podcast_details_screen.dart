@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:suzanne_podcast_app/provider/favorite_provider.dart';
 import 'package:suzanne_podcast_app/provider/download_provider.dart';
+import 'package:suzanne_podcast_app/provider/ratings_provider.dart';
+import 'package:suzanne_podcast_app/screens/podcasts/widget/rating_comments_widget.dart';
 import 'package:suzanne_podcast_app/utilis/constants/popup_utils.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -48,6 +50,12 @@ class _PodcastDetailsScreenState extends ConsumerState<PodcastDetailsScreen> {
         });
       }
     });
+
+    Future.microtask(() {
+      ref
+          .read(podcastRatingsProvider.notifier)
+          .fetchPodcastRatings(widget.podcast['id'].toString());
+    });
   }
 
   @override
@@ -91,6 +99,8 @@ class _PodcastDetailsScreenState extends ConsumerState<PodcastDetailsScreen> {
     final downloadedPodcastPaths =
         ref.read(downloadProvider.notifier).downloadedPodcastPaths;
     localPath = downloadedPodcastPaths[podcastId];
+
+    //rating part
 
     if (localPath != null &&
         File(localPath!).existsSync() &&
@@ -289,47 +299,7 @@ class _PodcastDetailsScreenState extends ConsumerState<PodcastDetailsScreen> {
 
               const SizedBox(height: 32),
               // Comment Section
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Star Rating Section
-                    Row(
-                      children: List.generate(5, (index) {
-                        return IconButton(
-                          icon: const Icon(Icons.star_border),
-                          color: AppColors.secondaryColor,
-                          onPressed: () {
-                            // Handle star rating logic here
-                          },
-                        );
-                      }),
-                    ),
-                    const SizedBox(height: 16),
-                    // Text Field for Comments
-                    TextField(
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.red,
-                        hintText: "Leave a comment here",
-                        hintStyle:
-                            TextStyle(color: Color(0xFFFFF8F0), fontSize: 15),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                              color: Colors.red,
-                              width: 3), // Change the border color here
-                        ),
-                      ),
-                      maxLines: 3,
-                    )
-                  ],
-                ),
-              ),
+              RatingCommentsWidget(podcastId: podcastId),
             ],
           ),
         ),

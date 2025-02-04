@@ -7,6 +7,7 @@ class User {
   final String password;
   final String? gender; // Optional
   final String? id; // Optional for responses like login or registration success
+  final String? token; // ✅ Add token for authentication
 
   User({
     required this.firstName,
@@ -15,6 +16,7 @@ class User {
     required this.password,
     this.gender,
     this.id,
+    this.token,
   });
 
   // Factory method to create a User object from JSON
@@ -27,6 +29,9 @@ class User {
       password: json['password'] is String ? json['password'] : '',
       gender: json['gender'] is String ? json['gender'] : null,
       id: json['id'] is String ? json['id'] : json['id'].toString(),
+      token: json['token'] is String
+          ? json['token']
+          : null, // ✅ Extract token from API response
     );
   }
 
@@ -39,11 +44,12 @@ class User {
       'password': password,
       'gender': gender,
       'id': id,
+      'token': token,
     };
   }
 
   @override
   String toString() {
-    return 'User(firstName: $firstName, lastName: $lastName, email: $email, gender: $gender, id: $id)';
+    return 'User(firstName: $firstName, lastName: $lastName, email: $email, gender: $gender, id: $id, token: $token)';
   }
 }

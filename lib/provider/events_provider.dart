@@ -17,9 +17,24 @@ class EventNotifier extends StateNotifier<AsyncValue<List<Event>>> {
       state = AsyncValue.error(e, stackTrace); // Handle errors gracefully
     }
   }
+
+  // Fetch events based on a schedule ID
+  Future<void> loadEventsByScheduleId(int scheduleId) async {
+    try {
+      state = const AsyncValue.loading();
+      final events = await apiService.fetchEvents(); // Get all events
+      final filteredEvents =
+          events.where((event) => event.scheduleId == scheduleId).toList();
+      state = AsyncValue.data(filteredEvents);
+    } catch (e, stackTrace) {
+      state = AsyncValue.error(e, stackTrace);
+    }
+  }
 }
 
-final EventProvider = FutureProvider<List<Event>>((ref) async {
+// ** Provider for managing event state **
+final eventNotifierProvider =
+    StateNotifierProvider<EventNotifier, AsyncValue<List<Event>>>((ref) {
   final apiService = ref.watch(apiServiceProvider);
-  return apiService.fetchEvents(); // Fetch and return events
+  return EventNotifier(apiService);
 });

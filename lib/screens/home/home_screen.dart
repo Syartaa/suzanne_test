@@ -97,6 +97,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               SizedBox(
                 height: 35,
               ),
+
+              SizedBox(
+                height: 35,
+              ),
+
               UpcomingWidget(),
             ],
           ),

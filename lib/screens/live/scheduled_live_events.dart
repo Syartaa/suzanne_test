@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:suzanne_podcast_app/provider/events_provider.dart';
-import 'package:suzanne_podcast_app/models/events.dart';
 
 class ScheduledLiveEvents extends ConsumerStatefulWidget {
   const ScheduledLiveEvents({super.key});
@@ -19,7 +18,7 @@ class _ScheduledLiveEventsState extends ConsumerState<ScheduledLiveEvents> {
   @override
   Widget build(BuildContext context) {
     // Watch the events from EventNotifier
-    final eventsAsyncValue = ref.watch(EventProvider);
+    final eventsAsyncValue = ref.watch(eventNotifierProvider);
 
     return Scaffold(
       backgroundColor: AppColors.primaryColor,

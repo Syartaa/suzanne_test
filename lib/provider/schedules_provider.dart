@@ -48,6 +48,7 @@ class SchedulesNotifier extends StateNotifier<AsyncValue<List<Schedule>>> {
       state = const AsyncValue.loading(); // Set loading state
       print("Fetching schedules..."); // Debug log
       final schedules = await apiService.fetchSchedules();
+
       state = AsyncValue.data(schedules); // Update with fetched data
 
       // Cache the schedules in SharedPreferences

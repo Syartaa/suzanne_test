@@ -151,4 +151,54 @@ class ApiService {
       throw Exception("Failed to fetch categories: $e");
     }
   }
+
+//post rate
+  Future<Map<String, dynamic>> ratePodcast({
+    required String podcastId,
+    required int rate,
+    String? comment,
+    required String authToken, // Assuming authentication is required
+  }) async {
+    try {
+      final response = await _dio.post(
+        '/podcast/$podcastId/rate',
+        data: {
+          'rate': rate,
+          'comment': comment ?? '', // Optional comment
+        },
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $authToken', // Include the token
+          },
+        ),
+      );
+
+      return response.data; // Assuming the response follows the given structure
+    } catch (e) {
+      if (e is DioException) {
+        print("Dio error response: ${e.response?.data}");
+      }
+      throw Exception("Failed to rate podcast: $e");
+    }
+  }
+
+//get ratings
+  Future<Map<String, dynamic>> getPodcastRatings(String podcastId) async {
+    try {
+      final response = await _dio.get('/podcasts/$podcastId/ratings');
+
+      if (response.data is Map<String, dynamic>) {
+        return response.data; // Returns the full response (ratings + message)
+      } else {
+        throw Exception(
+            "Unexpected response format: ${response.data.runtimeType}");
+      }
+    } catch (e) {
+      if (e is DioException) {
+        print("Dio error response: ${e.response?.data}");
+      }
+      throw Exception("Failed to fetch podcast ratings: $e");
+    }
+  }
 }
