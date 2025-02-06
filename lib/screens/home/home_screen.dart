@@ -7,6 +7,7 @@ import 'package:suzanne_podcast_app/constants/podcast_slider_widget.dart';
 import 'package:suzanne_podcast_app/provider/podcast_provider.dart';
 import 'package:suzanne_podcast_app/provider/schedules_provider.dart';
 import 'package:suzanne_podcast_app/screens/home/widget/scheculed_slider.dart';
+import 'package:suzanne_podcast_app/screens/home/widget/tab_event_podcast.dart';
 import 'package:suzanne_podcast_app/screens/home/widget/upcomming.dart';
 import 'package:suzanne_podcast_app/screens/podcasts/podcast_screen.dart';
 import 'package:suzanne_podcast_app/screens/profile/profile_screen.dart';
@@ -98,11 +99,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 height: 35,
               ),
 
-              SizedBox(
-                height: 35,
-              ),
-
-              UpcomingWidget(),
+              PodcastsEventsTab(),
             ],
           ),
         ),

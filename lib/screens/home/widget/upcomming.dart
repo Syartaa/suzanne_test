@@ -7,8 +7,8 @@ import 'package:suzanne_podcast_app/utilis/constants/popup_utils.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 import 'package:suzanne_podcast_app/models/podcasts.dart';
 
-class UpcomingWidget extends ConsumerWidget {
-  const UpcomingWidget({Key? key}) : super(key: key);
+class PodcastTab extends ConsumerWidget {
+  const PodcastTab({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -18,52 +18,40 @@ class UpcomingWidget extends ConsumerWidget {
     return Container(
       color: Colors.red,
       padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Upcoming",
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w700,
-              fontSize: 24,
-              color: const Color(0xFFFFF8F0),
-              shadows: [
-                const Shadow(
-                  color: Color(0xFFFFF1F1),
-                  offset: Offset(1.0, 1.0),
-                  blurRadius: 3.0,
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
-          podcastsAsyncValue.when(
-            data: (podcasts) {
-              return ListView.builder(
-                shrinkWrap: true,
-                itemCount: podcasts.length,
-                itemBuilder: (context, index) {
-                  final podcast = podcasts[index];
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (_) =>
-                              PodcastDetailsScreen(podcast: podcast)));
+      child: podcastsAsyncValue.when(
+        data: (podcasts) {
+          return podcasts.isEmpty
+              ? Center(
+                  child: Text(
+                    "No podcasts available",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                )
+              : Expanded(
+                  child: ListView.builder(
+                    itemCount: podcasts.length,
+                    itemBuilder: (context, index) {
+                      final podcast = podcasts[index];
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (_) =>
+                                  PodcastDetailsScreen(podcast: podcast)));
+                        },
+                        child: _buildPodcastTile(
+                          podcast,
+                          context,
+                          ref,
+                          downloads
+                              .any((d) => d.id == podcast['id'].toString()),
+                        ),
+                      );
                     },
-                    child: _buildPodcastTile(
-                      podcast,
-                      context,
-                      ref,
-                      downloads.any((d) => d.id == podcast['id'].toString()),
-                    ),
-                  );
-                },
-              );
-            },
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, stackTrace) => Center(child: Text('Error: $error')),
-          ),
-        ],
+                  ),
+                );
+        },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stackTrace) => Center(child: Text('Error: $error')),
       ),
     );
   }
@@ -77,7 +65,6 @@ class UpcomingWidget extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(8.0),
@@ -121,7 +108,6 @@ class UpcomingWidget extends ConsumerWidget {
             ),
           ),
           Row(
-            mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
                 icon: Icon(
@@ -154,8 +140,8 @@ class UpcomingWidget extends ConsumerWidget {
                 onPressed: () {
                   showFavoritePlaylistPopup(
                     context,
-                    ref, // Pass ref for Riverpod
-                    podcast['id'].toString(), // Pass podcast ID
+                    ref,
+                    podcast['id'].toString(),
                   );
                 },
               ),
