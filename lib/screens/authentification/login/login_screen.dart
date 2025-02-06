@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:suzanne_podcast_app/navigation_menu.dart';
 import 'package:suzanne_podcast_app/provider/user_provider.dart';
-import 'package:suzanne_podcast_app/screens/authentification/signup/signup_screen.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -16,6 +15,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  String? errorMessage; // Variable to hold the error message
 
   @override
   Widget build(BuildContext context) {
@@ -133,21 +133,31 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         final password = passwordController.text;
 
                         // Trigger the login using the userProvider
-                        await ref
+                        final loginResult = await ref
                             .read(userProvider.notifier)
                             .loginUser(email, password);
 
-                        // Navigate to NavigationMenu if login is successful
-                        final userState =
-                            ref.watch(userProvider); // use watch() instead
-
-                        if (userState.value != null) {
+                        // Handle login results
+                        if (loginResult == 'User not found') {
+                          setState(() {
+                            errorMessage = 'User is not registered.';
+                          });
+                        } else if (loginResult == 'Incorrect password') {
+                          setState(() {
+                            errorMessage = 'Incorrect password.';
+                          });
+                        } else if (loginResult == 'Success') {
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(builder: (_) => NavigationMenu()),
                             (route) =>
                                 false, // This removes all previous routes from the stack
                           );
+                        } else {
+                          setState(() {
+                            errorMessage =
+                                'An unexpected error occurred. Please try again.';
+                          });
                         }
                       }
                     },
@@ -160,6 +170,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                     ),
                   ),
+                  const SizedBox(height: 10),
+                  // Show error message if exists
+                  if (errorMessage != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Text(
+                        errorMessage!,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                   const SizedBox(height: 10),
                   // Or Text
                   Text(
@@ -191,39 +214,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  // Sign Up Link
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Don’t have an account? ",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (_) => SignUpScreen()));
-                        },
-                        child: Text(
-                          'Sign up',
-                          style: TextStyle(
-                            color: AppColors.secondaryColor,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  // Show loading indicator, success, or error
-                  if (userState.isLoading)
-                    Center(
-                        child: CircularProgressIndicator(
-                            color: AppColors.secondaryColor)),
-                  if (userState.hasError)
-                    Center(
-                        child: Text('Login Failed',
-                            style: TextStyle(color: Colors.red))),
                 ],
               ),
             ),

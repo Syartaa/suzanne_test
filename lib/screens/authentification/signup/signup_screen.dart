@@ -80,13 +80,13 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           isMale = false;
           isFemale = false;
         });
-        // Add navigation logic if required.
+
         Navigator.of(context)
             .pushReplacement(MaterialPageRoute(builder: (_) => LoginScreen()));
       }
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${error.toString()}')),
+        SnackBar(content: Text(error.toString())),
       );
     }
   }
@@ -94,6 +94,14 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     final userState = ref.watch(userProvider);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (userState is AsyncError) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(userState.error.toString())),
+        );
+      }
+    });
 
     return Scaffold(
       backgroundColor: AppColors.primaryColor,

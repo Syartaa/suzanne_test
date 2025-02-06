@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:suzanne_podcast_app/provider/ratings_provider.dart';
-import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
 class RatingCommentsWidget extends ConsumerStatefulWidget {
   final String podcastId;

@@ -9,14 +9,13 @@ import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart
 class PlaylistsTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final playlists =
-        ref.watch(playlistProvider); // Get playlists from provider
-    final userState = ref.watch(userProvider); // Watch the user state
+    final playlists = ref.watch(playlistProvider); // Get playlists from API
+    final userState = ref.watch(userProvider); // Watch user state
     final podcastState = ref.watch(podcastProvider); // Get podcast list
 
     // Trigger reload of playlists when user state changes
     if (userState.value != null) {
-      ref.read(playlistProvider.notifier).loadPlaylists();
+      ref.read(playlistProvider.notifier).fetchAllPlaylists();
     }
 
     return Scaffold(
@@ -36,13 +35,18 @@ class PlaylistsTab extends ConsumerWidget {
 
           return ListView.builder(
             padding: const EdgeInsets.symmetric(vertical: 10.0),
-            itemCount: playlists.keys.length,
+            itemCount: playlists.length,
             itemBuilder: (context, index) {
-              final playlistName = playlists.keys.elementAt(index);
-              final playlistPodcasts = playlists[playlistName]!
-                  .map((podcastId) => allPodcasts.firstWhere((podcast) =>
-                      podcast['id'].toString() == podcastId.toString()))
-                  .toList();
+              final playlist = playlists[index];
+
+              // ✅ Use podcasts_count if podcasts list is missing
+              final playlistPodcasts = (playlist['podcasts'] as List?) ?? [];
+              final int podcastCount = playlistPodcasts.isNotEmpty
+                  ? playlistPodcasts.length
+                  : (playlist['podcasts_count'] ?? 0);
+
+              final playlistName =
+                  playlist['name'] as String? ?? "Unnamed Playlist";
 
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -76,7 +80,7 @@ class PlaylistsTab extends ConsumerWidget {
                       ),
                     ),
                     subtitle: Text(
-                      '${playlistPodcasts.length} Podcasts',
+                      '$podcastCount Podcasts',
                       style: const TextStyle(
                         fontSize: 12,
                         color: Colors.white70,
@@ -88,13 +92,19 @@ class PlaylistsTab extends ConsumerWidget {
                       size: 16,
                     ),
                     onTap: () {
-                      // Navigate to playlist detail screen
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => PlaylistDetailScreen(
                             playlistName: playlistName,
-                            playlistPodcasts: playlistPodcasts,
+                            playlistPodcasts: playlistPodcasts.map((podcast) {
+                              return {
+                                'id': podcast['id'],
+                                'title': podcast['title'],
+                                'thumbnail': podcast['thumbnail'],
+                                'audio_url': podcast['audio_url']
+                              };
+                            }).toList(),
                           ),
                         ),
                       );

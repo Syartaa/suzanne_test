@@ -7,10 +7,13 @@ import 'package:suzanne_podcast_app/provider/user_provider.dart';
 void showFavoritePlaylistPopup(
     BuildContext context, WidgetRef ref, String podcastId) {
   final userState = ref.read(userProvider);
-  final isLoggedIn = userState.value != null; // Check if user is logged in
+  final isLoggedIn = userState.when(
+    data: (user) => user != null,
+    loading: () => false,
+    error: (error, stackTrace) => false,
+  );
   final favorites = ref.watch(favoriteProvider);
   final isFavorited = favorites.contains(podcastId);
-  final playlists = ref.watch(playlistProvider);
 
   showModalBottomSheet(
     context: context,
@@ -70,57 +73,75 @@ void showFavoritePlaylistPopup(
 }
 
 void showPlaylistPopup(BuildContext context, WidgetRef ref, String podcastId) {
-  final playlists = ref.watch(playlistProvider);
+  final playlistsState = ref.watch(playlistProvider);
+
+  // If playlists are empty, fetch them first
+  if (playlistsState.isEmpty) {
+    ref.read(playlistProvider.notifier).fetchAllPlaylists();
+  }
 
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     builder: (BuildContext context) {
-      return Container(
-        padding: const EdgeInsets.all(0.0),
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 0, 0, 0),
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(16.0),
-            topRight: Radius.circular(16.0),
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                'Select Playlist or Create New',
-                style: TextStyle(color: Colors.white, fontSize: 18),
+      return Consumer(
+        builder: (context, ref, child) {
+          final playlistsState = ref.watch(playlistProvider);
+
+          if (playlistsState.isEmpty) {
+            return const Center(
+              child: CircularProgressIndicator(color: Colors.white),
+            );
+          }
+
+          return Container(
+            padding: const EdgeInsets.all(0.0),
+            decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 0, 0, 0),
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(16.0),
+                topRight: Radius.circular(16.0),
               ),
             ),
-            ...playlists.keys.map((playlistName) {
-              return ListTile(
-                leading:
-                    const Icon(Icons.playlist_add_check, color: Colors.white),
-                title: Text(playlistName,
-                    style: const TextStyle(color: Colors.white)),
-                onTap: () {
-                  ref
-                      .read(playlistProvider.notifier)
-                      .togglePodcastInPlaylist(playlistName, podcastId);
-                  Navigator.of(context).pop(); // Close the popup
-                },
-              );
-            }).toList(),
-            ListTile(
-              leading: const Icon(Icons.add, color: Colors.white),
-              title: const Text('Create New Playlist',
-                  style: TextStyle(color: Colors.white)),
-              onTap: () {
-                Navigator.of(context).pop(); // Close the current popup
-                _showCreatePlaylistDialog(context, ref, podcastId);
-              },
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    'Select Playlist or Create New',
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
+                ),
+                // Display all available playlists
+                ...playlistsState.map((playlist) {
+                  final playlistName = playlist['name'] ?? 'Unnamed Playlist';
+                  return ListTile(
+                    leading: const Icon(Icons.playlist_add_check,
+                        color: Colors.white),
+                    title: Text(playlistName,
+                        style: const TextStyle(color: Colors.white)),
+                    onTap: () {
+                      ref.read(playlistProvider.notifier).addPodcastToPlaylist(
+                          playlist['id'].toString(), podcastId);
+                      Navigator.of(context).pop();
+                    },
+                  );
+                }).toList(),
+                ListTile(
+                  leading: const Icon(Icons.add, color: Colors.white),
+                  title: const Text('Create New Playlist',
+                      style: TextStyle(color: Colors.white)),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    _showCreatePlaylistDialog(context, ref, podcastId);
+                  },
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       );
     },
   );
@@ -164,9 +185,9 @@ void _showCreatePlaylistDialog(
                 ref
                     .read(playlistProvider.notifier)
                     .createPlaylist(playlistName);
-                ref
-                    .read(playlistProvider.notifier)
-                    .togglePodcastInPlaylist(playlistName, podcastId);
+                ref.read(playlistProvider.notifier).addPodcastToPlaylist(
+                    playlistName,
+                    podcastId); // Add podcast to newly created playlist
                 Navigator.of(context).pop();
               }
             },

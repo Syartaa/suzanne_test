@@ -201,4 +201,228 @@ class ApiService {
       throw Exception("Failed to fetch podcast ratings: $e");
     }
   }
+
+  // Add/Remove Podcast from Favorites
+  Future<bool> toggleFavoritePodcast(String podcastId, String authToken) async {
+    try {
+      final response = await _dio.post(
+        '/podcast/$podcastId/favorite',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $authToken',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+
+      print("API response data: ${response.data}");
+
+      if (response.data != null &&
+          response.data['message'] != null &&
+          response.data['message'].toString().contains("added to favorites")) {
+        return true;
+      } else if (response.data != null &&
+          response.data['message'] != null &&
+          response.data['message']
+              .toString()
+              .contains("removed from favorites")) {
+        return false;
+      } else {
+        print("Unexpected API response format: ${response.data}");
+        return false;
+      }
+    } catch (e) {
+      if (e is DioException) {
+        print("Dio error response: ${e.response?.data}");
+        // You can retry the API call or show a more detailed error message to the user.
+      }
+      print("Error toggling favorite podcast: $e");
+      throw Exception("Failed to toggle favorite podcast: $e");
+    }
+  }
+
+  // Fetch User's Favorite Podcasts
+  Future<List<String>> getFavoritePodcasts(String authToken) async {
+    try {
+      final response = await _dio.get(
+        '/user/favorites',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $authToken',
+          },
+        ),
+      );
+
+      if (response.data is List) {
+        return List<String>.from(
+            response.data); // Assuming response is a list of podcast IDs
+      } else {
+        throw Exception("Unexpected response format for favorites");
+      }
+    } catch (e) {
+      throw Exception("Failed to fetch favorite podcasts: $e");
+    }
+  }
+
+  ///playlist API
+  ///playlist create
+  Future<Map<String, dynamic>> createPlaylist({
+    required String name,
+    required String authToken,
+  }) async {
+    try {
+      final response = await _dio.post(
+        '/playlists',
+        data: {
+          'name': name,
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $authToken',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+
+      print("Playlist Created: ${response.data}"); // Debugging
+
+      return response
+          .data; // Assuming response contains the created playlist data
+    } catch (e) {
+      if (e is DioException) {
+        print("Dio error response: ${e.response?.data}");
+      }
+      throw Exception("Failed to create playlist: $e");
+    }
+  }
+
+//Get All Playlists
+  Future<List<Map<String, dynamic>>> getAllPlaylists(String authToken) async {
+    try {
+      final response = await _dio.get(
+        '/playlists',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $authToken',
+          },
+        ),
+      );
+
+      print("Fetched Playlists: ${response.data}"); // Debugging
+
+      if (response.data is Map && response.data.containsKey('error')) {
+        throw Exception("API Error: ${response.data['error']}");
+      }
+
+      if (response.data is Map && response.data.containsKey('data')) {
+        return List<Map<String, dynamic>>.from(response.data['data']);
+      } else {
+        throw Exception("Unexpected response format for playlists");
+      }
+    } catch (e) {
+      print("Dio error response: ${e is DioException ? e.response?.data : e}");
+      throw Exception("Failed to fetch playlists: $e");
+    }
+  }
+
+  ///podcast to a playlist
+  Future<Map<String, dynamic>> addPodcastToPlaylist({
+    required String playlistId,
+    required String podcastId,
+    required String authToken,
+  }) async {
+    try {
+      // Fetch the playlist first to confirm it exists
+      final playlistResponse = await _dio.get(
+        '/playlists/$playlistId',
+        options: Options(
+          headers: {'Authorization': 'Bearer $authToken'},
+        ),
+      );
+
+      if (playlistResponse.data is Map &&
+          playlistResponse.data.containsKey('error')) {
+        throw Exception(
+            "Playlist not found: ${playlistResponse.data['error']}");
+      }
+
+      // Now add podcast to playlist
+      final response = await _dio.post(
+        '/playlists/$playlistId/podcasts',
+        data: {
+          'podcast_id': podcastId,
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $authToken',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+
+      print("Podcast added to playlist: ${response.data}"); // Debugging
+
+      return response.data;
+    } catch (e) {
+      if (e is DioException) {
+        print("Dio error response: ${e.response?.data}");
+      }
+      throw Exception("Failed to add podcast to playlist: $e");
+    }
+  }
+
+//remove a podcast from playlist
+  Future<Map<String, dynamic>> removePodcastFromPlaylist({
+    required String playlistId,
+    required String podcastId,
+    required String authToken,
+  }) async {
+    try {
+      final response = await _dio.delete(
+        '/playlists/$playlistId/podcasts/$podcastId',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $authToken',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+
+      print("Podcast removed from playlist: ${response.data}"); // Debugging
+
+      return response.data; // Response contains message confirming removal
+    } catch (e) {
+      if (e is DioException) {
+        print("Dio error response: ${e.response?.data}");
+      }
+      throw Exception("Failed to remove podcast from playlist: $e");
+    }
+  }
+
+// get playlist id
+  Future<Map<String, dynamic>> getPlaylistById({
+    required String playlistId,
+    required String authToken,
+  }) async {
+    try {
+      final response = await _dio.get(
+        '/playlists/$playlistId',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $authToken',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+
+      print("Fetched playlist data: ${response.data}"); // Debugging
+
+      return response.data; // Returns the playlist data including podcasts
+    } catch (e) {
+      if (e is DioException) {
+        print("Dio error response: ${e.response?.data}");
+      }
+      throw Exception("Failed to fetch playlist: $e");
+    }
+  }
 }

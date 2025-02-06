@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class User {
   final String firstName;
   final String lastName;
@@ -7,7 +5,7 @@ class User {
   final String password;
   final String? gender; // Optional
   final String? id; // Optional for responses like login or registration success
-  final String? token; // ✅ Add token for authentication
+  String? token; // ✅ Add token for authentication
 
   User({
     required this.firstName,

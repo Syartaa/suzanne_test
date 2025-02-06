@@ -2,14 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:suzanne_podcast_app/provider/favorite_provider.dart';
 import 'package:suzanne_podcast_app/provider/podcast_provider.dart';
+import 'package:suzanne_podcast_app/provider/user_provider.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
 class FavoritesTab extends ConsumerWidget {
   @override
+  @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final favoriteIds =
-        ref.watch(favoriteProvider); // List of favorite podcast IDs
-    final podcastState = ref.watch(podcastProvider); // List of all podcasts
+    final favoriteIds = ref.watch(favoriteProvider);
+    final podcastState = ref.watch(podcastProvider);
+    final userState = ref.watch(userProvider);
+
+    // If user is NOT logged in, show "No favorite podcasts"
+    if (userState.value == null || userState.value!.token == null) {
+      return const Center(
+        child: Text(
+          "No favorite podcasts yet!",
+          style: TextStyle(color: Colors.white, fontSize: 18),
+        ),
+      );
+    }
 
     print('Favorite IDs: $favoriteIds'); // Debugging
 
@@ -36,8 +48,7 @@ class FavoritesTab extends ConsumerWidget {
                 itemBuilder: (context, index) {
                   final podcast = favoritePodcasts[index];
                   final podcastId = podcast['id'].toString();
-                  final isFavorited =
-                      favoriteIds.contains(podcastId); // Corrected
+                  final isFavorited = favoriteIds.contains(podcastId);
 
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),

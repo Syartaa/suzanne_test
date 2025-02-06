@@ -60,7 +60,6 @@ class _ChooseInterestScreenState extends State<ChooseInterestScreen> {
                 _buildInterestButton('Empower'),
                 _buildInterestButton('Women’s Leadership'),
                 _buildInterestButton('Career Development'),
-                _buildInterestButton('Empower'),
               ],
             ),
             const Spacer(),

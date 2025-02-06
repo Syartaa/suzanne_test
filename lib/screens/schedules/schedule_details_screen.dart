@@ -7,8 +7,7 @@ import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart
 class ScheduleDetailsScreen extends ConsumerStatefulWidget {
   final Schedule schedule;
 
-  const ScheduleDetailsScreen({Key? key, required this.schedule})
-      : super(key: key);
+  const ScheduleDetailsScreen({super.key, required this.schedule});
 
   @override
   ConsumerState<ScheduleDetailsScreen> createState() =>

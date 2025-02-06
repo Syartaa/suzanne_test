@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:suzanne_podcast_app/models/user.dart';
 import 'package:suzanne_podcast_app/screens/discover/discover_screen.dart';
 import 'package:suzanne_podcast_app/screens/home/home_screen.dart';
-import 'package:suzanne_podcast_app/screens/live/live_screen.dart';
+import 'package:suzanne_podcast_app/screens/event/scheduled_live_events.dart';
 import 'package:suzanne_podcast_app/screens/mylibrary/my_library_screen.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
@@ -50,7 +49,7 @@ class NavigationMenu extends ConsumerWidget {
               label: '', // No label
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.live_tv_outlined),
+              icon: Icon(Icons.calendar_month),
               label: '', // No label
             ),
           ],
@@ -68,7 +67,7 @@ class NavigationMenu extends ConsumerWidget {
       case 2:
         return MyLibraryScreen();
       case 3:
-        return LiveScreen();
+        return ScheduledLiveEvents();
       default:
         return const HomeScreen();
     }

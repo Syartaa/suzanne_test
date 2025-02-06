@@ -1,111 +1,109 @@
-import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:suzanne_podcast_app/models/user.dart';
 import 'package:suzanne_podcast_app/provider/user_provider.dart';
+import 'package:suzanne_podcast_app/services/api_service.dart';
 
-class PlaylistNotifier extends StateNotifier<Map<String, List<String>>> {
-  PlaylistNotifier(this.ref) : super({}) {
-    loadPlaylists();
+class PlaylistNotifier extends StateNotifier<List<Map<String, dynamic>>> {
+  PlaylistNotifier(this.ref) : super([]) {
+    fetchAllPlaylists();
   }
 
   final Ref ref;
+  final ApiService _apiService = ApiService();
 
-  // Load playlists from SharedPreferences based on the logged-in user
-  Future<void> loadPlaylists() async {
-    final userState = ref.watch(userProvider);
-    final prefs = await SharedPreferences.getInstance();
-
-    if (userState is AsyncData<User?> && userState.value != null) {
-      final userId = userState.value!.id;
-      final playlistsJson = prefs.getString('user_playlists_$userId');
-
-      if (playlistsJson != null) {
-        state = Map<String, List<String>>.from(
-          json.decode(playlistsJson).map(
-                (key, value) => MapEntry(key, List<String>.from(value)),
-              ),
-        );
-        print("Loaded playlists for user $userId: $state");
-      } else {
-        print("No playlists found for user $userId.");
-      }
-    } else {
-      print("User not loaded yet or is null.");
-    }
-  }
-
-  // Save playlists to SharedPreferences based on the logged-in user
-  Future<void> _savePlaylists() async {
+  // Fetch all playlists from the API
+  Future<void> fetchAllPlaylists() async {
     final userState = ref.read(userProvider);
-    final prefs = await SharedPreferences.getInstance();
+    if (userState.value == null) return;
 
-    if (userState.value != null) {
-      final userId = userState.value!.id;
-      await prefs.setString('user_playlists_$userId', json.encode(state));
-      print("Saved playlists for user $userId: $state");
+    final authToken = userState.value!.token;
+    try {
+      final playlists = await _apiService.getAllPlaylists(authToken!);
+      print("Fetched Playlists: $playlists"); // Debugging
+      state = [...playlists]; // Ensure UI updates
+    } catch (e) {
+      print("Error fetching playlists: $e");
     }
   }
 
-  // Create a new playlist if it doesn't exist for the current user
+  // Create a new playlist via API
   Future<void> createPlaylist(String playlistName) async {
     final userState = ref.read(userProvider);
-    if (userState.value == null) {
-      print("User not logged in! Cannot create playlist.");
-      return;
-    }
+    if (userState.value == null) return;
 
-    if (!state.containsKey(playlistName)) {
-      state = {...state, playlistName: []};
-      await _savePlaylists();
-      print("Created new playlist: $playlistName");
-    } else {
-      print("Playlist already exists: $playlistName");
+    final authToken = userState.value!.token;
+    try {
+      final response = await _apiService.createPlaylist(
+          name: playlistName, authToken: authToken!);
+
+      if (response.containsKey('data')) {
+        final newPlaylist = response['data'];
+        state = [...state, newPlaylist]; // Add new playlist to state
+      } else {
+        print("Unexpected create playlist response: $response");
+      }
+    } catch (e) {
+      print("Error creating playlist: $e");
     }
   }
 
-  // Add or remove a podcast from a playlist for the logged-in user
-  Future<void> togglePodcastInPlaylist(
-      String playlistName, String podcastId) async {
+  // Add podcast to a playlist
+  Future<void> addPodcastToPlaylist(String playlistId, String podcastId) async {
     final userState = ref.read(userProvider);
-    if (userState.value == null) {
-      print("User not logged in! Cannot modify playlist.");
-      return;
-    }
+    if (userState.value == null) return;
 
-    if (!state.containsKey(playlistName)) {
-      print("Playlist does not exist: $playlistName");
-      return;
-    }
+    final authToken = userState.value!.token;
+    try {
+      await _apiService.addPodcastToPlaylist(
+          playlistId: playlistId, podcastId: podcastId, authToken: authToken!);
 
-    final isInPlaylist = state[playlistName]!.contains(podcastId);
-    if (isInPlaylist) {
-      state[playlistName] =
-          state[playlistName]!.where((id) => id != podcastId).toList();
-      print("Removed podcast $podcastId from playlist $playlistName");
-    } else {
-      state[playlistName] = [...state[playlistName]!, podcastId];
-      print("Added podcast $podcastId to playlist $playlistName");
+      // Fetch updated playlist data
+      await fetchAllPlaylists();
+    } catch (e) {
+      print("Error adding podcast to playlist: $e");
     }
+  }
 
-    await _savePlaylists();
+  // Remove podcast from a playlist
+  Future<void> removePodcastFromPlaylist(
+      String playlistId, String podcastId) async {
+    final userState = ref.read(userProvider);
+    if (userState.value == null) return;
+
+    final authToken = userState.value!.token;
+    try {
+      await _apiService.removePodcastFromPlaylist(
+          playlistId: playlistId, podcastId: podcastId, authToken: authToken!);
+
+      // Fetch updated playlist data
+      await fetchAllPlaylists();
+    } catch (e) {
+      print("Error removing podcast from playlist: $e");
+    }
+  }
+
+  // Get a specific playlist by ID
+  Future<Map<String, dynamic>?> getPlaylistById(String playlistId) async {
+    final userState = ref.read(userProvider);
+    if (userState.value == null) return null;
+
+    final authToken = userState.value!.token;
+    try {
+      return await _apiService.getPlaylistById(
+          playlistId: playlistId, authToken: authToken!);
+    } catch (e) {
+      print("Error fetching playlist by ID: $e");
+      return null;
+    }
   }
 
   // Reset playlists when user logs out
-  Future<void> resetPlaylists(User? user) async {
-    state = {}; // Clear the current playlists
-    final prefs = await SharedPreferences.getInstance();
-
-    if (user != null) {
-      final userId = user.id;
-      await prefs
-          .remove('user_playlists_$userId'); // Remove from SharedPreferences
-      print("Reset playlists for user $userId");
-    }
+  void resetPlaylists() {
+    state = [];
   }
 }
 
+// Define provider
 final playlistProvider =
-    StateNotifierProvider<PlaylistNotifier, Map<String, List<String>>>((ref) {
+    StateNotifierProvider<PlaylistNotifier, List<Map<String, dynamic>>>((ref) {
   return PlaylistNotifier(ref);
 });
