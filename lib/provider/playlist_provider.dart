@@ -10,8 +10,12 @@ class PlaylistNotifier extends StateNotifier<List<Map<String, dynamic>>> {
   final Ref ref;
   final ApiService _apiService = ApiService();
 
+  // Flag to check if playlists are already loaded
+  bool _playlistsLoaded = false;
+
   // Fetch all playlists from the API
   Future<void> fetchAllPlaylists() async {
+    if (_playlistsLoaded) return; // Prevent multiple calls
     final userState = ref.read(userProvider);
     if (userState.value == null) return;
 
@@ -19,10 +23,17 @@ class PlaylistNotifier extends StateNotifier<List<Map<String, dynamic>>> {
     try {
       final playlists = await _apiService.getAllPlaylists(authToken!);
       print("Fetched Playlists: $playlists"); // Debugging
-      state = [...playlists]; // Ensure UI updates
+      state = playlists; // Update state with fetched playlists
+      _playlistsLoaded = true; // Mark playlists as loaded
     } catch (e) {
       print("Error fetching playlists: $e");
     }
+  }
+
+  // Reset playlists when user logs out
+  void resetPlaylists() {
+    state = [];
+    _playlistsLoaded = false; // Reset loaded flag
   }
 
   // Create a new playlist via API
@@ -94,11 +105,6 @@ class PlaylistNotifier extends StateNotifier<List<Map<String, dynamic>>> {
       print("Error fetching playlist by ID: $e");
       return null;
     }
-  }
-
-  // Reset playlists when user logs out
-  void resetPlaylists() {
-    state = [];
   }
 }
 

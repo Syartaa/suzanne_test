@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:suzanne_podcast_app/screens/home/widget/evet_tab.dart';
-import 'package:suzanne_podcast_app/screens/home/widget/upcomming.dart';
+import 'package:suzanne_podcast_app/screens/home/widget/podcast_tab.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
 class PodcastsEventsTab extends StatefulWidget {
@@ -40,8 +40,8 @@ class _PodcastsEventsTabState extends State<PodcastsEventsTab>
           child: TabBarView(
             controller: _tabController,
             children: [
-              Center(child: PodcastTab()),
-              Center(child: EventTab()),
+              PodcastTab(),
+              EventTab(),
             ],
           ),
         ),

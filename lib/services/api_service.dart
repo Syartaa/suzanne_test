@@ -205,6 +205,12 @@ class ApiService {
   // Add/Remove Podcast from Favorites
   Future<bool> toggleFavoritePodcast(String podcastId, String authToken) async {
     try {
+      if (authToken == null || authToken.isEmpty) {
+        print("Token is missing. User needs to log in again.");
+        // Prompt user to log in
+        return false;
+      }
+
       final response = await _dio.post(
         '/podcast/$podcastId/favorite',
         options: Options(
@@ -217,33 +223,37 @@ class ApiService {
 
       print("API response data: ${response.data}");
 
-      if (response.data != null &&
-          response.data['message'] != null &&
-          response.data['message'].toString().contains("added to favorites")) {
-        return true;
-      } else if (response.data != null &&
-          response.data['message'] != null &&
-          response.data['message']
-              .toString()
-              .contains("removed from favorites")) {
-        return false;
-      } else {
-        print("Unexpected API response format: ${response.data}");
-        return false;
+      if (response.data != null && response.data['message'] != null) {
+        final message = response.data['message'].toString().toLowerCase();
+        if (message == "podcast added to favorites.") {
+          return true; // Favorited successfully
+        } else if (message == "podcast removed from favorites.") {
+          return false; // Unfavorited successfully
+        }
       }
+
+      print("Unexpected API response format: ${response.data}");
+      return false;
     } catch (e) {
       if (e is DioException) {
+        if (e.response?.statusCode == 302) {
+          print("Redirecting to login, token might be expired or invalid.");
+          // Handle token expiration or invalid token by prompting the user to log in
+        }
         print("Dio error response: ${e.response?.data}");
-        // You can retry the API call or show a more detailed error message to the user.
       }
       print("Error toggling favorite podcast: $e");
       throw Exception("Failed to toggle favorite podcast: $e");
     }
   }
 
-  // Fetch User's Favorite Podcasts
   Future<List<String>> getFavoritePodcasts(String authToken) async {
     try {
+      if (authToken == null || authToken.isEmpty) {
+        print("Token is missing. User needs to log in again.");
+        return [];
+      }
+
       final response = await _dio.get(
         '/user/favorites',
         options: Options(
@@ -253,13 +263,19 @@ class ApiService {
         ),
       );
 
-      if (response.data is List) {
+      // Check if response has 'data' and it is a list
+      if (response.data != null && response.data['data'] is List) {
+        // Extract podcast IDs as strings from the 'data' list
         return List<String>.from(
-            response.data); // Assuming response is a list of podcast IDs
+            response.data['data'].map((podcast) => podcast['id'].toString()));
       } else {
         throw Exception("Unexpected response format for favorites");
       }
     } catch (e) {
+      if (e is DioException) {
+        print("Dio error response: ${e.response?.data}");
+      }
+      print("Error fetching favorite podcasts: $e");
       throw Exception("Failed to fetch favorite podcasts: $e");
     }
   }

@@ -8,6 +8,9 @@ class FavoriteNotifier extends StateNotifier<List<String>> {
   final Ref ref;
   final ApiService _apiService;
 
+  // Flag to track if favorites have already been loaded
+  bool _favoritesLoaded = false;
+
   FavoriteNotifier(this.ref, this._apiService) : super([]) {
     ref.listen(userProvider, (previous, next) {
       if (next.isLoading || next.hasError) return;
@@ -21,14 +24,15 @@ class FavoriteNotifier extends StateNotifier<List<String>> {
       }
     });
 
-    Future.delayed(Duration.zero, () {
-      if (ref.read(userProvider).value?.token != null) {
-        loadFavorites();
-      }
-    });
+    // Ensure that we load favorites immediately when the app starts and user is logged in
+    if (ref.read(userProvider).value?.token != null) {
+      loadFavorites();
+    }
   }
 
   Future<void> loadFavorites() async {
+    if (_favoritesLoaded) return; // Prevent multiple API calls
+
     final userState = ref.read(userProvider);
 
     if (userState.value == null || userState.value!.token == null) {
@@ -42,6 +46,7 @@ class FavoriteNotifier extends StateNotifier<List<String>> {
     try {
       final favorites = await _apiService.getFavoritePodcasts(authToken);
       state = favorites;
+      _favoritesLoaded = true; // Mark favorites as loaded
       print("Favorites loaded successfully: $favorites");
     } catch (e) {
       print("Error loading favorites: $e");
@@ -92,7 +97,6 @@ class FavoriteNotifier extends StateNotifier<List<String>> {
   }
 }
 
-/// Favorite Provider
 final favoriteProvider =
     StateNotifierProvider<FavoriteNotifier, List<String>>((ref) {
   return FavoriteNotifier(ref, ref.watch(apiServiceProvider));

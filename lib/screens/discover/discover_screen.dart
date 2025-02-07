@@ -23,8 +23,11 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
   @override
   void initState() {
     super.initState();
-    // Trigger loading of events when the screen is first built
-    ref.read(eventNotifierProvider.notifier).loadEvents();
+    // Use Future.microtask to ensure loadEvents runs after the build phase
+    Future.microtask(() {
+      // Trigger the event loading
+      ref.read(eventNotifierProvider.notifier).loadEvents();
+    });
   }
 
   @override

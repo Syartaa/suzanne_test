@@ -27,27 +27,24 @@ class PodcastTab extends ConsumerWidget {
                     style: TextStyle(color: Colors.white),
                   ),
                 )
-              : Expanded(
-                  child: ListView.builder(
-                    itemCount: podcasts.length,
-                    itemBuilder: (context, index) {
-                      final podcast = podcasts[index];
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (_) =>
-                                  PodcastDetailsScreen(podcast: podcast)));
-                        },
-                        child: _buildPodcastTile(
-                          podcast,
-                          context,
-                          ref,
-                          downloads
-                              .any((d) => d.id == podcast['id'].toString()),
-                        ),
-                      );
-                    },
-                  ),
+              : ListView.builder(
+                  itemCount: podcasts.length,
+                  itemBuilder: (context, index) {
+                    final podcast = podcasts[index];
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) =>
+                                PodcastDetailsScreen(podcast: podcast)));
+                      },
+                      child: _buildPodcastTile(
+                        podcast,
+                        context,
+                        ref,
+                        downloads.any((d) => d.id == podcast['id'].toString()),
+                      ),
+                    );
+                  },
                 );
         },
         loading: () => const Center(child: CircularProgressIndicator()),

@@ -24,23 +24,21 @@ class EventTab extends ConsumerWidget {
                     style: TextStyle(color: Colors.white),
                   ),
                 )
-              : Expanded(
-                  child: ListView.builder(
-                    itemCount: events.length,
-                    itemBuilder: (context, index) {
-                      final event = events[index];
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => EventDetailsPage(event: event),
-                            ),
-                          );
-                        },
-                        child: _buildEventTile(event),
-                      );
-                    },
-                  ),
+              : ListView.builder(
+                  itemCount: events.length,
+                  itemBuilder: (context, index) {
+                    final event = events[index];
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => EventDetailsPage(event: event),
+                          ),
+                        );
+                      },
+                      child: _buildEventTile(event),
+                    );
+                  },
                 );
         },
         loading: () => const Center(child: CircularProgressIndicator()),

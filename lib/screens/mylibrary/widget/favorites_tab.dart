@@ -4,9 +4,9 @@ import 'package:suzanne_podcast_app/provider/favorite_provider.dart';
 import 'package:suzanne_podcast_app/provider/podcast_provider.dart';
 import 'package:suzanne_podcast_app/provider/user_provider.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
+import 'package:shimmer/shimmer.dart';
 
 class FavoritesTab extends ConsumerWidget {
-  @override
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final favoriteIds = ref.watch(favoriteProvider);
@@ -26,12 +26,14 @@ class FavoritesTab extends ConsumerWidget {
     print('Favorite IDs: $favoriteIds'); // Debugging
 
     return podcastState.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () =>
+          _buildShimmerLoading(), // Show shimmer skeleton while loading
       error: (err, stack) =>
           Center(child: Text("Error loading podcasts: $err")),
       data: (allPodcasts) {
         final favoritePodcasts = allPodcasts
-            .where((podcast) => favoriteIds.contains(podcast['id'].toString()))
+            .where((podcast) => favoriteIds
+                .contains(podcast['id'].toString())) // Ensure both are strings
             .toList();
 
         print('Favorite podcasts: $favoritePodcasts'); // Debugging
@@ -102,6 +104,54 @@ class FavoritesTab extends ConsumerWidget {
                   );
                 },
               );
+      },
+    );
+  }
+
+  // Shimmer loading widget
+  Widget _buildShimmerLoading() {
+    return ListView.builder(
+      itemCount: 5, // Show 5 placeholder items
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 5.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              child: ListTile(
+                contentPadding: const EdgeInsets.all(10),
+                leading: Container(
+                  width: 70,
+                  height: 70,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.white,
+                  ),
+                ),
+                title: Container(
+                  width: 100,
+                  height: 16,
+                  color: Colors.white,
+                ),
+                subtitle: Container(
+                  width: 70,
+                  height: 12,
+                  color: Colors.white,
+                ),
+                trailing: Icon(
+                  Icons.favorite_border,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        );
       },
     );
   }
