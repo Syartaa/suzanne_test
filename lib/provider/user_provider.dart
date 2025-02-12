@@ -5,7 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suzanne_podcast_app/models/user.dart';
 import 'package:suzanne_podcast_app/provider/api_service_provider.dart';
 import 'package:suzanne_podcast_app/provider/download_provider.dart';
-import 'package:suzanne_podcast_app/provider/playlist_provider.dart';
 import 'package:suzanne_podcast_app/services/api_service.dart';
 
 class UserNotifier extends StateNotifier<AsyncValue<User?>> {

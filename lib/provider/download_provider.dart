@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -59,9 +58,7 @@ class DownloadNotifier extends StateNotifier<List<Podcast>> {
       final directory = await getApplicationDocumentsDirectory();
       final filePath = '${directory.path}/${podcast.id.toString()}.mp4';
 
-      // Extract the video ID from the URL
       final videoId = extractVideoId(podcast.audioUrl);
-
       if (videoId == null) {
         print("Invalid YouTube URL: ${podcast.audioUrl}");
         return;
@@ -71,32 +68,38 @@ class DownloadNotifier extends StateNotifier<List<Podcast>> {
       final manifest =
           await yt.videos.streamsClient.getManifest(VideoId(videoId));
 
-      // Check if muxed streams are available, if not, try audio streams
+      if (manifest.muxed.isEmpty && manifest.audio.isEmpty) {
+        print("No available streams found for video ID: $videoId");
+        return;
+      }
+
       StreamInfo? streamInfo;
+
       if (manifest.muxed.isNotEmpty) {
         streamInfo = manifest.muxed.withHighestBitrate();
       } else if (manifest.audio.isNotEmpty) {
+        print("No muxed stream found. Downloading audio-only stream.");
         streamInfo = manifest.audio.withHighestBitrate();
       }
 
-      if (streamInfo != null) {
-        final stream = yt.videos.streamsClient.get(streamInfo);
-        final file = File(filePath);
-        final fileSink = file.openWrite();
-
-        await stream.pipe(fileSink);
-        await fileSink.flush();
-        await fileSink.close();
-
-        downloadedPodcastPaths[podcast.id.toString()] = filePath;
-        state = [...state, podcast];
-        await _saveDownloads();
-
-        print("Podcast downloaded: ${podcast.title}");
-      } else {
-        print(
-            "No available audio or video streams found for video ID: $videoId");
+      if (streamInfo == null) {
+        print("Stream selection failed for video ID: $videoId");
+        return;
       }
+
+      final stream = yt.videos.streamsClient.get(streamInfo);
+      final file = File(filePath);
+      final fileSink = file.openWrite();
+
+      await stream.pipe(fileSink);
+      await fileSink.flush();
+      await fileSink.close();
+
+      downloadedPodcastPaths[podcast.id.toString()] = filePath;
+      state = [...state, podcast];
+      await _saveDownloads();
+
+      print("Podcast downloaded: ${podcast.title}");
     } catch (e) {
       print("Download failed: $e");
       print("Podcast URL: ${podcast.audioUrl}");

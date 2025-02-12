@@ -17,16 +17,6 @@ class _ScheduledLiveEventsState extends ConsumerState<ScheduledLiveEvents> {
   DateTime? _selectedDay;
 
   @override
-  void initState() {
-    super.initState();
-    // Fetch the events when the widget is first created
-    // Use Future.microtask for scheduling the loadEvents() call
-    Future.microtask(() {
-      ref.read(eventNotifierProvider.notifier).loadEvents();
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     final eventsAsyncValue = ref.watch(eventNotifierProvider);
 

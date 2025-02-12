@@ -12,6 +12,7 @@ class ApiService {
     ),
   );
 
+//signup
   Future<User> registerUser(User user) async {
     try {
       final response = await _dio.post(
@@ -33,6 +34,7 @@ class ApiService {
     }
   }
 
+//login user
   Future<Map<String, dynamic>> loginUser(String email, String password) async {
     try {
       final response = await _dio.post('/login', data: {
@@ -45,24 +47,43 @@ class ApiService {
     }
   }
 
+//get podcast
   Future<List<dynamic>> fetchPodcasts() async {
     try {
       final response = await _dio.get('/podcasts');
-      return response.data; // Assuming the response is a list of podcasts
+
+      // Check if the response contains 'data' and it is a list
+      if (response.data is Map<String, dynamic> &&
+          response.data['data'] is List) {
+        // Return the list of podcasts from the 'data' key
+        return List<dynamic>.from(response.data['data']);
+      } else {
+        throw Exception('Invalid data format');
+      }
     } catch (e) {
       throw Exception("Failed to fetch podcasts: $e");
     }
   }
 
+//get podcast by id
   Future<Map<String, dynamic>> getPodcastDetail(String id) async {
     try {
       final response = await _dio.get('/podcasts/$id');
-      return response.data;
+
+      // Check if the response contains 'data' key and return it
+      if (response.data is Map<String, dynamic> &&
+          response.data['data'] is Map<String, dynamic>) {
+        return response
+            .data['data']; // Return the podcast detail from the 'data' key
+      } else {
+        throw Exception('Invalid data format');
+      }
     } catch (e) {
       throw Exception("Failed to fetch podcast detail: $e");
     }
   }
 
+//get Events
   Future<List<Event>> fetchEvents() async {
     try {
       final response = await _dio.get('/events');
@@ -87,6 +108,7 @@ class ApiService {
     }
   }
 
+//get Events by id
   Future<Event> getEventDetail(String id) async {
     try {
       final response = await _dio.get('/events/$id');
@@ -107,6 +129,7 @@ class ApiService {
     }
   }
 
+//get schedules
   Future<List<Schedule>> fetchSchedules() async {
     try {
       final response = await _dio.get('/schedules');
@@ -122,6 +145,7 @@ class ApiService {
     }
   }
 
+//get schedules by id
   Future<Schedule> fetchScheduleById(String id) async {
     try {
       final response = await _dio.get('/schedules/$id');

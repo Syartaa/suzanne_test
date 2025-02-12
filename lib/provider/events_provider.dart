@@ -4,30 +4,51 @@ import 'package:suzanne_podcast_app/provider/api_service_provider.dart';
 import 'package:suzanne_podcast_app/services/api_service.dart';
 
 class EventNotifier extends StateNotifier<AsyncValue<List<Event>>> {
-  EventNotifier(this.apiService) : super(const AsyncValue.loading());
-
   final ApiService apiService;
 
-  Future<void> loadEvents() async {
-    try {
-      state = const AsyncValue.loading(); // Set the loading state
-      final events = await apiService.fetchEvents();
-      state = AsyncValue.data(events); // Update with fetched data
-    } catch (e, stackTrace) {
-      state = AsyncValue.error(e, stackTrace); // Handle errors gracefully
+  EventNotifier(this.apiService) : super(const AsyncValue.loading()) {
+    _loadEvents();
+  }
+
+  // Local cache to store fetched events
+  List<Event>? _cachedEvents;
+
+  // Try to load events faster, with caching mechanism
+  Future<void> _loadEvents() async {
+    if (_cachedEvents != null) {
+      // If events are cached, load them directly
+      state = AsyncValue.data(_cachedEvents!);
+    } else {
+      try {
+        // Fetch from API if no cached data
+        final events = await apiService.fetchEvents();
+        _cachedEvents = events; // Cache fetched events
+        state = AsyncValue.data(events);
+      } catch (e, stackTrace) {
+        state = AsyncValue.error(e, stackTrace);
+      }
     }
   }
 
   // Fetch events based on a schedule ID
   Future<void> loadEventsByScheduleId(int scheduleId) async {
-    try {
-      state = const AsyncValue.loading();
-      final events = await apiService.fetchEvents(); // Get all events
-      final filteredEvents =
-          events.where((event) => event.scheduleId == scheduleId).toList();
+    if (_cachedEvents != null) {
+      // If events are cached, filter them directly
+      final filteredEvents = _cachedEvents!
+          .where((event) => event.scheduleId == scheduleId)
+          .toList();
       state = AsyncValue.data(filteredEvents);
-    } catch (e, stackTrace) {
-      state = AsyncValue.error(e, stackTrace);
+    } else {
+      try {
+        // Fetch all events from API
+        final events = await apiService.fetchEvents();
+        _cachedEvents = events; // Cache fetched events
+        final filteredEvents =
+            events.where((event) => event.scheduleId == scheduleId).toList();
+        state = AsyncValue.data(filteredEvents);
+      } catch (e, stackTrace) {
+        state = AsyncValue.error(e, stackTrace);
+      }
     }
   }
 }
@@ -37,4 +58,11 @@ final eventNotifierProvider =
     StateNotifierProvider<EventNotifier, AsyncValue<List<Event>>>((ref) {
   final apiService = ref.watch(apiServiceProvider);
   return EventNotifier(apiService);
+});
+
+// ** Provider to pre-fetch events in the background **
+final preFetchedEventsProvider = Provider.autoDispose<Future<void>>((ref) {
+  final apiService = ref.watch(apiServiceProvider);
+  return apiService
+      .fetchEvents(); // Pre-fetch events in the background when possible
 });

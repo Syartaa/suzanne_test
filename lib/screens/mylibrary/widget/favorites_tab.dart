@@ -23,22 +23,19 @@ class FavoritesTab extends ConsumerWidget {
       );
     }
 
-    print('Favorite IDs: $favoriteIds'); // Debugging
-
     return podcastState.when(
       loading: () =>
-          _buildShimmerLoading(), // Show shimmer skeleton while loading
+          _buildShimmerLoading(), // Show shimmer skeleton while loading podcasts
       error: (err, stack) =>
           Center(child: Text("Error loading podcasts: $err")),
       data: (allPodcasts) {
+        // Get favorite podcasts
         final favoritePodcasts = allPodcasts
-            .where((podcast) => favoriteIds
-                .contains(podcast['id'].toString())) // Ensure both are strings
+            .where((podcast) => favoriteIds.contains(podcast['id'].toString()))
             .toList();
 
-        print('Favorite podcasts: $favoritePodcasts'); // Debugging
-
-        return favoritePodcasts.isEmpty
+        return favoriteIds.isEmpty &&
+                !ref.read(favoriteProvider.notifier).isLoading
             ? const Center(
                 child: Text(
                   "No favorite podcasts yet!",
@@ -116,7 +113,7 @@ class FavoritesTab extends ConsumerWidget {
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Shimmer.fromColors(
-            baseColor: Colors.grey[300]!,
+            baseColor: AppColors.primaryColor,
             highlightColor: Colors.grey[100]!,
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 5.0),

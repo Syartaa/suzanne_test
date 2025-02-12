@@ -7,7 +7,6 @@ import 'package:suzanne_podcast_app/screens/discover/widget/top_podcast.dart';
 import 'package:suzanne_podcast_app/screens/podcasts/podcast_details_screen.dart';
 import 'package:suzanne_podcast_app/screens/schedules/schedule_details_screen.dart';
 import 'package:suzanne_podcast_app/screens/event/widget/event_details_page.dart';
-import 'package:suzanne_podcast_app/screens/schedules/widget/monday_marks_list.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
 class DiscoverScreen extends ConsumerStatefulWidget {
@@ -19,16 +18,6 @@ class DiscoverScreen extends ConsumerStatefulWidget {
 
 class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
   String searchQuery = "";
-
-  @override
-  void initState() {
-    super.initState();
-    // Use Future.microtask to ensure loadEvents runs after the build phase
-    Future.microtask(() {
-      // Trigger the event loading
-      ref.read(eventNotifierProvider.notifier).loadEvents();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {

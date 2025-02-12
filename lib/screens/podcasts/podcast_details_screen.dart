@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:suzanne_podcast_app/provider/favorite_provider.dart';
@@ -27,9 +28,18 @@ class _PodcastDetailsScreenState extends ConsumerState<PodcastDetailsScreen> {
   Duration? _currentPosition;
   String? localPath;
 
+  bool isOffline = false;
+
   @override
   void initState() {
     super.initState();
+
+    // Check the network connectivity status
+    Connectivity().checkConnectivity().then((connectivityResult) {
+      setState(() {
+        isOffline = connectivityResult == ConnectivityResult.none;
+      });
+    });
 
     final videoUrl = widget.podcast['audio_url'];
     final videoId = YoutubePlayer.convertUrlToId(videoUrl ?? "");
@@ -66,12 +76,24 @@ class _PodcastDetailsScreenState extends ConsumerState<PodcastDetailsScreen> {
   }
 
   void _initializeLocalVideo(String path) {
-    _videoController = VideoPlayerController.file(File(path))
+    File file = File(path);
+    if (!file.existsSync()) {
+      print("Error: File does not exist at path: $path");
+      return;
+    }
+
+    _videoController = VideoPlayerController.file(file)
       ..initialize().then((_) {
         setState(() {
           _videoDuration = _videoController!.value.duration;
         });
-        _videoController!.play();
+
+        // 🔹 Restore previous position if available
+        if (_currentPosition != null) {
+          _videoController!.seekTo(_currentPosition!);
+        }
+
+        print("Local video initialized. Duration: $_videoDuration");
       }).catchError((error) {
         print("Error initializing video: $error");
       });
@@ -100,8 +122,7 @@ class _PodcastDetailsScreenState extends ConsumerState<PodcastDetailsScreen> {
         ref.read(downloadProvider.notifier).downloadedPodcastPaths;
     localPath = downloadedPodcastPaths[podcastId];
 
-    //rating part
-
+    // Initialize the local video only if the file exists
     if (localPath != null &&
         File(localPath!).existsSync() &&
         _videoController == null) {
@@ -145,7 +166,7 @@ class _PodcastDetailsScreenState extends ConsumerState<PodcastDetailsScreen> {
                 ),
                 child: Column(
                   children: [
-                    localPath != null
+                    localPath != null && File(localPath!).existsSync()
                         ? _videoController != null &&
                                 _videoController!.value.isInitialized
                             ? AspectRatio(
@@ -156,16 +177,13 @@ class _PodcastDetailsScreenState extends ConsumerState<PodcastDetailsScreen> {
                             : const CircularProgressIndicator()
                         : YoutubePlayer(
                             controller: _controller,
-                            showVideoProgressIndicator: true,
-                          ),
+                            showVideoProgressIndicator: true),
                     const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          _formatDuration(_currentPosition),
-                          style: const TextStyle(color: Color(0xFFFFDBB5)),
-                        ),
+                        Text(_formatDuration(_currentPosition),
+                            style: TextStyle(color: Colors.white)),
                         Expanded(
                           child: _videoDuration != null &&
                                   _videoDuration!.inSeconds > 0
@@ -185,7 +203,7 @@ class _PodcastDetailsScreenState extends ConsumerState<PodcastDetailsScreen> {
                                       _videoController?.seekTo(newPosition);
                                     }
                                   },
-                                  activeColor: AppColors.secondaryColor,
+                                  activeColor: Colors.white,
                                   inactiveColor: Colors.grey,
                                 )
                               : const SizedBox(),
@@ -228,19 +246,27 @@ class _PodcastDetailsScreenState extends ConsumerState<PodcastDetailsScreen> {
                           color: AppColors.secondaryColor,
                           iconSize: 50,
                           onPressed: () {
-                            if (localPath == null) {
-                              if (_controller.value.isPlaying) {
-                                _controller.pause();
+                            setState(() {
+                              if (localPath == null) {
+                                if (_controller.value.isPlaying) {
+                                  _controller.pause();
+                                } else {
+                                  _controller.play();
+                                }
                               } else {
-                                _controller.play();
+                                if (_videoController?.value.isPlaying ??
+                                    false) {
+                                  _videoController?.pause();
+                                } else {
+                                  // 🔹 Resume from last known position
+
+                                  if (_currentPosition != null) {
+                                    _videoController?.seekTo(_currentPosition!);
+                                  }
+                                  _videoController?.play();
+                                }
                               }
-                            } else {
-                              if (_videoController?.value.isPlaying ?? false) {
-                                _videoController?.pause();
-                              } else {
-                                _videoController?.play();
-                              }
-                            }
+                            });
                           },
                         ),
                         IconButton(
@@ -296,7 +322,6 @@ class _PodcastDetailsScreenState extends ConsumerState<PodcastDetailsScreen> {
                   ],
                 ),
               ),
-
               const SizedBox(height: 32),
               // Comment Section
               RatingCommentsWidget(podcastId: podcastId),

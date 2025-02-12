@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:suzanne_podcast_app/provider/podcast_provider.dart';
 import 'package:suzanne_podcast_app/provider/playlist_provider.dart';
 import 'package:suzanne_podcast_app/provider/user_provider.dart';
 import 'package:suzanne_podcast_app/screens/mylibrary/widget/playlist_details.dart';
@@ -12,7 +11,6 @@ class PlaylistsTab extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final playlists = ref.watch(playlistProvider); // Get playlists from API
     final userState = ref.watch(userProvider); // Watch user state
-    final podcastState = ref.watch(podcastProvider); // Get podcast list
 
     // Trigger reload of playlists when user state changes (only once)
     if (userState.value != null && playlists.isEmpty) {
@@ -28,7 +26,7 @@ class PlaylistsTab extends ConsumerWidget {
               itemCount: playlists.length,
               itemBuilder: (context, index) {
                 final playlist = playlists[index];
-
+                final playlistId = playlist['id'].toString();
                 // ✅ Use podcasts_count if podcasts list is missing
                 final playlistPodcasts = (playlist['podcasts'] as List?) ?? [];
                 final int podcastCount = playlistPodcasts.isNotEmpty
@@ -81,23 +79,45 @@ class PlaylistsTab extends ConsumerWidget {
                         color: Colors.white70,
                         size: 16,
                       ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => PlaylistDetailScreen(
-                              playlistName: playlistName,
-                              playlistPodcasts: playlistPodcasts.map((podcast) {
-                                return {
-                                  'id': podcast['id'],
-                                  'title': podcast['title'],
-                                  'thumbnail': podcast['thumbnail'],
-                                  'audio_url': podcast['audio_url']
-                                };
-                              }).toList(),
+                      onTap: () async {
+                        final notifier = ref.read(playlistProvider.notifier);
+                        await notifier.fetchPlaylistById(playlistId);
+                        final selectedPlaylist = notifier.selectedPlaylist;
+
+                        if (selectedPlaylist != null) {
+                          // ✅ Check if playlist is wrapped in 'data' key
+                          final playlistData =
+                              selectedPlaylist['data'] ?? selectedPlaylist;
+
+                          final playlistName =
+                              playlistData['name']?.toString() ??
+                                  "Unnamed Playlist";
+                          final playlistPodcasts =
+                              (playlistData['podcasts'] as List?)
+                                      ?.map((podcast) => {
+                                            'id': podcast['id'],
+                                            'title': podcast['title'],
+                                            'thumbnail': podcast['thumbnail'],
+                                            'audio_url': podcast['audio_url'],
+                                            'host_name': podcast['host_name']
+                                          })
+                                      .toList() ??
+                                  [];
+
+                          print(
+                              "Passing playlistName: $playlistName, Podcasts: $playlistPodcasts"); // Debugging
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PlaylistDetailScreen(
+                                playlistName: playlistName,
+                                playlistPodcasts: playlistPodcasts,
+                                playlistId: playlistId,
+                              ),
                             ),
-                          ),
-                        );
+                          );
+                        }
                       },
                     ),
                   ),

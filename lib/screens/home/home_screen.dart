@@ -8,7 +8,6 @@ import 'package:suzanne_podcast_app/provider/podcast_provider.dart';
 import 'package:suzanne_podcast_app/provider/schedules_provider.dart';
 import 'package:suzanne_podcast_app/screens/home/widget/scheculed_slider.dart';
 import 'package:suzanne_podcast_app/screens/home/widget/tab_event_podcast.dart';
-import 'package:suzanne_podcast_app/screens/home/widget/podcast_tab.dart';
 import 'package:suzanne_podcast_app/screens/podcasts/podcast_screen.dart';
 import 'package:suzanne_podcast_app/screens/profile/profile_screen.dart';
 import 'package:suzanne_podcast_app/screens/schedules/monday_marks_screen.dart';

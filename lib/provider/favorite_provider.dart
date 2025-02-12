@@ -8,8 +8,8 @@ class FavoriteNotifier extends StateNotifier<List<String>> {
   final Ref ref;
   final ApiService _apiService;
 
-  // Flag to track if favorites have already been loaded
   bool _favoritesLoaded = false;
+  bool isLoading = false; // Add loading flag
 
   FavoriteNotifier(this.ref, this._apiService) : super([]) {
     ref.listen(userProvider, (previous, next) {
@@ -24,14 +24,13 @@ class FavoriteNotifier extends StateNotifier<List<String>> {
       }
     });
 
-    // Ensure that we load favorites immediately when the app starts and user is logged in
     if (ref.read(userProvider).value?.token != null) {
       loadFavorites();
     }
   }
 
   Future<void> loadFavorites() async {
-    if (_favoritesLoaded) return; // Prevent multiple API calls
+    if (_favoritesLoaded || isLoading) return; // Prevent multiple API calls
 
     final userState = ref.read(userProvider);
 
@@ -43,14 +42,20 @@ class FavoriteNotifier extends StateNotifier<List<String>> {
 
     final authToken = userState.value!.token!;
 
+    // Set loading state to true
+    isLoading = true;
+    state = []; // Clear favorites while loading
+
     try {
       final favorites = await _apiService.getFavoritePodcasts(authToken);
       state = favorites;
-      _favoritesLoaded = true; // Mark favorites as loaded
+      _favoritesLoaded = true;
       print("Favorites loaded successfully: $favorites");
     } catch (e) {
       print("Error loading favorites: $e");
       state = [];
+    } finally {
+      isLoading = false; // Set loading state to false after loading is complete
     }
   }
 
@@ -64,13 +69,12 @@ class FavoriteNotifier extends StateNotifier<List<String>> {
 
     final authToken = userState.value!.token!;
 
-    // Optimistically update the UI immediately
     final isCurrentlyFavorited = state.contains(podcastId);
     final updatedFavorites = isCurrentlyFavorited
-        ? state.where((id) => id != podcastId).toList() // Remove from favorites
-        : [...state, podcastId]; // Add to favorites
+        ? state.where((id) => id != podcastId).toList()
+        : [...state, podcastId];
 
-    state = updatedFavorites; // Immediately update UI
+    state = updatedFavorites;
 
     try {
       final success =
@@ -78,14 +82,12 @@ class FavoriteNotifier extends StateNotifier<List<String>> {
 
       if (!success) {
         print("API failed to toggle favorite for podcast $podcastId.");
-        // Revert state if API call fails
         state = isCurrentlyFavorited
             ? [...state, podcastId]
             : state.where((id) => id != podcastId).toList();
       }
     } catch (e) {
       print("Error toggling favorite: $e");
-      // Revert state on error
       state = isCurrentlyFavorited
           ? [...state, podcastId]
           : state.where((id) => id != podcastId).toList();

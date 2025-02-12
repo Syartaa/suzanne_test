@@ -49,6 +49,8 @@ class PodcastNotifier extends StateNotifier<AsyncValue<List<dynamic>>> {
       // If there's an error fetching from the API, don't update with an error,
       // just keep the state as it was (or load cached data if available)
       // You can add a log here if you need to debug
+      print("Error loading schedules data: $e");
+      state = AsyncValue.error(e, stackTrace);
     }
   }
 }
