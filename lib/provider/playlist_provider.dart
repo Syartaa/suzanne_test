@@ -10,31 +10,32 @@ class PlaylistNotifier extends StateNotifier<List<Map<String, dynamic>>> {
   final Ref ref;
   final ApiService _apiService = ApiService();
 
-  // Flag to check if playlists are already loaded
   bool _playlistsLoaded = false;
-
-  // New state for the selected playlist
   Map<String, dynamic>? _selectedPlaylist;
   Map<String, dynamic>? get selectedPlaylist => _selectedPlaylist;
 
-  // Fetch all playlists from the API
+  // Tracks the current playlist being played
+  Map<String, dynamic>? _currentPlaylist;
+  List<dynamic> _currentPlaylistPodcasts = [];
+  int _currentPodcastIndex = -1;
+
+  Map<String, dynamic>? get currentPlaylist => _currentPlaylist;
+
   Future<void> fetchAllPlaylists() async {
-    if (_playlistsLoaded) return; // Prevent multiple calls
+    if (_playlistsLoaded) return;
     final userState = ref.read(userProvider);
     if (userState.value == null) return;
 
     final authToken = userState.value!.token;
     try {
       final playlists = await _apiService.getAllPlaylists(authToken!);
-      print("Fetched Playlists: $playlists"); // Debugging
-      state = playlists; // Update state with fetched playlists
-      _playlistsLoaded = true; // Mark playlists as loaded
+      state = playlists;
+      _playlistsLoaded = true;
     } catch (e) {
       print("Error fetching playlists: $e");
     }
   }
 
-  // Fetch a specific playlist by ID
   Future<void> fetchPlaylistById(String playlistId) async {
     final userState = ref.read(userProvider);
     if (userState.value == null) return;
@@ -44,11 +45,8 @@ class PlaylistNotifier extends StateNotifier<List<Map<String, dynamic>>> {
       final playlist = await _apiService.getPlaylistById(
           playlistId: playlistId, authToken: authToken!);
 
-      // ✅ Ensure selectedPlaylist is correctly set
       _selectedPlaylist = playlist['data'] ?? playlist;
-      print(_selectedPlaylist);
 
-      // Update state to reflect changes
       state = [
         for (final p in state)
           if (p['id'] == playlistId) _selectedPlaylist! else p
@@ -58,13 +56,11 @@ class PlaylistNotifier extends StateNotifier<List<Map<String, dynamic>>> {
     }
   }
 
-  // Reset playlists when user logs out
   void resetPlaylists() {
     state = [];
-    _playlistsLoaded = false; // Reset loaded flag
+    _playlistsLoaded = false;
   }
 
-  // Create a new playlist via API
   Future<void> createPlaylist(String playlistName) async {
     final userState = ref.read(userProvider);
     if (userState.value == null) return;
@@ -76,16 +72,13 @@ class PlaylistNotifier extends StateNotifier<List<Map<String, dynamic>>> {
 
       if (response.containsKey('data')) {
         final newPlaylist = response['data'];
-        state = [...state, newPlaylist]; // Add new playlist to state
-      } else {
-        print("Unexpected create playlist response: $response");
+        state = [...state, newPlaylist];
       }
     } catch (e) {
       print("Error creating playlist: $e");
     }
   }
 
-  // Add podcast to a playlist
   Future<void> addPodcastToPlaylist(String playlistId, String podcastId) async {
     final userState = ref.read(userProvider);
     if (userState.value == null) return;
@@ -95,14 +88,12 @@ class PlaylistNotifier extends StateNotifier<List<Map<String, dynamic>>> {
       await _apiService.addPodcastToPlaylist(
           playlistId: playlistId, podcastId: podcastId, authToken: authToken!);
 
-      // Fetch updated playlist data
       await fetchAllPlaylists();
     } catch (e) {
       print("Error adding podcast to playlist: $e");
     }
   }
 
-  // Remove podcast from a playlist
   Future<void> removePodcastFromPlaylist(
       String playlistId, String podcastId) async {
     final userState = ref.read(userProvider);
@@ -116,7 +107,6 @@ class PlaylistNotifier extends StateNotifier<List<Map<String, dynamic>>> {
         authToken: authToken!,
       );
 
-      // ✅ Update state immediately without refetching
       state = [
         for (final playlist in state)
           if (playlist['id'].toString() == playlistId)
@@ -131,11 +121,9 @@ class PlaylistNotifier extends StateNotifier<List<Map<String, dynamic>>> {
       ];
     } catch (e) {
       print("Error removing podcast from playlist: $e");
-      throw e;
     }
   }
 
-  // Get a specific playlist by ID
   Future<Map<String, dynamic>?> getPlaylistById(String playlistId) async {
     final userState = ref.read(userProvider);
     if (userState.value == null) return null;
@@ -147,6 +135,52 @@ class PlaylistNotifier extends StateNotifier<List<Map<String, dynamic>>> {
     } catch (e) {
       print("Error fetching playlist by ID: $e");
       return null;
+    }
+  }
+
+  // ✅ Function to play a podcast in order when started from a playlist
+  void playPodcast(
+      {required String podcastId, Map<String, dynamic>? playlist}) {
+    if (playlist != null) {
+      // If starting from a playlist, set it as the current playlist
+      _currentPlaylist = playlist;
+      _currentPlaylistPodcasts = playlist['podcasts'] ?? [];
+      _currentPodcastIndex = _currentPlaylistPodcasts
+          .indexWhere((podcast) => podcast['id'].toString() == podcastId);
+    } else {
+      // If playing a single podcast, reset playlist tracking
+      _currentPlaylist = null;
+      _currentPlaylistPodcasts = [];
+      _currentPodcastIndex = -1;
+    }
+
+    // Play the selected podcast
+    _startPlayingPodcast(podcastId);
+  }
+
+  void _startPlayingPodcast(String podcastId) {
+    print("Playing podcast: $podcastId");
+
+    // If playing from a playlist, listen for completion
+    if (_currentPlaylist != null &&
+        _currentPodcastIndex >= 0 &&
+        _currentPodcastIndex < _currentPlaylistPodcasts.length - 1) {
+      _playNextPodcast();
+    }
+  }
+
+  void _playNextPodcast() {
+    _currentPodcastIndex++;
+
+    if (_currentPodcastIndex < _currentPlaylistPodcasts.length) {
+      final nextPodcastId =
+          _currentPlaylistPodcasts[_currentPodcastIndex]['id'].toString();
+      print("Automatically playing next podcast: $nextPodcastId");
+      _startPlayingPodcast(nextPodcastId);
+    } else {
+      print("Reached the end of the playlist.");
+      _currentPlaylist = null;
+      _currentPodcastIndex = -1;
     }
   }
 }

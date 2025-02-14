@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:suzanne_podcast_app/provider/notifications_provider.dart';
 import 'package:suzanne_podcast_app/provider/user_provider.dart';
 import 'package:suzanne_podcast_app/screens/authentification/login/login_screen.dart';
+import 'package:suzanne_podcast_app/screens/profile/notification_screen.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -166,27 +168,60 @@ class ProfileScreen extends ConsumerWidget {
                     const SizedBox(height: 20),
                     SizedBox(
                       width: double.infinity,
-                      child: OutlinedButton(
-                        onPressed: () {},
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Icon(
-                              Iconsax.notification,
-                              color: Colors.white,
+                      child: Consumer(
+                        builder: (context, ref, child) {
+                          final unreadCount =
+                              ref.watch(notificationsProvider).when(
+                                    data: (notifications) => notifications
+                                        .where((n) => !n.isRead)
+                                        .length,
+                                    loading: () => 0,
+                                    error: (_, __) => 0,
+                                  );
+
+                          return OutlinedButton(
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (_) => const NotificationScreen(),
+                              ));
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Iconsax.notification,
+                                  color: Colors.white,
+                                ),
+                                const SizedBox(width: 10),
+                                const Text(
+                                  'Notifications',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                if (unreadCount > 0)
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: Colors.red,
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Text(
+                                      unreadCount.toString(),
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                              ],
                             ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Text(
-                              'Notifications',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
+                          );
+                        },
                       ),
                     ),
                     SizedBox(height: 20),

@@ -49,5 +49,20 @@
 		<false/>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
 		<false/>
+		<key>FIREBASE_ANALYTICS_COLLECTION_ENABLED</key>
+<true/>
+<key>FirebaseAnalyticsEnabled</key>
+<true/>
+
+<key>UIBackgroundModes</key>
+<array>
+    <string>fetch</string>
+    <string>remote-notification</string>
+</array>
+
+<key>FirebaseAppDelegateProxyEnabled</key>
+<false/>
+
+
 	</dict>
 </plist>

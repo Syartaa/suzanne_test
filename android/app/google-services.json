@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "919282709984",
+    "project_id": "suzanne-app",
+    "storage_bucket": "suzanne-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:919282709984:android:6b1227296aad512e0e6785",
+        "android_client_info": {
+          "package_name": "com.example.suzanne_podcast_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCG74kBtL9bZWLqjl6QhYWmZmD_4DtLrhM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
