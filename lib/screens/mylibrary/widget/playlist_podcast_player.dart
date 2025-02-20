@@ -31,19 +31,13 @@ class _PlaylistPodcastPlayerScreenState
   }
 
   void _playNext() {
-    if (_currentIndex < widget.playlistPodcasts.length - 1) {
-      setState(() {
-        _currentIndex++;
-      });
-    }
+    ref.read(playlistProvider.notifier).playNextPodcast();
+    setState(() {}); // Force UI to update
   }
 
   void _playPrevious() {
-    if (_currentIndex > 0) {
-      setState(() {
-        _currentIndex--;
-      });
-    }
+    ref.read(playlistProvider.notifier).playPreviousPodcast();
+    setState(() {}); // Force UI to update
   }
 
   @override
@@ -110,22 +104,25 @@ class _PlaylistPodcastPlayerScreenState
               IconButton(
                 icon: const Icon(Icons.skip_previous,
                     size: 40, color: Colors.white),
-                onPressed: _currentIndex > 0 ? _playPrevious : null,
+                onPressed: _playPrevious,
               ),
               IconButton(
                 icon: const Icon(Icons.play_circle_fill,
                     size: 60, color: Colors.white),
                 onPressed: () {
-                  // Handle play functionality
-                  print("Playing: ${currentPodcast['audio_url']}");
+                  ref.read(playlistProvider.notifier).playPodcast(
+                    podcastId:
+                        widget.playlistPodcasts[_currentIndex]['id'].toString(),
+                    playlist: {
+                      'podcasts': widget.playlistPodcasts,
+                    },
+                  );
                 },
               ),
               IconButton(
                 icon:
                     const Icon(Icons.skip_next, size: 40, color: Colors.white),
-                onPressed: _currentIndex < widget.playlistPodcasts.length - 1
-                    ? _playNext
-                    : null,
+                onPressed: _playNext,
               ),
             ],
           ),

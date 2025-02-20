@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suzanne_podcast_app/models/notification.dart';
 
 class NotificationsNotifier
@@ -10,38 +11,34 @@ class NotificationsNotifier
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<void> fetchNotifications() async {
-    try {
-      final querySnapshot = await _firestore
-          .collection('notifications')
-          .orderBy('timestamp', descending: true)
-          .get();
+  void fetchNotifications() async {
+    final prefs = await SharedPreferences.getInstance();
+    final readIds = prefs.getStringList('read_notifications') ?? [];
 
+    _firestore
+        .collection('notifications')
+        .orderBy('timestamp', descending: true)
+        .snapshots()
+        .listen((querySnapshot) {
       final notifications = querySnapshot.docs.map((doc) {
         final notif = AppNotification.fromFirestore(doc);
-        return notif.copyWith(isRead: false); // Always mark as unread initially
+        return notif.copyWith(isRead: readIds.contains(notif.id));
       }).toList();
 
       state = AsyncValue.data(notifications);
-    } catch (e) {
-      state = AsyncValue.error(e, StackTrace.current);
+    });
+  }
+
+  /// **Mark a single notification as read (locally + persist)**
+  Future<void> markAsRead(String notificationId) async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> readIds = prefs.getStringList('read_notifications') ?? [];
+
+    if (!readIds.contains(notificationId)) {
+      readIds.add(notificationId);
+      await prefs.setStringList('read_notifications', readIds);
     }
-  }
 
-  /// **Get unread notification count (local)**
-  int getUnreadCount() {
-    return state.value?.where((n) => !n.isRead).length ?? 0;
-  }
-
-  /// **Mark all notifications as read (local only, NOT Firestore)**
-  void markAllAsRead() {
-    state = AsyncValue.data(
-      state.value?.map((n) => n.copyWith(isRead: true)).toList() ?? [],
-    );
-  }
-
-  /// **Mark a single notification as read (local)**
-  void markAsRead(String notificationId) {
     state = AsyncValue.data(
       state.value?.map((n) {
             if (n.id == notificationId) {
@@ -50,6 +47,17 @@ class NotificationsNotifier
             return n;
           }).toList() ??
           [],
+    );
+  }
+
+  /// **Mark all notifications as read (local only + persist)**
+  Future<void> markAllAsRead() async {
+    final prefs = await SharedPreferences.getInstance();
+    final allIds = state.value?.map((n) => n.id).toList() ?? [];
+    await prefs.setStringList('read_notifications', allIds);
+
+    state = AsyncValue.data(
+      state.value?.map((n) => n.copyWith(isRead: true)).toList() ?? [],
     );
   }
 }

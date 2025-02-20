@@ -142,46 +142,57 @@ class PlaylistNotifier extends StateNotifier<List<Map<String, dynamic>>> {
   void playPodcast(
       {required String podcastId, Map<String, dynamic>? playlist}) {
     if (playlist != null) {
-      // If starting from a playlist, set it as the current playlist
       _currentPlaylist = playlist;
-      _currentPlaylistPodcasts = playlist['podcasts'] ?? [];
+      _currentPlaylistPodcasts =
+          List<Map<String, dynamic>>.from(playlist['podcasts'] ?? []);
       _currentPodcastIndex = _currentPlaylistPodcasts
           .indexWhere((podcast) => podcast['id'].toString() == podcastId);
     } else {
-      // If playing a single podcast, reset playlist tracking
       _currentPlaylist = null;
       _currentPlaylistPodcasts = [];
       _currentPodcastIndex = -1;
     }
 
-    // Play the selected podcast
-    _startPlayingPodcast(podcastId);
+    if (_currentPodcastIndex != -1) {
+      _startPlayingPodcast();
+    }
   }
 
-  void _startPlayingPodcast(String podcastId) {
+  void _startPlayingPodcast() {
+    if (_currentPodcastIndex < 0 ||
+        _currentPodcastIndex >= _currentPlaylistPodcasts.length) {
+      print("No podcast to play");
+      return;
+    }
+
+    final currentPodcast = _currentPlaylistPodcasts[_currentPodcastIndex];
+    final podcastId = currentPodcast['id'].toString();
     print("Playing podcast: $podcastId");
 
-    // If playing from a playlist, listen for completion
-    if (_currentPlaylist != null &&
-        _currentPodcastIndex >= 0 &&
-        _currentPodcastIndex < _currentPlaylistPodcasts.length - 1) {
-      _playNextPodcast();
-    }
+    // TODO: Integrate with audio player logic and listen for completion
   }
 
-  void _playNextPodcast() {
-    _currentPodcastIndex++;
-
-    if (_currentPodcastIndex < _currentPlaylistPodcasts.length) {
-      final nextPodcastId =
-          _currentPlaylistPodcasts[_currentPodcastIndex]['id'].toString();
-      print("Automatically playing next podcast: $nextPodcastId");
-      _startPlayingPodcast(nextPodcastId);
-    } else {
+// Function to play the next podcast in the playlist
+  void playNextPodcast() {
+    if (_currentPlaylist == null ||
+        _currentPodcastIndex >= _currentPlaylistPodcasts.length - 1) {
       print("Reached the end of the playlist.");
-      _currentPlaylist = null;
-      _currentPodcastIndex = -1;
+      return;
     }
+
+    _currentPodcastIndex++;
+    _startPlayingPodcast();
+  }
+
+// Function to play the previous podcast
+  void playPreviousPodcast() {
+    if (_currentPlaylist == null || _currentPodcastIndex <= 0) {
+      print("Already at the beginning of the playlist.");
+      return;
+    }
+
+    _currentPodcastIndex--;
+    _startPlayingPodcast();
   }
 }
 

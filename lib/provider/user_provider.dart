@@ -17,7 +17,6 @@ class UserNotifier extends StateNotifier<AsyncValue<User?>> {
   }
 
   /// Function to load user data from SharedPreferences
-  /// Function to load user data from SharedPreferences
   Future<void> _loadUserFromPreferences() async {
     state = const AsyncValue.loading();
     try {

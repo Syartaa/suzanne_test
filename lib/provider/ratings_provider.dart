@@ -1,9 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:suzanne_podcast_app/provider/api_service_provider.dart';
 import 'package:suzanne_podcast_app/services/api_service.dart';
 import 'package:suzanne_podcast_app/models/user.dart';
 import 'package:suzanne_podcast_app/provider/user_provider.dart';
-
-final apiServiceProvider = Provider<ApiService>((ref) => ApiService());
 
 class PodcastRatingsNotifier
     extends StateNotifier<AsyncValue<Map<String, dynamic>>> {

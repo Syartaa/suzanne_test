@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:suzanne_podcast_app/provider/notifications_provider.dart';
+import 'package:suzanne_podcast_app/screens/podcasts/podcast_screen.dart';
+import 'package:suzanne_podcast_app/screens/schedules/monday_marks_screen.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
+import 'package:suzanne_podcast_app/models/notification.dart';
 
 class NotificationScreen extends ConsumerWidget {
   const NotificationScreen({super.key});
@@ -37,95 +40,144 @@ class NotificationScreen extends ConsumerWidget {
       ),
       body: notificationsState.when(
         data: (notifications) {
-          // Filter notifications for today
           final today = DateTime.now();
+
+          // Filter Today's Notifications
           final todayNotifications = notifications.where((n) {
             return n.timestamp.year == today.year &&
                 n.timestamp.month == today.month &&
                 n.timestamp.day == today.day;
           }).toList();
 
-          if (todayNotifications.isEmpty) {
-            return const Center(
-              child: Text(
-                "No notifications for today.",
-                style: TextStyle(color: Colors.white70, fontSize: 16),
-              ),
+          // Filter Older Notifications
+          final olderNotifications = notifications.where((n) {
+            return n.timestamp.isBefore(
+              DateTime(today.year, today.month, today.day),
             );
-          }
+          }).toList();
 
-          return ListView.builder(
-            itemCount: todayNotifications.length,
-            itemBuilder: (context, index) {
-              final notification = todayNotifications[index];
-
-              return Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 231, 32, 32),
-                    borderRadius: BorderRadius.circular(12.0),
+          return notifications.isEmpty
+              ? const Center(
+                  child: Text(
+                    "No notifications available.",
+                    style: TextStyle(color: Colors.white70, fontSize: 16),
                   ),
-                  child: ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: CircleAvatar(
-                      radius: 30,
-                      backgroundColor: Colors.white24,
-                      child: Icon(
-                        Icons.notifications_active,
-                        color: AppColors.secondaryColor,
-                        size: 30,
-                      ),
-                    ),
-                    title: Text(
-                      notification.title,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(242, 255, 248, 240),
-                      ),
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          notification.body,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.white70,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          DateFormat('hh:mm a').format(notification.timestamp),
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.white54,
-                          ),
-                        ),
-                      ],
-                    ),
-                    trailing: notification.isRead
-                        ? null
-                        : const Icon(Icons.circle,
-                            color: Colors.yellow, size: 12),
-                    onTap: () {
-                      ref
-                          .read(notificationsProvider.notifier)
-                          .markAsRead(notification.id);
-                    },
-                  ),
-                ),
-              );
-            },
-          );
+                )
+              : ListView(
+                  children: [
+                    if (todayNotifications.isNotEmpty) ...[
+                      _buildSectionTitle("Today's Notifications"),
+                      ...todayNotifications.map((notification) =>
+                          _buildNotificationTile(notification, ref, context)),
+                    ],
+                    if (olderNotifications.isNotEmpty) ...[
+                      _buildSectionTitle("Older Notifications"),
+                      ...olderNotifications.map((notification) =>
+                          _buildNotificationTile(notification, ref, context)),
+                    ],
+                  ],
+                );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => Center(
-            child:
-                Text("Error: $error", style: TextStyle(color: Colors.white))),
+          child: Text("Error: $error", style: TextStyle(color: Colors.white)),
+        ),
+      ),
+    );
+  }
+
+  /// **Build Section Title Widget**
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.white70,
+        ),
+      ),
+    );
+  }
+
+  /// **Build Notification Tile with Navigation**
+  Widget _buildNotificationTile(
+      AppNotification notification, WidgetRef ref, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 231, 32, 32),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        child: ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: CircleAvatar(
+            radius: 20,
+            backgroundColor: Colors.white24,
+            child: Icon(
+              Icons.notifications_active,
+              color: AppColors.secondaryColor,
+              size: 24,
+            ),
+          ),
+          title: Text(
+            notification.title,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: Color.fromARGB(242, 255, 248, 240),
+            ),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                notification.body,
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.white70,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                DateFormat('yyyy-MM-dd hh:mm a').format(notification.timestamp),
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.white54,
+                ),
+              ),
+            ],
+          ),
+          trailing: notification.isRead
+              ? null
+              : const Icon(Icons.circle, color: Colors.yellow, size: 12),
+          onTap: () {
+            // Mark notification as read
+            ref
+                .read(notificationsProvider.notifier)
+                .markAsRead(notification.id);
+
+            // Navigate based on notification type
+            if (notification.type == "podcast") {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PodcastScreen(),
+                ),
+              );
+            } else if (notification.type == "monday mark") {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MondayMarksScreen(),
+                ),
+              );
+            }
+          },
+        ),
       ),
     );
   }

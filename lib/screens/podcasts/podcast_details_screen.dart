@@ -13,8 +13,11 @@ import 'package:video_player/video_player.dart';
 
 class PodcastDetailsScreen extends ConsumerStatefulWidget {
   final Map<String, dynamic> podcast;
+  final int? playlistIndex; // Index of the current podcast in the playlist
+  final List<Map<String, dynamic>>? playlist; // Full playlist
 
-  const PodcastDetailsScreen({super.key, required this.podcast});
+  const PodcastDetailsScreen(
+      {super.key, required this.podcast, this.playlist, this.playlistIndex});
 
   @override
   ConsumerState<PodcastDetailsScreen> createState() =>
@@ -115,6 +118,36 @@ class _PodcastDetailsScreenState extends ConsumerState<PodcastDetailsScreen> {
     return "${duration.inHours > 0 ? '${duration.inHours}:' : ''}$minutes:$seconds";
   }
 
+  void _playPrevious() {
+    if (widget.playlist != null &&
+        widget.playlistIndex != null &&
+        widget.playlistIndex! > 0) {
+      final newIndex = widget.playlistIndex! - 1;
+      _navigateToPodcast(widget.playlist![newIndex], newIndex);
+    }
+  }
+
+  void _playNext() {
+    if (widget.playlist != null &&
+        widget.playlistIndex != null &&
+        widget.playlistIndex! < widget.playlist!.length - 1) {
+      final newIndex = widget.playlistIndex! + 1;
+      _navigateToPodcast(widget.playlist![newIndex], newIndex);
+    }
+  }
+
+  void _navigateToPodcast(Map<String, dynamic> newPodcast, int newIndex) {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => PodcastDetailsScreen(
+          podcast: newPodcast,
+          playlist: widget.playlist,
+          playlistIndex: newIndex,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final podcastId = widget.podcast['id'].toString();
@@ -131,12 +164,14 @@ class _PodcastDetailsScreenState extends ConsumerState<PodcastDetailsScreen> {
 
     final isFavorited = ref.watch(favoriteProvider).contains(podcastId);
 
+    bool isFromPlaylist = widget.playlistIndex != null;
+
     return Scaffold(
       backgroundColor: AppColors.primaryColor,
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(198, 243, 18, 18),
         title: Text(
-          widget.podcast['title'],
+          isFromPlaylist ? "Playing from Playlist" : widget.podcast['title'],
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w500,
             fontSize: 20,
@@ -219,6 +254,16 @@ class _PodcastDetailsScreenState extends ConsumerState<PodcastDetailsScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         IconButton(
+                          icon: const Icon(Icons.skip_previous,
+                              color: Colors.white),
+                          iconSize: 40,
+                          onPressed: (widget.playlist != null &&
+                                  widget.playlistIndex != null &&
+                                  widget.playlistIndex! > 0)
+                              ? _playPrevious
+                              : null, // Disable button when at the first podcast
+                        ),
+                        IconButton(
                           icon: const Icon(Icons.replay_10),
                           color: Colors.white,
                           onPressed: () {
@@ -259,7 +304,6 @@ class _PodcastDetailsScreenState extends ConsumerState<PodcastDetailsScreen> {
                                   _videoController?.pause();
                                 } else {
                                   // 🔹 Resume from last known position
-
                                   if (_currentPosition != null) {
                                     _videoController?.seekTo(_currentPosition!);
                                   }
@@ -283,6 +327,17 @@ class _PodcastDetailsScreenState extends ConsumerState<PodcastDetailsScreen> {
                                   const Duration(seconds: 10));
                             }
                           },
+                        ),
+                        IconButton(
+                          icon:
+                              const Icon(Icons.skip_next, color: Colors.white),
+                          iconSize: 40,
+                          onPressed: (widget.playlist != null &&
+                                  widget.playlistIndex != null &&
+                                  widget.playlistIndex! <
+                                      widget.playlist!.length - 1)
+                              ? _playNext
+                              : null, // Disable button when at the last podcast
                         ),
                       ],
                     ),

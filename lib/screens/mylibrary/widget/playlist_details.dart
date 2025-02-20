@@ -91,11 +91,11 @@ class PlaylistDetailScreen extends ConsumerWidget {
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (_) => PlaylistPodcastPlayerScreen(
-                      playlistName: playlistName,
-                      playlistPodcasts:
-                          List<Map<String, dynamic>>.from(playlistPodcasts),
-                      startIndex: index,
+                    builder: (_) => PodcastDetailsScreen(
+                      podcast: podcast, // Pass the podcast details
+                      playlist: playlistPodcasts.cast<Map<String, dynamic>>(),
+                      playlistIndex:
+                          index, // Pass the index to indicate it's from a playlist
                     ),
                   ),
                 );

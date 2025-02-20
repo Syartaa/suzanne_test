@@ -6,6 +6,7 @@ class AppNotification {
   final String body;
   final DateTime timestamp;
   final bool isRead; // Locally managed
+  final String type;
 
   AppNotification({
     required this.id,
@@ -13,6 +14,7 @@ class AppNotification {
     required this.body,
     required this.timestamp,
     this.isRead = false, // Default: Unread
+    required this.type,
   });
 
   factory AppNotification.fromFirestore(DocumentSnapshot doc) {
@@ -23,6 +25,7 @@ class AppNotification {
       body: data['body'] ?? '',
       timestamp: (data['timestamp'] as Timestamp).toDate(),
       isRead: false, // Always set to false (unread)
+      type: data['type'] ?? '',
     );
   }
 
@@ -34,6 +37,7 @@ class AppNotification {
       body: body,
       timestamp: timestamp,
       isRead: isRead ?? this.isRead,
+      type: type,
     );
   }
 }
