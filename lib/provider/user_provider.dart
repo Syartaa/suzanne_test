@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suzanne_podcast_app/models/user.dart';
 import 'package:suzanne_podcast_app/provider/api_service_provider.dart';
-import 'package:suzanne_podcast_app/provider/download_provider.dart';
 import 'package:suzanne_podcast_app/services/api_service.dart';
 
 class UserNotifier extends StateNotifier<AsyncValue<User?>> {
@@ -134,9 +133,6 @@ class UserNotifier extends StateNotifier<AsyncValue<User?>> {
 
       // ✅ Pass the current user explicitly to avoid ref.read issues
       final user = state.value;
-      ref
-          .read(downloadProvider.notifier)
-          .resetDownloads(user); // ✅ Reset downloads
 
       state = const AsyncValue.data(null);
       print("User logged out successfully.");

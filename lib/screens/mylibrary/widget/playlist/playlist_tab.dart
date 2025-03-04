@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:suzanne_podcast_app/provider/playlist_provider.dart';
 import 'package:suzanne_podcast_app/provider/user_provider.dart';
-import 'package:suzanne_podcast_app/screens/mylibrary/widget/playlist_details.dart';
+import 'package:suzanne_podcast_app/screens/mylibrary/widget/playlist/playlist_details.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
-import 'package:shimmer/shimmer.dart';
 
 class PlaylistsTab extends ConsumerWidget {
   @override
@@ -20,14 +19,18 @@ class PlaylistsTab extends ConsumerWidget {
     return Scaffold(
       backgroundColor: AppColors.primaryColor,
       body: playlists.isEmpty
-          ? _buildShimmerLoading() // Show shimmer effect when loading
+          ? Center(
+              child: Text(
+                "No playlists available.",
+                style: TextStyle(color: Colors.white70, fontSize: 16),
+              ),
+            )
           : ListView.builder(
               padding: const EdgeInsets.symmetric(vertical: 10.0),
               itemCount: playlists.length,
               itemBuilder: (context, index) {
                 final playlist = playlists[index];
                 final playlistId = playlist['id'].toString();
-                // ✅ Use podcasts_count if podcasts list is missing
                 final playlistPodcasts = (playlist['podcasts'] as List?) ?? [];
                 final int podcastCount = playlistPodcasts.isNotEmpty
                     ? playlistPodcasts.length
@@ -85,7 +88,6 @@ class PlaylistsTab extends ConsumerWidget {
                         final selectedPlaylist = notifier.selectedPlaylist;
 
                         if (selectedPlaylist != null) {
-                          // ✅ Check if playlist is wrapped in 'data' key
                           final playlistData =
                               selectedPlaylist['data'] ?? selectedPlaylist;
 
@@ -104,9 +106,6 @@ class PlaylistsTab extends ConsumerWidget {
                                       .toList() ??
                                   [];
 
-                          print(
-                              "Passing playlistName: $playlistName, Podcasts: $playlistPodcasts"); // Debugging
-
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -124,54 +123,6 @@ class PlaylistsTab extends ConsumerWidget {
                 );
               },
             ),
-    );
-  }
-
-  // Shimmer loading widget
-  Widget _buildShimmerLoading() {
-    return ListView.builder(
-      itemCount: 5, // Show 5 placeholder items
-      itemBuilder: (context, index) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Shimmer.fromColors(
-            baseColor: AppColors.primaryColor,
-            highlightColor: Colors.grey[100]!,
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 5.0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12.0),
-              ),
-              child: ListTile(
-                contentPadding: const EdgeInsets.all(10),
-                leading: Container(
-                  width: 70,
-                  height: 70,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: Colors.white,
-                  ),
-                ),
-                title: Container(
-                  width: 100,
-                  height: 16,
-                  color: Colors.white,
-                ),
-                subtitle: Container(
-                  width: 70,
-                  height: 12,
-                  color: Colors.white,
-                ),
-                trailing: Icon(
-                  Icons.arrow_forward_ios,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-        );
-      },
     );
   }
 }

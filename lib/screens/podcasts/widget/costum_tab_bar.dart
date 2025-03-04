@@ -51,7 +51,8 @@ class CustomTabBarWidget extends ConsumerWidget {
                     tabs: tabs, // Use the dynamically generated tabs here
                   ),
                   SizedBox(
-                    height: 400, // Set a fixed height for the TabBarView
+                    height: MediaQuery.of(context).size.height *
+                        0.6, // Adjust as needed
                     child: TabBarView(
                       children: categoriesList.map((category) {
                         return podcasts.when(

@@ -165,6 +165,11 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
                               ? const SizedBox()
                               : Column(
                                   children: [
+                                    const Text('Events',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold)),
                                     ListView.builder(
                                       shrinkWrap: true,
                                       physics:
@@ -225,6 +230,11 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
                               ? const SizedBox()
                               : Column(
                                   children: [
+                                    const Text('Monday Marks',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold)),
                                     ListView.builder(
                                       shrinkWrap: true,
                                       physics:

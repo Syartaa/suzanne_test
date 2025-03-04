@@ -1,9 +1,9 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:suzanne_podcast_app/constants/banner_widget.dart';
 import 'package:suzanne_podcast_app/constants/podcast_slider_widget.dart';
+import 'package:suzanne_podcast_app/provider/banner_provider.dart';
 import 'package:suzanne_podcast_app/provider/notifications_provider.dart';
 import 'package:suzanne_podcast_app/provider/podcast_provider.dart';
 import 'package:suzanne_podcast_app/provider/schedules_provider.dart';
@@ -25,7 +25,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // Delay the loadSchedules call until the widget tree is built
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(schedulesNotifierProvider.notifier).loadSchedules();
     });
@@ -34,6 +33,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final podcastsAsyncValue = ref.watch(podcastProvider);
+
     return Scaffold(
       backgroundColor: AppColors.primaryColor,
       appBar: AppBar(
@@ -90,50 +90,92 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Main Banner
-              ClipRRect(
-                borderRadius: BorderRadius.circular(15.0),
-                child: Image(
-                  image: AssetImage("assets/images/banner.jpg"),
-                  width: double.infinity,
-                  fit: BoxFit.cover,
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Main Banner using BannerWidget
+                BannerWidget(bannerType: 'main'), // Specify banner type here
+                SizedBox(height: 35),
+
+                // Monday Marks Section
+                ScheculedSlider(
+                  title: "Monday Marks",
+                  onSeeMorePressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (ctx) => MondayMarksScreen()));
+                  },
+                ),
+                SizedBox(height: 35),
+                BannerWidget(
+                    bannerType: 'secondary'), // Specify banner type here
+                SizedBox(height: 20),
+                PodcastSliderWidget(
+                  title: "Featured Podcasts",
+                  seeMoreText: "See more",
+                  routeBuilder: (ctx) => PodcastScreen(),
+                  podcastsAsyncValue: podcastsAsyncValue,
+                ),
+                SizedBox(height: 20),
+                BannerWidget(bannerType: 'third'), // Specify banner type here
+                SizedBox(height: 20),
+                PodcastsEventsTab(),
+                SizedBox(height: 50),
+              ],
+            ),
+          ),
+
+          // Info Icon at the Bottom
+          Positioned(
+            bottom: 20,
+            right: 20,
+            child: GestureDetector(
+              onTap: () => _showInfoDialog(context),
+              child: Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.info_outline,
+                  color: Colors.white,
+                  size: 30,
                 ),
               ),
-              SizedBox(
-                height: 35,
-              ),
-              // Monday Marks Section
-              ScheculedSlider(
-                title: "Monday Marks",
-                onSeeMorePressed: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (ctx) => MondayMarksScreen()));
-                },
-              ),
-              SizedBox(
-                height: 35,
-              ),
-              PodcastSliderWidget(
-                title: "Featured Podcasts",
-                seeMoreText: "See more",
-                routeBuilder: (ctx) => PodcastScreen(),
-                podcastsAsyncValue: podcastsAsyncValue,
-              ),
-              SizedBox(
-                height: 20,
-              ),
-
-              PodcastsEventsTab(),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
+    );
+  }
+
+  void _showInfoDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: AppColors.primaryColor,
+          title: Text("Info"),
+          content: Text(
+            "This app is a product of Suzanne Media Platform. The application has been supported by LuxAid and UNDP.",
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                "OK",
+                style: TextStyle(
+                    color: AppColors.secondaryColor,
+                    fontWeight: FontWeight.w600),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -51,8 +51,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             itemCount: images.length,
             itemBuilder: (context, index) {
               final titles = [
-                'Tune into the Suzanne Podcast',
-                'Curated Events Just for You',
+                'Tune in to the Suzanne Podcast',
+                'Curated Events Beyond Mainstream. Just for You',
                 'Discover, engage, and Empower',
               ];
 
@@ -63,8 +63,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               ];
 
               final subtitles = [
-                'Stories, discussions, and empowerment for women everywhere.',
-                'Find and attend the best events in your region.',
+                'A podcast made in Prishtina telling the untold stories of women of Kosova and neighbourhoods they lived',
+                'Bringing you the daily recommendations and review of the best arts, culture, food, fashion from Kosova and beyond...',
                 'Your go-to platform for local events, podcasts, and creative industries.',
               ];
 

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:suzanne_podcast_app/provider/podcast_provider.dart';
-import 'package:suzanne_podcast_app/provider/download_provider.dart';
 import 'package:suzanne_podcast_app/screens/podcasts/podcast_details_screen.dart';
 import 'package:suzanne_podcast_app/utilis/constants/popup_utils.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
-import 'package:suzanne_podcast_app/models/podcasts.dart';
 
 class PodcastTab extends ConsumerWidget {
   const PodcastTab({Key? key}) : super(key: key);
@@ -13,7 +11,6 @@ class PodcastTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final podcastsAsyncValue = ref.watch(podcastProvider);
-    final downloads = ref.watch(downloadProvider);
 
     return Container(
       color: Colors.red,
@@ -41,7 +38,6 @@ class PodcastTab extends ConsumerWidget {
                         podcast,
                         context,
                         ref,
-                        downloads.any((d) => d.id == podcast['id'].toString()),
                       ),
                     );
                   },
@@ -57,7 +53,6 @@ class PodcastTab extends ConsumerWidget {
     Map<String, dynamic> podcast,
     BuildContext context,
     WidgetRef ref,
-    bool isDownloaded,
   ) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -104,45 +99,15 @@ class PodcastTab extends ConsumerWidget {
               ],
             ),
           ),
-          Row(
-            children: [
-              IconButton(
-                icon: Icon(
-                  isDownloaded ? Icons.download_done : Icons.download,
-                  color: AppColors.secondaryColor,
-                ),
-                onPressed: () {
-                  if (!isDownloaded) {
-                    final podcastObj = Podcast(
-                      id: podcast['id'].toString(),
-                      title: podcast['title'],
-                      shortDescription: podcast['short_description'],
-                      longDescription: podcast['long_description'],
-                      hostName: podcast['host_name'],
-                      categoryId: podcast['category_id'],
-                      thumbnail: podcast['thumbnail'],
-                      audioUrl: podcast['audio_url'],
-                      status: podcast['status'],
-                    );
-
-                    ref
-                        .read(downloadProvider.notifier)
-                        .downloadPodcast(podcastObj);
-                  }
-                },
-              ),
-              IconButton(
-                icon: const Icon(Icons.more_vert,
-                    color: AppColors.secondaryColor),
-                onPressed: () {
-                  showFavoritePlaylistPopup(
-                    context,
-                    ref,
-                    podcast['id'].toString(),
-                  );
-                },
-              ),
-            ],
+          IconButton(
+            icon: const Icon(Icons.more_vert, color: AppColors.secondaryColor),
+            onPressed: () {
+              showFavoritePlaylistPopup(
+                context,
+                ref,
+                podcast['id'].toString(),
+              );
+            },
           ),
         ],
       ),

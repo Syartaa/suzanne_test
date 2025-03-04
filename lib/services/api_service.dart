@@ -1,5 +1,6 @@
 // Import necessary packages
 import 'package:dio/dio.dart'; // Dio is the HTTP client to make network requests
+import 'package:suzanne_podcast_app/models/banner.dart';
 import 'package:suzanne_podcast_app/models/events.dart'; // Model for events
 import 'package:suzanne_podcast_app/models/schedule.dart'; // Model for schedules
 import 'package:suzanne_podcast_app/models/user.dart'; // Model for user
@@ -226,37 +227,36 @@ class ApiService {
   // Add or remove podcast from favorites
   Future<bool> toggleFavoritePodcast(String podcastId, String authToken) async {
     try {
-      if (authToken == null || authToken.isEmpty) {
+      if (authToken.isEmpty) {
         print("Token is missing. User needs to log in again.");
         return false;
       }
 
       final response = await _dio.post(
-        '/podcast/$podcastId/favorite', // Toggle favorite
+        '/podcast/$podcastId/favorite',
         options: Options(
           headers: {
-            'Authorization': 'Bearer $authToken', // Use auth token
-            'Content-Type': 'application/json', // Set content type to JSON
+            'Authorization': 'Bearer $authToken',
+            'Content-Type': 'application/json',
           },
         ),
       );
 
+      print("API Response: ${response.data}"); // Debugging line
+
       if (response.data != null && response.data['message'] != null) {
         final message = response.data['message'].toString().toLowerCase();
-        if (message == "podcast added to favorites.") {
-          return true; // Successfully added to favorites
-        } else if (message == "podcast removed from favorites.") {
-          return false; // Successfully removed from favorites
-        }
+        return message.contains("added") || message.contains("removed");
       }
 
       print("Unexpected API response format: ${response.data}");
       return false;
     } catch (e) {
       if (e is DioException) {
-        print("Dio error response: ${e.response?.data}");
+        print("Dio error: ${e.response?.data}");
       }
-      throw Exception("Failed to toggle favorite podcast: $e");
+      print("Exception: $e");
+      return false;
     }
   }
 
@@ -414,6 +414,27 @@ class ApiService {
       return response.data; // Return playlist data
     } catch (e) {
       throw Exception("Failed to fetch playlist: $e");
+    }
+  }
+
+  //get bannerss
+  Future<List<Banner>> fetchBanners() async {
+    try {
+      final response = await _dio.get('/banners'); // Fetch banners
+
+      // Ensure that the 'data' field exists and is a List
+      if (response.data is Map<String, dynamic> &&
+          response.data['data'] is List) {
+        // Parse the banners from the 'data' field
+        return (response.data['data'] as List)
+            .map((bannerJson) =>
+                Banner.fromJson(bannerJson)) // Convert to BannerModel
+            .toList();
+      } else {
+        throw Exception("Unexpected response format");
+      }
+    } catch (e) {
+      throw Exception("Failed to fetch banners: $e");
     }
   }
 }

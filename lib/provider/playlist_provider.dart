@@ -22,7 +22,7 @@ class PlaylistNotifier extends StateNotifier<List<Map<String, dynamic>>> {
   Map<String, dynamic>? get currentPlaylist => _currentPlaylist;
 
   Future<void> fetchAllPlaylists() async {
-    if (_playlistsLoaded) return;
+    _playlistsLoaded = false; // Ensure fresh fetch
     final userState = ref.read(userProvider);
     if (userState.value == null) return;
 
