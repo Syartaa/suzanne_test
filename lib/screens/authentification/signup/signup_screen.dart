@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:suzanne_podcast_app/l10n/app_localizations.dart';
 import 'package:suzanne_podcast_app/models/user.dart';
 import 'package:suzanne_podcast_app/provider/user_provider.dart';
 import 'package:suzanne_podcast_app/screens/authentification/login/login_screen.dart';
@@ -93,6 +94,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!; // 🔹 Get translations
     final userState = ref.watch(userProvider);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -122,8 +124,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     height: 150,
                   ),
                   const SizedBox(height: 15),
-                  const Text(
-                    'Sign Up!',
+                  Text(
+                    loc.welcome_signup,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
@@ -132,8 +134,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  const Text(
-                    'Create an account to get started.',
+                  Text(
+                    loc.createAccount,
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
@@ -145,9 +147,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                         child: TextFormField(
                           controller: firstNameController,
                           decoration:
-                              _inputDecoration('First Name', Icons.person),
+                              _inputDecoration(loc.firstName, Icons.person),
                           validator: (value) =>
-                              value!.isEmpty ? 'First name is required' : null,
+                              value!.isEmpty ? loc.firstNameRequired : null,
                         ),
                       ),
                       const SizedBox(width: 10),
@@ -155,9 +157,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                         child: TextFormField(
                           controller: lastNameController,
                           decoration: _inputDecoration(
-                              'Last Name', Icons.person_outline),
+                              loc.lastName, Icons.person_outline),
                           validator: (value) =>
-                              value!.isEmpty ? 'Last name is required' : null,
+                              value!.isEmpty ? loc.lastNameRequired : null,
                         ),
                       ),
                     ],
@@ -167,9 +169,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     controller: emailController,
                     decoration: _inputDecoration('Email', Icons.email),
                     validator: (value) {
-                      if (value!.isEmpty) return 'Email is required';
+                      if (value!.isEmpty) return loc.emailRequired;
                       if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                        return 'Enter a valid email';
+                        return loc.email_validation;
                       }
                       return null;
                     },
@@ -178,10 +180,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   TextFormField(
                     controller: passwordController,
                     obscureText: true,
-                    decoration: _inputDecoration('Password', Icons.lock),
+                    decoration: _inputDecoration(loc.password_hint, Icons.lock),
                     validator: (value) {
                       if (value!.length < 6) {
-                        return 'Password must be at least 6 characters';
+                        return loc.passwordRequired;
                       }
                       return null;
                     },
@@ -191,10 +193,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     controller: confirmPasswordController,
                     obscureText: true,
                     decoration:
-                        _inputDecoration('Confirm Password', Icons.lock),
+                        _inputDecoration(loc.confirmPassword, Icons.lock),
                     validator: (value) {
                       if (value != passwordController.text) {
-                        return 'Passwords do not match';
+                        return loc.passwordsNotMatch;
                       }
                       return null;
                     },
@@ -214,8 +216,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                             activeColor: Colors.tealAccent,
                             checkColor: Colors.white,
                           ),
-                          const Text(
-                            "Male",
+                          Text(
+                            loc.male,
                             style: TextStyle(color: Colors.tealAccent),
                           ),
                         ],
@@ -231,8 +233,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                             activeColor: Colors.tealAccent,
                             checkColor: Colors.white,
                           ),
-                          const Text(
-                            "Female",
+                          Text(
+                            loc.female,
                             style: TextStyle(color: Colors.tealAccent),
                           ),
                         ],
@@ -251,8 +253,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     onPressed: userState is AsyncLoading ? null : _signUp,
                     child: userState is AsyncLoading
                         ? const CircularProgressIndicator(color: Colors.white)
-                        : const Text(
-                            'Sign Up',
+                        : Text(
+                            loc.signUpButton,
                             style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
@@ -268,7 +270,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Have an account? ",
+                        loc.haveAccount,
                         style: TextStyle(color: Colors.white),
                       ),
                       GestureDetector(
@@ -277,7 +279,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                               MaterialPageRoute(builder: (_) => LoginScreen()));
                         },
                         child: Text(
-                          'Login',
+                          ' Login',
                           style: TextStyle(
                             color: AppColors.secondaryColor,
                             fontWeight: FontWeight.bold,

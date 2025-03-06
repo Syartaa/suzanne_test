@@ -5,7 +5,7 @@ import 'package:suzanne_podcast_app/provider/onboarding_provider.dart';
 class OnBoardingNavigation extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final onboardingState = ref.watch(OnboardingStateProvider);
+    final onboardingState = ref.watch(onboardingStateProvider);
 
     return Positioned(
       bottom: 40,
@@ -14,7 +14,7 @@ class OnBoardingNavigation extends ConsumerWidget {
         children: List.generate(3, (index) {
           return GestureDetector(
             onTap: () => ref
-                .read(OnboardingStateProvider.notifier)
+                .read(onboardingStateProvider.notifier)
                 .dotNavigationClick(index),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 300),

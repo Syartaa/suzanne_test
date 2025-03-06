@@ -1,6 +1,5 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
+import 'package:suzanne_podcast_app/l10n/app_localizations.dart';
 import 'package:suzanne_podcast_app/navigation_menu.dart';
 import 'package:suzanne_podcast_app/screens/authentification/login/login_screen.dart';
 import 'package:suzanne_podcast_app/screens/authentification/signup/signup_screen.dart';
@@ -11,15 +10,15 @@ class WelcomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localization = AppLocalizations.of(context)!; // 🔹 Get translations
+
     return Scaffold(
       backgroundColor: AppColors.primaryColor,
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
-          mainAxisAlignment:
-              MainAxisAlignment.spaceBetween, // Spread out the content
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Center part (Image and buttons)
             Column(
               children: [
                 Center(
@@ -29,9 +28,7 @@ class WelcomeScreen extends StatelessWidget {
                     height: 300,
                   ),
                 ),
-                SizedBox(
-                  height: 15.0,
-                ),
+                SizedBox(height: 15.0),
                 SizedBox(
                   width: double.infinity,
                   child: OutlinedButton(
@@ -40,14 +37,12 @@ class WelcomeScreen extends StatelessWidget {
                           MaterialPageRoute(builder: (_) => LoginScreen()));
                     },
                     child: Text(
-                      "Login",
+                      localization.welcome_login, // 🔹 Use translation
                       style: TextStyle(color: AppColors.secondaryColor),
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: 25.0,
-                ),
+                SizedBox(height: 25.0),
                 SizedBox(
                   width: double.infinity,
                   child: OutlinedButton(
@@ -56,36 +51,32 @@ class WelcomeScreen extends StatelessWidget {
                           MaterialPageRoute(builder: (_) => SignUpScreen()));
                     },
                     child: Text(
-                      "Sign up",
+                      localization.welcome_signup, // 🔹 Use translation
                       style: TextStyle(color: AppColors.secondaryColor),
                     ),
                   ),
                 ),
               ],
             ),
-
-            // Spacer or Bottom content
             Column(
               children: [
                 Text(
-                  "If you don’t have an account",
+                  localization.welcome_no_account, // 🔹 Use translation
                   style: TextStyle(color: Colors.white),
                 ),
-                SizedBox(
-                  height: 10.0,
-                ),
+                SizedBox(height: 10.0),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (cyx) => NavigationMenu()));
+                          builder: (ctx) => NavigationMenu()));
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.secondaryColor,
                     ),
                     child: Text(
-                      "Continue as a guest",
+                      localization.welcome_continue_guest, // 🔹 Use translation
                       style: TextStyle(
                           color: const Color.fromARGB(211, 43, 43, 43)),
                     ),

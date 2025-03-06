@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:suzanne_podcast_app/provider/locale_provider.dart';
 import 'package:suzanne_podcast_app/provider/notifications_provider.dart';
 import 'package:suzanne_podcast_app/provider/user_provider.dart';
 import 'package:suzanne_podcast_app/screens/authentification/login/login_screen.dart';
@@ -13,6 +14,7 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userState = ref.watch(userProvider);
+    final languageNotifier = ref.watch(localeProvider.notifier);
 
     return Scaffold(
       backgroundColor: AppColors.primaryColor,
@@ -24,9 +26,9 @@ class ProfileScreen extends ConsumerWidget {
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w600,
             fontSize: 24,
-            color: Color(0xFFFFF8F0),
+            color: const Color(0xFFFFF8F0),
             shadows: [
-              Shadow(
+              const Shadow(
                 color: Color(0xFFFFF1F1),
                 offset: Offset(1.0, 1.0),
                 blurRadius: 3.0,
@@ -37,6 +39,35 @@ class ProfileScreen extends ConsumerWidget {
         iconTheme: const IconThemeData(
           color: Colors.white,
         ),
+        actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Iconsax.global, color: Colors.white),
+            color: const Color.fromARGB(
+                255, 32, 32, 32), // Change background color
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+            onSelected: (String language) {
+              languageNotifier.setLocale(language);
+            },
+            itemBuilder: (BuildContext context) {
+              return [
+                PopupMenuItem(
+                  value: 'en',
+                  child: Text("English",
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w600)),
+                ),
+                PopupMenuItem(
+                  value: 'sq',
+                  child: Text("Albanian",
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w600)),
+                ),
+              ];
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -48,7 +79,6 @@ class ProfileScreen extends ConsumerWidget {
                     'User loaded: firstName: ${user.firstName}, lastName: ${user.lastName}, email: ${user.email}');
               }
 
-              //if the user is not login just as a guest
               if (user == null) {
                 return Center(
                   child: Column(
@@ -63,7 +93,7 @@ class ProfileScreen extends ConsumerWidget {
                       const SizedBox(height: 20),
                       Text(
                         "User not found",
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 24,
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -72,7 +102,7 @@ class ProfileScreen extends ConsumerWidget {
                       const SizedBox(height: 10),
                       Text(
                         "Please log in to continue.",
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           color: Colors.white70,
                         ),
@@ -92,13 +122,8 @@ class ProfileScreen extends ConsumerWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: const [
-                              Icon(
-                                Iconsax.login,
-                                color: Colors.white,
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
+                              Icon(Iconsax.login, color: Colors.white),
+                              SizedBox(width: 10),
                               Text(
                                 'Login',
                                 style: TextStyle(
@@ -118,23 +143,20 @@ class ProfileScreen extends ConsumerWidget {
                   children: [
                     const SizedBox(height: 20),
                     Row(
-                      //mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         CircleAvatar(
                           radius: 50,
                           backgroundColor: Colors.white,
-                          child: Icon(
-                            Icons.person,
-                            size: 50,
-                            color: AppColors.primaryColor,
-                          ),
+                          child: Icon(Icons.person,
+                              size: 50, color: AppColors.primaryColor),
                         ),
                         const SizedBox(width: 20),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Text(
-                              (user.firstName != '' && user.lastName != '')
+                              (user.firstName.isNotEmpty &&
+                                      user.lastName.isNotEmpty)
                                   ? "${user.firstName} ${user.lastName}"
                                   : "Username",
                               style: const TextStyle(
@@ -158,8 +180,8 @@ class ProfileScreen extends ConsumerWidget {
                     const SizedBox(height: 20),
                     ClipRRect(
                       borderRadius: BorderRadius.circular(15.0),
-                      child: Image(
-                        image: AssetImage("assets/images/banner.jpg"),
+                      child: Image.asset(
+                        "assets/images/banner.jpg",
                         width: double.infinity,
                         height: 180,
                         fit: BoxFit.cover,
@@ -188,10 +210,8 @@ class ProfileScreen extends ConsumerWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Icon(
-                                  Iconsax.notification,
-                                  color: Colors.white,
-                                ),
+                                const Icon(Iconsax.notification,
+                                    color: Colors.white),
                                 const SizedBox(width: 10),
                                 const Text(
                                   'Notifications',
@@ -200,7 +220,6 @@ class ProfileScreen extends ConsumerWidget {
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                                const SizedBox(width: 10),
                                 if (unreadCount > 0)
                                   Container(
                                     padding: const EdgeInsets.symmetric(
@@ -224,7 +243,7 @@ class ProfileScreen extends ConsumerWidget {
                         },
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     SizedBox(
                       width: double.infinity,
                       child: OutlinedButton(
@@ -248,13 +267,8 @@ class ProfileScreen extends ConsumerWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
-                              Iconsax.logout,
-                              color: Colors.white,
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
+                            const Icon(Iconsax.logout, color: Colors.white),
+                            const SizedBox(width: 10),
                             Text(
                               user == null ? "Login" : "Logout",
                               style: const TextStyle(

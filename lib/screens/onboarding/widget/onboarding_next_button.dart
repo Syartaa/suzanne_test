@@ -7,15 +7,14 @@ class OnBoardingNextButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final onboardingState = ref.watch(OnboardingStateProvider);
-    final controller = ref.read(OnboardingStateProvider.notifier);
+    final onboardingState = ref.watch(onboardingStateProvider);
+    final controller = ref.read(onboardingStateProvider.notifier);
 
     return Align(
-      alignment:
-          const Alignment(0, 0.9), // Move slightly to the right and bottom
+      alignment: const Alignment(0, 0.9),
       child: ElevatedButton(
         onPressed: () {
-          controller.nextPage(); // Move to the next page
+          controller.nextPage(context); // ✅ Pass context here
         },
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 12.0),

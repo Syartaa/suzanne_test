@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get/get.dart';
-import 'package:suzanne_podcast_app/screens/onboarding/choose_interest_screen.dart';
+import 'package:suzanne_podcast_app/screens/onboarding/language_selection_screen.dart';
 
 class OnboardingState {
   final int currentPageIndex;
@@ -29,15 +28,22 @@ class OnboardingStateNotifier extends StateNotifier<OnboardingState> {
     pageController.jumpToPage(index);
   }
 
-  void nextPage() {
+  void nextPage(BuildContext context) {
+    // ✅ Pass context here
     if (state.currentPageIndex == 2) {
-      Navigator.push(Get.context!,
-          MaterialPageRoute(builder: (ctx) => ChooseInterestScreen()));
+      // ✅ Navigate using context, not navigatorKey
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (ctx) => LanguageSelectionScreen()),
+      );
     } else {
       int nextPage = state.currentPageIndex + 1;
       state = state.copyWith(currentPageIndex: nextPage);
-      pageController.animateToPage(nextPage,
-          duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
+      pageController.animateToPage(
+        nextPage,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
     }
   }
 
@@ -47,7 +53,7 @@ class OnboardingStateNotifier extends StateNotifier<OnboardingState> {
   }
 }
 
-final OnboardingStateProvider =
+final onboardingStateProvider =
     StateNotifierProvider<OnboardingStateNotifier, OnboardingState>(
   (ref) => OnboardingStateNotifier(),
 );

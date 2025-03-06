@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:suzanne_podcast_app/l10n/app_localizations.dart';
 import 'package:suzanne_podcast_app/navigation_menu.dart';
 import 'package:suzanne_podcast_app/provider/user_provider.dart';
+import 'package:suzanne_podcast_app/screens/authentification/signup/signup_screen.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -19,8 +21,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final userState = ref.watch(userProvider);
-
+    final loc = AppLocalizations.of(context)!; // 🔹 Get translations
     return Scaffold(
       backgroundColor: AppColors.primaryColor,
       body: SingleChildScrollView(
@@ -37,7 +38,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   Image(image: AssetImage("assets/logo/logo1.png")),
                   const SizedBox(height: 20),
                   Text(
-                    'Welcome!',
+                    loc.welcome,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
@@ -47,7 +48,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    'Discover Limitless Choices and Unmatched Convince.',
+                    loc.login_subtitle,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
@@ -61,7 +62,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     decoration: InputDecoration(
                       prefixIcon:
                           Icon(Icons.email, color: AppColors.secondaryColor),
-                      hintText: 'Email',
+                      hintText: loc.email_hint,
                       hintStyle: TextStyle(color: AppColors.secondaryColor),
                       filled: true,
                       fillColor: AppColors.secondaryColor.withOpacity(0.2),
@@ -77,10 +78,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     style: TextStyle(color: AppColors.secondaryColor),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your email';
+                        return loc.enter_email;
                       }
                       if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                        return 'Please enter a valid email address';
+                        return loc.email_validation;
                       }
                       return null;
                     },
@@ -93,7 +94,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     decoration: InputDecoration(
                       prefixIcon:
                           Icon(Icons.lock, color: AppColors.secondaryColor),
-                      hintText: 'Password',
+                      hintText: loc.password_hint,
                       hintStyle: TextStyle(color: AppColors.secondaryColor),
                       filled: true,
                       fillColor: AppColors.secondaryColor.withOpacity(0.2),
@@ -109,10 +110,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     style: TextStyle(color: AppColors.secondaryColor),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your password';
+                        return loc.enter_password;
                       }
                       if (value.length < 6) {
-                        return 'Password must be at least 6 characters';
+                        return loc.password_validation;
                       }
                       return null;
                     },
@@ -140,11 +141,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         // Handle login results
                         if (loginResult == 'User not found') {
                           setState(() {
-                            errorMessage = 'User is not registered.';
+                            errorMessage = loc.user_not_found;
                           });
                         } else if (loginResult == 'Incorrect password') {
                           setState(() {
-                            errorMessage = 'Incorrect password.';
+                            errorMessage = loc.incorrect_password;
                           });
                         } else if (loginResult == 'Success') {
                           Navigator.pushAndRemoveUntil(
@@ -155,20 +156,45 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           );
                         } else {
                           setState(() {
-                            errorMessage =
-                                'An unexpected error occurred. Please try again.';
+                            errorMessage = loc.unexpected_error;
                           });
                         }
                       }
                     },
                     child: Text(
-                      'Login',
+                      loc.login_button,
                       style: TextStyle(
                         color: Colors.red,
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
                       ),
                     ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  // Sign Up Link
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        loc.donthaveAccount,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (_) => SignUpScreen()));
+                        },
+                        child: Text(
+                          loc.signUp,
+                          style: TextStyle(
+                            color: AppColors.secondaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 10),
                   // Show error message if exists
@@ -186,7 +212,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   const SizedBox(height: 10),
                   // Or Text
                   Text(
-                    '- Or -',
+                    loc.or_text,
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.white),
                   ),
@@ -205,7 +231,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           MaterialPageRoute(builder: (_) => NavigationMenu()));
                     },
                     child: Text(
-                      'Continue as a Guest',
+                      loc.continue_guest,
                       style: TextStyle(
                         color: AppColors.secondaryColor,
                         fontWeight: FontWeight.bold,

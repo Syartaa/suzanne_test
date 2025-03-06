@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:suzanne_podcast_app/l10n/app_localizations.dart';
 import 'package:suzanne_podcast_app/provider/schedules_provider.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
@@ -45,7 +46,7 @@ class ScheculedSlider extends ConsumerWidget {
             TextButton(
               onPressed: onSeeMorePressed,
               child: Text(
-                "See more",
+                AppLocalizations.of(context)!.seeMore,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: AppColors.secondaryColor,
                     ),

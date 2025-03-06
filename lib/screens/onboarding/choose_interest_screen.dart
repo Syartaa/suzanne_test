@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:suzanne_podcast_app/l10n/app_localizations.dart';
 import 'package:suzanne_podcast_app/screens/onboarding/welcome_screen.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
@@ -15,6 +16,15 @@ class _ChooseInterestScreenState extends State<ChooseInterestScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+    if (loc == null) {
+      print(
+          "🚨 Localization is null. Make sure localization is properly set up.");
+      return const SizedBox.shrink();
+    }
+
+    print("📝 Localization Loaded: ${loc?.chooseInterests ?? 'NULL'}");
+
     return Scaffold(
       backgroundColor: AppColors.primaryColor,
       body: Padding(
@@ -31,20 +41,20 @@ class _ChooseInterestScreenState extends State<ChooseInterestScreen> {
               ),
             ),
             const SizedBox(height: 30),
-            const Text(
-              'Choose your interests and get the best\npodcast recommendations.',
+            Text(
+              loc.chooseInterests,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 17,
                 fontWeight: FontWeight.w500,
               ),
             ),
             const SizedBox(height: 10),
-            const Text(
-              'Don’t worry you can always change it later',
+            Text(
+              loc.dontWorryChangeLater,
               textAlign: TextAlign.right,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Color.fromARGB(186, 252, 252, 252),
                 fontSize: 13,
               ),
@@ -56,14 +66,14 @@ class _ChooseInterestScreenState extends State<ChooseInterestScreen> {
               runSpacing: 15.0,
               alignment: WrapAlignment.center,
               children: [
-                _buildInterestButton('Music'),
-                _buildInterestButton('Podcasts'),
-                _buildInterestButton('Cinema'),
-                _buildInterestButton('Books'),
-                _buildInterestButton('Theatre'),
-                _buildInterestButton('Clubbing'),
-                _buildInterestButton('Literature'),
-                _buildInterestButton('Visual arts'),
+                _buildInterestButton(loc.music),
+                _buildInterestButton(loc.podcasts),
+                _buildInterestButton(loc.cinema),
+                _buildInterestButton(loc.books),
+                _buildInterestButton(loc.theatre),
+                _buildInterestButton(loc.clubbing),
+                _buildInterestButton(loc.literature),
+                _buildInterestButton(loc.visualArts),
               ],
             ),
             const Spacer(),
@@ -71,11 +81,11 @@ class _ChooseInterestScreenState extends State<ChooseInterestScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildActionButton(context, 'Skip', AppColors.secondaryColor,
+                _buildActionButton(context, loc.skip, AppColors.secondaryColor,
                     const Color.fromARGB(255, 0, 0, 0)),
                 _buildActionButton(
                     context,
-                    'Continue',
+                    loc.continueButton,
                     const Color.fromARGB(255, 202, 13, 13),
                     AppColors.secondaryColor),
               ],

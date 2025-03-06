@@ -35,6 +35,7 @@ class _PodcastDetailsScreenState extends ConsumerState<PodcastDetailsScreen> {
   void initState() {
     super.initState();
 
+    // Check the network connectivity status
     Connectivity().checkConnectivity().then((connectivityResult) {
       setState(() {
         isOffline = connectivityResult == ConnectivityResult.none;
@@ -80,6 +81,36 @@ class _PodcastDetailsScreenState extends ConsumerState<PodcastDetailsScreen> {
     final minutes = twoDigits(duration.inMinutes.remainder(60));
     final seconds = twoDigits(duration.inSeconds.remainder(60));
     return "${duration.inHours > 0 ? '${duration.inHours}:' : ''}$minutes:$seconds";
+  }
+
+  void _playPrevious() {
+    if (widget.playlist != null &&
+        widget.playlistIndex != null &&
+        widget.playlistIndex! > 0) {
+      final newIndex = widget.playlistIndex! - 1;
+      _navigateToPodcast(widget.playlist![newIndex], newIndex);
+    }
+  }
+
+  void _playNext() {
+    if (widget.playlist != null &&
+        widget.playlistIndex != null &&
+        widget.playlistIndex! < widget.playlist!.length - 1) {
+      final newIndex = widget.playlistIndex! + 1;
+      _navigateToPodcast(widget.playlist![newIndex], newIndex);
+    }
+  }
+
+  void _navigateToPodcast(Map<String, dynamic> newPodcast, int newIndex) {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => PodcastDetailsScreen(
+          podcast: newPodcast,
+          playlist: widget.playlist,
+          playlistIndex: newIndex,
+        ),
+      ),
+    );
   }
 
   @override
@@ -160,6 +191,73 @@ class _PodcastDetailsScreenState extends ConsumerState<PodcastDetailsScreen> {
                       ],
                     ),
                     const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.skip_previous,
+                              color: Colors.white),
+                          iconSize: 40,
+                          onPressed: (widget.playlist != null &&
+                                  widget.playlistIndex != null &&
+                                  widget.playlistIndex! > 0)
+                              ? _playPrevious
+                              : null, // Disable button when at the first podcast
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.replay_10),
+                          color: Colors.white,
+                          onPressed: () {
+                            final currentPosition =
+                                _currentPosition ?? Duration.zero;
+                            _controller.seekTo(
+                                currentPosition - const Duration(seconds: 10));
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            _controller.value.isPlaying
+                                ? Icons.pause_circle_filled
+                                : Icons.play_circle_fill,
+                          ),
+                          color: AppColors.secondaryColor,
+                          iconSize: 50,
+                          onPressed: () {
+                            setState(() {
+                              if (_controller.value.isPlaying) {
+                                _controller.pause();
+                              } else {
+                                _controller.play();
+                              }
+                            });
+                          },
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.forward_10),
+                          color: Colors.white,
+                          onPressed: () {
+                            final currentPosition =
+                                _currentPosition ?? Duration.zero;
+                            _controller.seekTo(
+                                currentPosition + const Duration(seconds: 10));
+                          },
+                        ),
+                        IconButton(
+                          icon:
+                              const Icon(Icons.skip_next, color: Colors.white),
+                          iconSize: 40,
+                          onPressed: (widget.playlist != null &&
+                                  widget.playlistIndex != null &&
+                                  widget.playlistIndex! <
+                                      widget.playlist!.length - 1)
+                              ? _playNext
+                              : null, // Disable button when at the last podcast
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 16),
+                    // Favorite and Playlist Icons
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [

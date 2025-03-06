@@ -32,7 +32,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = ref.read(OnboardingStateProvider.notifier);
+    final controller = ref.read(onboardingStateProvider.notifier);
 
     return Scaffold(
       backgroundColor: Color(0xFFFC2221),

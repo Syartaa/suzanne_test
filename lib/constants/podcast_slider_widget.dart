@@ -34,7 +34,7 @@ class PodcastSliderWidget extends ConsumerWidget {
               title,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w700,
-                fontSize: 24,
+                fontSize: 22,
                 color: const Color(0xFFFFF8F0),
                 shadows: [
                   const Shadow(

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:suzanne_podcast_app/constants/banner_widget.dart';
 import 'package:suzanne_podcast_app/constants/podcast_slider_widget.dart';
+import 'package:suzanne_podcast_app/l10n/app_localizations.dart';
 import 'package:suzanne_podcast_app/provider/banner_provider.dart';
 import 'package:suzanne_podcast_app/provider/notifications_provider.dart';
 import 'package:suzanne_podcast_app/provider/podcast_provider.dart';
@@ -33,6 +34,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final podcastsAsyncValue = ref.watch(podcastProvider);
+    final loc = AppLocalizations.of(context)!; // 🔹 Get translations
 
     return Scaffold(
       backgroundColor: AppColors.primaryColor,
@@ -103,7 +105,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
                 // Monday Marks Section
                 ScheculedSlider(
-                  title: "Monday Marks",
+                  title: loc.mondayMarks,
                   onSeeMorePressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (ctx) => MondayMarksScreen()));
@@ -114,8 +116,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     bannerType: 'secondary'), // Specify banner type here
                 SizedBox(height: 20),
                 PodcastSliderWidget(
-                  title: "Featured Podcasts",
-                  seeMoreText: "See more",
+                  title: loc.featuredPodcasts,
+                  seeMoreText: loc.seeMore,
                   routeBuilder: (ctx) => PodcastScreen(),
                   podcastsAsyncValue: podcastsAsyncValue,
                 ),
@@ -159,9 +161,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: AppColors.primaryColor,
-          title: Text("Info"),
+          title: Text(AppLocalizations.of(context)!.infoTitle),
           content: Text(
-            "This app is a product of Suzanne Media Platform. The application has been supported by LuxAid and UNDP.",
+            AppLocalizations.of(context)!.infoContent,
           ),
           actions: [
             TextButton(

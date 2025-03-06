@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:suzanne_podcast_app/l10n/app_localizations.dart';
 import 'package:suzanne_podcast_app/provider/favorite_provider.dart';
 import 'package:suzanne_podcast_app/provider/playlist_provider.dart';
 import 'package:suzanne_podcast_app/provider/user_provider.dart';
@@ -43,7 +44,9 @@ void showFavoritePlaylistPopup(
                     color: Colors.white,
                   ),
                   title: Text(
-                    isFavorited ? 'Remove from Favorite' : 'Add to Favorite',
+                    isFavorited
+                        ? AppLocalizations.of(context)!.remove_from_favorite
+                        : AppLocalizations.of(context)!.add_to_favorite,
                     style: const TextStyle(color: Colors.white),
                   ),
                   onTap: () {
@@ -63,7 +66,7 @@ void showFavoritePlaylistPopup(
                 // "Add to Playlist" option
                 ListTile(
                   leading: const Icon(Icons.playlist_add, color: Colors.white),
-                  title: const Text('Add to Playlist',
+                  title: Text(AppLocalizations.of(context)!.add_to_playlist,
                       style: TextStyle(color: Colors.white)),
                   onTap: () {
                     Navigator.of(context).pop(); // Close the modal first
@@ -105,11 +108,11 @@ void showPlaylistPopup(BuildContext context, WidgetRef ref, String podcastId) {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    'Select Playlist or Create New',
-                    style: TextStyle(color: Colors.white, fontSize: 18),
+                    AppLocalizations.of(context)!.select_playlist,
+                    style: const TextStyle(color: Colors.white, fontSize: 18),
                   ),
                 ),
 
@@ -136,15 +139,15 @@ void showPlaylistPopup(BuildContext context, WidgetRef ref, String podcastId) {
                     );
                   }).toList()
                 else
-                  const Text(
-                    "No playlists found",
+                  Text(
+                    AppLocalizations.of(context)!.no_playlists,
                     style: TextStyle(color: Colors.white70),
                   ),
 
                 // Always Show "Create New Playlist"
                 ListTile(
                   leading: const Icon(Icons.add, color: Colors.white),
-                  title: const Text('Create New Playlist',
+                  title: Text(AppLocalizations.of(context)!.create_new_playlist,
                       style: TextStyle(color: Colors.white)),
                   onTap: () {
                     Navigator.of(context).pop();
@@ -172,15 +175,15 @@ void _showCreatePlaylistDialog(
     builder: (context) {
       return AlertDialog(
         backgroundColor: Colors.black,
-        title: const Text(
-          'Create a New Playlist',
+        title: Text(
+          AppLocalizations.of(context)!.create_new_playlist,
           style: TextStyle(color: Colors.white),
         ),
         content: TextField(
           controller: controller,
           style: const TextStyle(color: Colors.white),
-          decoration: const InputDecoration(
-            hintText: 'Enter playlist name',
+          decoration: InputDecoration(
+            hintText: AppLocalizations.of(context)!.enter_playlist_name,
             hintStyle: TextStyle(color: Colors.white70),
           ),
         ),
@@ -189,8 +192,8 @@ void _showCreatePlaylistDialog(
             onPressed: () {
               Navigator.of(context).pop(); // Close dialog only
             },
-            child: const Text(
-              'Cancel',
+            child: Text(
+              AppLocalizations.of(context)!.cancel,
               style: TextStyle(color: Colors.white),
             ),
           ),
@@ -211,8 +214,8 @@ void _showCreatePlaylistDialog(
                 });
               }
             },
-            child: const Text(
-              'Create',
+            child: Text(
+              AppLocalizations.of(context)!.create,
               style: TextStyle(color: Colors.white),
             ),
           ),
@@ -225,8 +228,8 @@ void _showCreatePlaylistDialog(
 // Show a login message when user is not logged in
 void _showLoginMessage(BuildContext context) {
   ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(
-      content: Text('Please log in to add to playlist or favorite podcasts.'),
+    SnackBar(
+      content: Text(AppLocalizations.of(context)!.login_message),
     ),
   );
 }
