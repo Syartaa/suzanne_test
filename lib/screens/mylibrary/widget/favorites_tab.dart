@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:suzanne_podcast_app/l10n/app_localizations.dart';
 import 'package:suzanne_podcast_app/provider/favorite_provider.dart';
 import 'package:suzanne_podcast_app/provider/podcast_provider.dart';
 import 'package:suzanne_podcast_app/provider/user_provider.dart';
@@ -12,13 +13,14 @@ class FavoritesTab extends ConsumerWidget {
     final favoriteIds = ref.watch(favoriteProvider);
     final podcastState = ref.watch(podcastProvider);
     final userState = ref.watch(userProvider);
+    final loc = AppLocalizations.of(context)!;
 
     // If user is NOT logged in, show "No favorite podcasts"
     if (userState.value == null || userState.value!.token == null) {
-      return const Center(
+      return Center(
         child: Text(
-          "No favorite podcasts yet!",
-          style: TextStyle(color: Colors.white, fontSize: 18),
+          loc.noFavoritePodcastsYet,
+          style: TextStyle(color: Colors.white70, fontSize: 16),
         ),
       );
     }
@@ -36,10 +38,10 @@ class FavoritesTab extends ConsumerWidget {
 
         return favoriteIds.isEmpty &&
                 !ref.read(favoriteProvider.notifier).isLoading
-            ? const Center(
+            ? Center(
                 child: Text(
-                  "No favorite podcasts yet!",
-                  style: TextStyle(color: Colors.white, fontSize: 18),
+                  loc.noFavoritePodcastsYet,
+                  style: TextStyle(color: Colors.white70, fontSize: 16),
                 ),
               )
             : ListView.builder(

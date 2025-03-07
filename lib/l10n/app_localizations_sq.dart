@@ -127,9 +127,6 @@ class AppLocalizationsSq extends AppLocalizations {
   String get incorrect_password => 'Fjalëkalimi i pasaktë.';
 
   @override
-  String get user_not_found => 'Përdoruesi nuk është i regjistruar.';
-
-  @override
   String get unexpected_error => 'Ndodhi një gabim i papritur. Ju lutem provoni përsëri.';
 
   @override
@@ -178,9 +175,6 @@ class AppLocalizationsSq extends AppLocalizations {
   String get haveAccount => 'Keni një llogari?';
 
   @override
-  String get login => 'Hyr';
-
-  @override
   String get firstNameRequired => 'Emri është i detyrueshëm';
 
   @override
@@ -206,4 +200,85 @@ class AppLocalizationsSq extends AppLocalizations {
 
   @override
   String get donthaveAccount => 'Nuk keni një llogari? ';
+
+  @override
+  String get selectLanguage => 'Zgjidhni gjuhën tuaj';
+
+  @override
+  String get profile => 'Profili';
+
+  @override
+  String get user_not_found => 'Përdoruesi nuk u gjet';
+
+  @override
+  String get please_log_in => 'Ju lutem, identifikohuni për të vazhduar.';
+
+  @override
+  String get login => 'Hyr';
+
+  @override
+  String get logout => 'Dil';
+
+  @override
+  String get username => 'Emri i përdoruesit';
+
+  @override
+  String get notifications => 'Njoftimet';
+
+  @override
+  String get scheduled_events => 'Eventet e Planifikuara';
+
+  @override
+  String get choose_events => 'Zgjidh një datë për të parë eventet e planifikuara.';
+
+  @override
+  String get no_events => 'Nuk u gjetën evente për datën e zgjedhur.';
+
+  @override
+  String get myLibrary => 'Libraria';
+
+  @override
+  String get favoritesTab => 'Preferuara';
+
+  @override
+  String get noPlaylistsAvailable => 'Nuk ka lista playlist.';
+
+  @override
+  String get noFavoritePodcastsYet => 'Ende nuk ka podkaste të preferuara!';
+
+  @override
+  String get discover => 'Kërko';
+
+  @override
+  String get todaysTop5Podcasts => 'Top 5 Podkaste të Ditës';
+
+  @override
+  String get noFeaturedPodcastsFound => 'Nuk u gjetën podkaste të paraqitura';
+
+  @override
+  String get today => 'Sot';
+
+  @override
+  String get monday => 'E Hënë';
+
+  @override
+  String get tuesday => 'E Martë';
+
+  @override
+  String get wednesday => 'E Mërkurë';
+
+  @override
+  String get thursday => 'E Enjte';
+
+  @override
+  String get friday => 'E Premte';
+
+  @override
+  String get saturday => 'E Shtunë';
+
+  @override
+  String get sunday => 'E Diel';
+
+  @override
+  String get change_language => 'Mos u shqetëso, gjithmonë mund ta ndryshosh më vonë';
 }

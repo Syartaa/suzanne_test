@@ -29,15 +29,17 @@ class PodcastNotifier extends StateNotifier<AsyncValue<List<dynamic>>> {
   // This method fetches podcasts from SharedPreferences (cache).
   Future<void> _loadPodcastsFromCache() async {
     final prefs = await SharedPreferences.getInstance();
-    String? cachedPodcastsJson =
-        prefs.getString('podcasts'); // Fetch cached podcasts
+    String? cachedPodcastsJson = prefs.getString('podcasts');
 
     if (cachedPodcastsJson != null) {
-      // If podcasts are cached, load them and set the state to 'data'
       List<dynamic> cachedPodcasts = jsonDecode(cachedPodcastsJson);
-      state = AsyncValue.data(cachedPodcasts); // Set state to loaded podcasts
+
+      // Sort cached podcasts before displaying them
+      cachedPodcasts.sort((a, b) => DateTime.parse(b['created_at'])
+          .compareTo(DateTime.parse(a['created_at'])));
+
+      state = AsyncValue.data(cachedPodcasts);
     } else {
-      // If there's no cached data, leave the state in loading mode
       state = const AsyncValue.loading();
     }
   }
@@ -45,22 +47,22 @@ class PodcastNotifier extends StateNotifier<AsyncValue<List<dynamic>>> {
   // This method fetches podcasts from the API and caches them.
   Future<void> _loadPodcastsFromApi() async {
     try {
-      state = const AsyncValue
-          .loading(); // Set state to loading before fetching from the API
-      final response =
-          await apiService.fetchPodcasts(); // Fetch podcasts from API
-      state = AsyncValue.data(response); // Update state with fetched data
+      state = const AsyncValue.loading();
+      final response = await apiService.fetchPodcasts();
 
-      // Cache the podcasts for offline usage
+      // Sort podcasts by date (assuming 'created_at' exists)
+      response.sort((a, b) => DateTime.parse(b['created_at'])
+          .compareTo(DateTime.parse(a['created_at'])));
+
+      state = AsyncValue.data(response);
+
+      // Cache the sorted list
       final prefs = await SharedPreferences.getInstance();
-      String podcastsJson = jsonEncode(response); // Encode podcasts to JSON
-      await prefs.setString(
-          'podcasts', podcastsJson); // Save them in SharedPreferences
+      String podcastsJson = jsonEncode(response);
+      await prefs.setString('podcasts', podcastsJson);
     } catch (e, stackTrace) {
-      // If an error occurs while fetching from the API, set the state to error
-      print("Error loading podcasts data: $e"); // Print error for debugging
-      state = AsyncValue.error(
-          e, stackTrace); // Set state to error with the exception
+      print("Error loading podcasts data: $e");
+      state = AsyncValue.error(e, stackTrace);
     }
   }
 }

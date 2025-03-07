@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:suzanne_podcast_app/l10n/app_localizations.dart';
 import 'package:suzanne_podcast_app/screens/mylibrary/widget/favorites_tab.dart';
 import 'package:suzanne_podcast_app/screens/mylibrary/widget/playlist/playlist_tab.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
@@ -8,6 +9,8 @@ class MyLibraryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return DefaultTabController(
       length: 2, // Number of tabs
       child: Scaffold(
@@ -17,7 +20,7 @@ class MyLibraryScreen extends StatelessWidget {
           backgroundColor: const Color.fromARGB(198, 243, 18, 18),
           title: Center(
             child: Text(
-              "My Library",
+              loc.myLibrary,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: 24,
@@ -44,8 +47,8 @@ class MyLibraryScreen extends StatelessWidget {
                 unselectedLabelColor: Color(0xFFFFF8F0),
                 indicatorColor: AppColors.secondaryColor,
                 indicatorWeight: 3.0,
-                tabs: const [
-                  Tab(text: 'Favorites'),
+                tabs: [
+                  Tab(text: loc.favoritesTab),
                   Tab(text: 'Playlist'),
                 ],
               ),

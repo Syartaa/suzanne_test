@@ -30,6 +30,7 @@ class _PodcastDetailsScreenState extends ConsumerState<PodcastDetailsScreen> {
   Duration? _videoDuration;
   Duration? _currentPosition;
   bool isOffline = false;
+  bool _isExpanded = false;
 
   @override
   void initState() {
@@ -290,6 +291,48 @@ class _PodcastDetailsScreenState extends ConsumerState<PodcastDetailsScreen> {
                     ),
                   ],
                 ),
+              ),
+              const SizedBox(height: 16),
+              Column(
+                children: [
+                  Text(
+                    widget.podcast['title'],
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 15,
+                      color: Color(0xFFFFF8F0),
+                      shadows: [
+                        Shadow(
+                          color: Color(0xFFFFF1F1),
+                          offset: Offset(1.0, 1.0),
+                          blurRadius: 3.0,
+                        ),
+                      ],
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      if (widget.podcast['long_description'] != null &&
+                          widget.podcast['long_description'].length > 150) {
+                        setState(() => _isExpanded = !_isExpanded);
+                      }
+                    },
+                    child: Text(
+                      widget.podcast['long_description'] != null
+                          ? (_isExpanded
+                              ? widget.podcast['long_description']
+                              : widget.podcast['long_description'].length > 150
+                                  ? '${widget.podcast['long_description'].substring(0, 150)}... See more'
+                                  : widget.podcast['long_description'])
+                          : "No description available",
+                      style: const TextStyle(
+                        color: Color.fromARGB(207, 255, 255, 255),
+                        fontSize: 13,
+                      ),
+                      textAlign: TextAlign.start,
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 32),
               RatingCommentsWidget(podcastId: podcastId),

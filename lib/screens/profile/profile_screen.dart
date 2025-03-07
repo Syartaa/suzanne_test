@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:suzanne_podcast_app/l10n/app_localizations.dart';
 import 'package:suzanne_podcast_app/provider/locale_provider.dart';
 import 'package:suzanne_podcast_app/provider/notifications_provider.dart';
 import 'package:suzanne_podcast_app/provider/user_provider.dart';
@@ -15,6 +16,7 @@ class ProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userState = ref.watch(userProvider);
     final languageNotifier = ref.watch(localeProvider.notifier);
+    final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: AppColors.primaryColor,
@@ -22,7 +24,7 @@ class ProfileScreen extends ConsumerWidget {
         backgroundColor: const Color.fromARGB(198, 243, 18, 18),
         centerTitle: true,
         title: Text(
-          "Profile",
+          loc.profile,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w600,
             fontSize: 24,
@@ -92,7 +94,7 @@ class ProfileScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: 20),
                       Text(
-                        "User not found",
+                        loc.user_not_found,
                         style: const TextStyle(
                           fontSize: 24,
                           color: Colors.white,
@@ -101,7 +103,7 @@ class ProfileScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: 10),
                       Text(
-                        "Please log in to continue.",
+                        loc.please_log_in,
                         style: const TextStyle(
                           fontSize: 16,
                           color: Colors.white70,
@@ -121,11 +123,11 @@ class ProfileScreen extends ConsumerWidget {
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
+                            children: [
                               Icon(Iconsax.login, color: Colors.white),
                               SizedBox(width: 10),
                               Text(
-                                'Login',
+                                loc.login,
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w500,
@@ -213,8 +215,8 @@ class ProfileScreen extends ConsumerWidget {
                                 const Icon(Iconsax.notification,
                                     color: Colors.white),
                                 const SizedBox(width: 10),
-                                const Text(
-                                  'Notifications',
+                                Text(
+                                  loc.notifications,
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w500,
@@ -270,7 +272,7 @@ class ProfileScreen extends ConsumerWidget {
                             const Icon(Iconsax.logout, color: Colors.white),
                             const SizedBox(width: 10),
                             Text(
-                              user == null ? "Login" : "Logout",
+                              user == null ? loc.login : loc.logout,
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w500,

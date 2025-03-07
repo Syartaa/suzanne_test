@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:suzanne_podcast_app/l10n/app_localizations.dart';
 import 'package:suzanne_podcast_app/screens/event/widget/event_details_page.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -20,6 +21,7 @@ class _ScheduledLiveEventsState extends ConsumerState<ScheduledLiveEvents> {
   @override
   Widget build(BuildContext context) {
     final eventsAsyncValue = ref.watch(eventNotifierProvider);
+    final loc = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: AppColors.primaryColor,
@@ -28,7 +30,7 @@ class _ScheduledLiveEventsState extends ConsumerState<ScheduledLiveEvents> {
         backgroundColor: const Color.fromARGB(198, 243, 18, 18),
         title: Center(
           child: Text(
-            "Scheduled Events",
+            loc.scheduled_events,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w600,
               fontSize: 24,
@@ -123,7 +125,7 @@ class _ScheduledLiveEventsState extends ConsumerState<ScheduledLiveEvents> {
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Text(
-                        "Choose a date to see scheduled events.",
+                        loc.choose_events,
                         style: TextStyle(fontSize: 18, color: Colors.white70),
                         textAlign: TextAlign.center,
                       ),
@@ -140,7 +142,7 @@ class _ScheduledLiveEventsState extends ConsumerState<ScheduledLiveEvents> {
                           return Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Text(
-                              "No events found for the selected date.",
+                              loc.no_events,
                               style: TextStyle(
                                   fontSize: 18, color: Colors.white70),
                               textAlign: TextAlign.center,

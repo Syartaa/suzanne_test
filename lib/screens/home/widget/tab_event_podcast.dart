@@ -36,7 +36,7 @@ class _PodcastsEventsTabState extends State<PodcastsEventsTab>
         ),
         SizedBox(height: 15),
         SizedBox(
-          height: 300, // Adjust height as needed
+          height: 400, // Adjust height as needed
           child: TabBarView(
             controller: _tabController,
             children: [

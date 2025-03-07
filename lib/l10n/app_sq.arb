@@ -1,4 +1,4 @@
-{
+  {
   "@@locale": "sq",
   "appTitle": "Suzanne Podcast",
   "welcomeMessage": "Mirësevini në aplikacionin e podcast!",
@@ -40,7 +40,7 @@
   "password_hint": "Fjalëkalimi",
   "login_button": "Hyr",
   "incorrect_password": "Fjalëkalimi i pasaktë.",
-  "user_not_found": "Përdoruesi nuk është i regjistruar.",
+
   "unexpected_error": "Ndodhi një gabim i papritur. Ju lutem provoni përsëri.",
   "or_text": "- Ose -",
   "continue_guest": "Vazhdo si Mysafir",
@@ -57,7 +57,7 @@
   "female": "Femër",
   "signUpButton": "Regjistrohu",
   "haveAccount": "Keni një llogari?",
-  "login": "Hyr",
+
   "firstNameRequired": "Emri është i detyrueshëm",
   "lastNameRequired": "Mbiemri është i detyrueshëm",
   "emailRequired": "Emaili është i detyrueshëm",
@@ -66,5 +66,32 @@
   "passwordsNotMatch": "Fjalëkalimet nuk përputhen",
   "selectGender": "Ju lutemi zgjidhni një gjini",
   "registrationSuccess": "Regjistrimi u krye me sukses!",
-  "donthaveAccount":"Nuk keni një llogari? "
+  "donthaveAccount":"Nuk keni një llogari? ",
+  "selectLanguage": "Zgjidhni gjuhën tuaj",
+  "profile": "Profili",
+  "user_not_found": "Përdoruesi nuk u gjet",
+  "please_log_in": "Ju lutem, identifikohuni për të vazhduar.",
+  "login": "Hyr",
+  "logout": "Dil",
+  "username": "Emri i përdoruesit",
+  "notifications": "Njoftimet",
+  "scheduled_events": "Eventet e Planifikuara",
+  "choose_events": "Zgjidh një datë për të parë eventet e planifikuara.",
+  "no_events":"Nuk u gjetën evente për datën e zgjedhur.",
+  "myLibrary": "Libraria",
+  "favoritesTab": "Preferuara",
+  "noPlaylistsAvailable": "Nuk ka lista playlist.",
+  "noFavoritePodcastsYet": "Ende nuk ka podkaste të preferuara!",
+  "discover": "Kërko",
+  "todaysTop5Podcasts": "Top 5 Podkaste të Ditës",
+  "noFeaturedPodcastsFound": "Nuk u gjetën podkaste të paraqitura",
+  "today": "Sot",
+  "monday": "E Hënë",
+  "tuesday": "E Martë",
+  "wednesday": "E Mërkurë",
+  "thursday": "E Enjte",
+  "friday": "E Premte",
+  "saturday": "E Shtunë",
+  "sunday": "E Diel",
+    "change_language":"Mos u shqetëso, gjithmonë mund ta ndryshosh më vonë"
 }

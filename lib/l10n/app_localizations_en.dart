@@ -127,9 +127,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get incorrect_password => 'Incorrect password.';
 
   @override
-  String get user_not_found => 'User is not registered.';
-
-  @override
   String get unexpected_error => 'An unexpected error occurred. Please try again.';
 
   @override
@@ -178,9 +175,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get haveAccount => 'Have an account?';
 
   @override
-  String get login => 'Login';
-
-  @override
   String get firstNameRequired => 'First name is required';
 
   @override
@@ -206,4 +200,85 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get donthaveAccount => 'Don\'t have an account? ';
+
+  @override
+  String get selectLanguage => 'Choose Your Language';
+
+  @override
+  String get profile => 'Profile';
+
+  @override
+  String get user_not_found => 'User not found';
+
+  @override
+  String get please_log_in => 'Please log in to continue.';
+
+  @override
+  String get login => 'Login';
+
+  @override
+  String get logout => 'Logout';
+
+  @override
+  String get username => 'Username';
+
+  @override
+  String get notifications => 'Notifications';
+
+  @override
+  String get scheduled_events => 'Scheduled Events';
+
+  @override
+  String get choose_events => 'Choose a date to see scheduled events.';
+
+  @override
+  String get no_events => 'No events found for the selected date.';
+
+  @override
+  String get myLibrary => 'My Library';
+
+  @override
+  String get favoritesTab => 'Favorites';
+
+  @override
+  String get noPlaylistsAvailable => 'No playlists available.';
+
+  @override
+  String get noFavoritePodcastsYet => 'No favorite podcasts yet!';
+
+  @override
+  String get discover => 'Search';
+
+  @override
+  String get todaysTop5Podcasts => 'Today’s Top 5 Podcasts';
+
+  @override
+  String get noFeaturedPodcastsFound => 'No Featured Podcasts found';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get monday => 'Monday';
+
+  @override
+  String get tuesday => 'Tuesday';
+
+  @override
+  String get wednesday => 'Wednesday';
+
+  @override
+  String get thursday => 'Thursday';
+
+  @override
+  String get friday => 'Friday';
+
+  @override
+  String get saturday => 'Saturday';
+
+  @override
+  String get sunday => 'Sunday';
+
+  @override
+  String get change_language => 'Don\'t worry, you can always change it later';
 }

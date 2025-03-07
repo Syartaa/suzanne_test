@@ -27,11 +27,12 @@ class _ChooseInterestScreenState extends State<ChooseInterestScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.primaryColor,
+      appBar: AppBar(),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
-            SizedBox(height: 50),
+            SizedBox(height: 45),
             Center(
               child: ClipRRect(
                 child: Image(

@@ -10,7 +10,7 @@ class PlaylistNotifier extends StateNotifier<List<Map<String, dynamic>>> {
   final Ref ref;
   final ApiService _apiService = ApiService();
 
-  bool _playlistsLoaded = false;
+  bool playlistsLoaded = false;
   Map<String, dynamic>? _selectedPlaylist;
   Map<String, dynamic>? get selectedPlaylist => _selectedPlaylist;
 
@@ -22,7 +22,7 @@ class PlaylistNotifier extends StateNotifier<List<Map<String, dynamic>>> {
   Map<String, dynamic>? get currentPlaylist => _currentPlaylist;
 
   Future<void> fetchAllPlaylists() async {
-    _playlistsLoaded = false; // Ensure fresh fetch
+    playlistsLoaded = false; // Ensure fresh fetch
     final userState = ref.read(userProvider);
     if (userState.value == null) return;
 
@@ -30,7 +30,7 @@ class PlaylistNotifier extends StateNotifier<List<Map<String, dynamic>>> {
     try {
       final playlists = await _apiService.getAllPlaylists(authToken!);
       state = playlists;
-      _playlistsLoaded = true;
+      playlistsLoaded = true;
     } catch (e) {
       print("Error fetching playlists: $e");
     }
@@ -58,7 +58,7 @@ class PlaylistNotifier extends StateNotifier<List<Map<String, dynamic>>> {
 
   void resetPlaylists() {
     state = [];
-    _playlistsLoaded = false;
+    playlistsLoaded = false;
   }
 
   Future<void> createPlaylist(String playlistName) async {

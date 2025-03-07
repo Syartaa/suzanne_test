@@ -18,11 +18,10 @@ class _RatingCommentsWidgetState extends ConsumerState<RatingCommentsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final ratingsState = ref.watch(podcastRatingsProvider);
     final ratingsNotifier = ref.read(podcastRatingsProvider.notifier);
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      //padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
       ),

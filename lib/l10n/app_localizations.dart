@@ -335,12 +335,6 @@ abstract class AppLocalizations {
   /// **'Incorrect password.'**
   String get incorrect_password;
 
-  /// No description provided for @user_not_found.
-  ///
-  /// In en, this message translates to:
-  /// **'User is not registered.'**
-  String get user_not_found;
-
   /// No description provided for @unexpected_error.
   ///
   /// In en, this message translates to:
@@ -437,12 +431,6 @@ abstract class AppLocalizations {
   /// **'Have an account?'**
   String get haveAccount;
 
-  /// No description provided for @login.
-  ///
-  /// In en, this message translates to:
-  /// **'Login'**
-  String get login;
-
   /// No description provided for @firstNameRequired.
   ///
   /// In en, this message translates to:
@@ -496,6 +484,168 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Don\'t have an account? '**
   String get donthaveAccount;
+
+  /// No description provided for @selectLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Your Language'**
+  String get selectLanguage;
+
+  /// No description provided for @profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profile;
+
+  /// No description provided for @user_not_found.
+  ///
+  /// In en, this message translates to:
+  /// **'User not found'**
+  String get user_not_found;
+
+  /// No description provided for @please_log_in.
+  ///
+  /// In en, this message translates to:
+  /// **'Please log in to continue.'**
+  String get please_log_in;
+
+  /// No description provided for @login.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get login;
+
+  /// No description provided for @logout.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get logout;
+
+  /// No description provided for @username.
+  ///
+  /// In en, this message translates to:
+  /// **'Username'**
+  String get username;
+
+  /// No description provided for @notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notifications;
+
+  /// No description provided for @scheduled_events.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled Events'**
+  String get scheduled_events;
+
+  /// No description provided for @choose_events.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a date to see scheduled events.'**
+  String get choose_events;
+
+  /// No description provided for @no_events.
+  ///
+  /// In en, this message translates to:
+  /// **'No events found for the selected date.'**
+  String get no_events;
+
+  /// No description provided for @myLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'My Library'**
+  String get myLibrary;
+
+  /// No description provided for @favoritesTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorites'**
+  String get favoritesTab;
+
+  /// No description provided for @noPlaylistsAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No playlists available.'**
+  String get noPlaylistsAvailable;
+
+  /// No description provided for @noFavoritePodcastsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No favorite podcasts yet!'**
+  String get noFavoritePodcastsYet;
+
+  /// No description provided for @discover.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get discover;
+
+  /// No description provided for @todaysTop5Podcasts.
+  ///
+  /// In en, this message translates to:
+  /// **'Today’s Top 5 Podcasts'**
+  String get todaysTop5Podcasts;
+
+  /// No description provided for @noFeaturedPodcastsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No Featured Podcasts found'**
+  String get noFeaturedPodcastsFound;
+
+  /// No description provided for @today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
+
+  /// No description provided for @monday.
+  ///
+  /// In en, this message translates to:
+  /// **'Monday'**
+  String get monday;
+
+  /// No description provided for @tuesday.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuesday'**
+  String get tuesday;
+
+  /// No description provided for @wednesday.
+  ///
+  /// In en, this message translates to:
+  /// **'Wednesday'**
+  String get wednesday;
+
+  /// No description provided for @thursday.
+  ///
+  /// In en, this message translates to:
+  /// **'Thursday'**
+  String get thursday;
+
+  /// No description provided for @friday.
+  ///
+  /// In en, this message translates to:
+  /// **'Friday'**
+  String get friday;
+
+  /// No description provided for @saturday.
+  ///
+  /// In en, this message translates to:
+  /// **'Saturday'**
+  String get saturday;
+
+  /// No description provided for @sunday.
+  ///
+  /// In en, this message translates to:
+  /// **'Sunday'**
+  String get sunday;
+
+  /// No description provided for @change_language.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t worry, you can always change it later'**
+  String get change_language;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -95,7 +95,7 @@ class CustomTabBarWidget extends ConsumerWidget {
                                               ),
                                               child: Padding(
                                                 padding:
-                                                    const EdgeInsets.all(12.0),
+                                                    const EdgeInsets.all(10.0),
                                                 child: Row(
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.center,
@@ -155,7 +155,9 @@ class CustomTabBarWidget extends ConsumerWidget {
                                                                 .start,
                                                         children: [
                                                           Text(
-                                                            podcast['title'],
+                                                            _shortenTitle(
+                                                                podcast[
+                                                                    'title']),
                                                             style:
                                                                 const TextStyle(
                                                               fontSize: 14,
@@ -244,5 +246,13 @@ class CustomTabBarWidget extends ConsumerWidget {
         ),
       ],
     );
+  }
+
+  String _shortenTitle(String title) {
+    List<String> words = title.split(' ');
+    if (words.length > 3) {
+      return '${words.sublist(0, 3).join(' ')}...';
+    }
+    return title;
   }
 }

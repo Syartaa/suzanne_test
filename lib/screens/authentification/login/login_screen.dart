@@ -17,11 +17,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  String? errorMessage; // Variable to hold the error message
+  String? errorMessage;
+  bool isLoading = false; // Manage loading state
 
   @override
   Widget build(BuildContext context) {
-    final loc = AppLocalizations.of(context)!; // 🔹 Get translations
+    final loc = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.primaryColor,
       body: SingleChildScrollView(
@@ -56,7 +57,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 40),
-                  // Email Input
                   TextFormField(
                     controller: emailController,
                     decoration: InputDecoration(
@@ -87,7 +87,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     },
                   ),
                   const SizedBox(height: 20),
-                  // Password Input
                   TextFormField(
                     controller: passwordController,
                     obscureText: true,
@@ -119,7 +118,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     },
                   ),
                   const SizedBox(height: 30),
-                  // Login Button
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.secondaryColor,
@@ -128,76 +126,53 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        final email = emailController.text;
-                        final password = passwordController.text;
+                    onPressed: isLoading
+                        ? null
+                        : () async {
+                            if (_formKey.currentState!.validate()) {
+                              setState(() {
+                                isLoading = true;
+                                errorMessage = null;
+                              });
 
-                        // Trigger the login using the userProvider
-                        final loginResult = await ref
-                            .read(userProvider.notifier)
-                            .loginUser(email, password);
+                              final email = emailController.text;
+                              final password = passwordController.text;
+                              final loginResult = await ref
+                                  .read(userProvider.notifier)
+                                  .loginUser(email, password);
 
-                        // Handle login results
-                        if (loginResult == 'User not found') {
-                          setState(() {
-                            errorMessage = loc.user_not_found;
-                          });
-                        } else if (loginResult == 'Incorrect password') {
-                          setState(() {
-                            errorMessage = loc.incorrect_password;
-                          });
-                        } else if (loginResult == 'Success') {
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(builder: (_) => NavigationMenu()),
-                            (route) =>
-                                false, // This removes all previous routes from the stack
-                          );
-                        } else {
-                          setState(() {
-                            errorMessage = loc.unexpected_error;
-                          });
-                        }
-                      }
-                    },
-                    child: Text(
-                      loc.login_button,
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  // Sign Up Link
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        loc.donthaveAccount,
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (_) => SignUpScreen()));
-                        },
-                        child: Text(
-                          loc.signUp,
-                          style: TextStyle(
-                            color: AppColors.secondaryColor,
-                            fontWeight: FontWeight.bold,
+                              if (loginResult == 'Success') {
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => NavigationMenu()),
+                                  (route) => false,
+                                );
+                              } else {
+                                setState(() {
+                                  isLoading = false;
+                                  errorMessage = loginResult == 'User not found'
+                                      ? loc.user_not_found
+                                      : loginResult == 'Incorrect password'
+                                          ? loc.incorrect_password
+                                          : loc.unexpected_error;
+                                });
+                              }
+                            }
+                          },
+                    child: isLoading
+                        ? const CircularProgressIndicator(
+                            color: AppColors.secondaryColor)
+                        : Text(
+                            loc.login_button,
+                            style: const TextStyle(
+                              color: Colors.red,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
                           ),
-                        ),
-                      ),
-                    ],
                   ),
                   const SizedBox(height: 10),
-                  // Show error message if exists
                   if (errorMessage != null)
                     Padding(
                       padding: const EdgeInsets.only(top: 10),
@@ -209,37 +184,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                       ),
                     ),
-                  const SizedBox(height: 10),
-                  // Or Text
-                  Text(
-                    loc.or_text,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  const SizedBox(height: 10),
-                  // Guest Button
-                  OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: AppColors.secondaryColor),
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(builder: (_) => NavigationMenu()));
-                    },
-                    child: Text(
-                      loc.continue_guest,
-                      style: TextStyle(
-                        color: AppColors.secondaryColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
                 ],
               ),
             ),

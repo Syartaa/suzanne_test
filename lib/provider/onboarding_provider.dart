@@ -29,10 +29,8 @@ class OnboardingStateNotifier extends StateNotifier<OnboardingState> {
   }
 
   void nextPage(BuildContext context) {
-    // ✅ Pass context here
-    if (state.currentPageIndex == 2) {
-      // ✅ Navigate using context, not navigatorKey
-      Navigator.push(
+    if (state.currentPageIndex == 1) {
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (ctx) => LanguageSelectionScreen()),
       );
@@ -47,9 +45,11 @@ class OnboardingStateNotifier extends StateNotifier<OnboardingState> {
     }
   }
 
-  void skipPage() {
-    state = state.copyWith(currentPageIndex: 2);
-    pageController.jumpToPage(2);
+  void skipPage(BuildContext context) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (ctx) => LanguageSelectionScreen()),
+    );
   }
 }
 

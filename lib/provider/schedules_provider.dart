@@ -35,10 +35,13 @@ class SchedulesNotifier extends StateNotifier<AsyncValue<List<Schedule>>> {
     if (cachedSchedulesJson != null) {
       List<dynamic> cachedSchedules = jsonDecode(cachedSchedulesJson);
       state = AsyncValue.data(
-        cachedSchedules.map((item) => Schedule.fromJson(item)).toList(),
-      ); // Load cached data
+        cachedSchedules
+            .map((item) => Schedule.fromJson(item))
+            .toList()
+            .reversed
+            .toList(),
+      ); // Reverse the cached data as well
     } else {
-      // If no cached data is available, just leave the state as loading
       state = const AsyncValue.loading();
     }
   }
@@ -49,16 +52,15 @@ class SchedulesNotifier extends StateNotifier<AsyncValue<List<Schedule>>> {
       print("Fetching schedules..."); // Debug log
       final schedules = await apiService.fetchSchedules();
 
-      state = AsyncValue.data(schedules); // Update with fetched data
+      // Reverse the list so the newest schedules appear first
+      state = AsyncValue.data(schedules.reversed.toList());
 
       // Cache the schedules in SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       String schedulesJson = jsonEncode(schedules);
       await prefs.setString('schedules', schedulesJson);
     } catch (e, stackTrace) {
-      // If there's an error fetching from the API, don't update with an error,
-      // just keep the state as it was (or load cached data if available)
-      // You can add a log here if you need to debug
+      print("Error fetching schedules: $e"); // Debug log
     }
   }
 

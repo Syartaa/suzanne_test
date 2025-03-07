@@ -4,7 +4,6 @@ import 'package:iconsax/iconsax.dart';
 import 'package:suzanne_podcast_app/constants/banner_widget.dart';
 import 'package:suzanne_podcast_app/constants/podcast_slider_widget.dart';
 import 'package:suzanne_podcast_app/l10n/app_localizations.dart';
-import 'package:suzanne_podcast_app/provider/banner_provider.dart';
 import 'package:suzanne_podcast_app/provider/notifications_provider.dart';
 import 'package:suzanne_podcast_app/provider/podcast_provider.dart';
 import 'package:suzanne_podcast_app/provider/schedules_provider.dart';
@@ -104,7 +103,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 SizedBox(height: 35),
 
                 // Monday Marks Section
-                ScheculedSlider(
+                ScheduledSlider(
                   title: loc.mondayMarks,
                   onSeeMorePressed: () {
                     Navigator.of(context).push(MaterialPageRoute(

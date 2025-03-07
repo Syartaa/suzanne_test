@@ -85,16 +85,17 @@ class ApiService {
   // Fetch a list of events from API
   Future<List<Event>> fetchEvents() async {
     try {
-      final response = await _dio.get('/events'); // Fetch events from API
+      final response = await _dio.get('/events');
+      print("API Response: ${response.data}"); // Debugging
 
       if (response.data is Map<String, dynamic> &&
           response.data['data'] is List<dynamic>) {
         return (response.data['data'] as List<dynamic>)
-            .map((eventJson) => Event.fromJson(eventJson)) // Parse events
+            .map((eventJson) => Event.fromJson(eventJson))
             .toList();
       } else if (response.data is List<dynamic>) {
         return (response.data as List<dynamic>)
-            .map((eventJson) => Event.fromJson(eventJson)) // Parse events
+            .map((eventJson) => Event.fromJson(eventJson))
             .toList();
       } else {
         throw Exception(

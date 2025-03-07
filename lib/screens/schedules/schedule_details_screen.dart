@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:suzanne_podcast_app/models/schedule.dart';
 import 'package:suzanne_podcast_app/provider/events_provider.dart';
+import 'package:suzanne_podcast_app/screens/event/widget/event_details_page.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
 class ScheduleDetailsScreen extends ConsumerStatefulWidget {
@@ -100,6 +101,7 @@ class _ScheduleDetailsScreenState extends ConsumerState<ScheduleDetailsScreen> {
               const SizedBox(height: 8.0),
 
               // ** Handle Loading, Data, and Error States **
+
               eventsState.when(
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (error, _) =>
@@ -166,10 +168,50 @@ class _ScheduleDetailsScreenState extends ConsumerState<ScheduleDetailsScreen> {
                               ),
                               const SizedBox(height: 8.0),
 
-                              // ** Event Description **
-                              Text(
-                                event.description,
-                                style: Theme.of(context).textTheme.bodyMedium,
+                              // ** Event Description with "Read More" Button **
+                              LayoutBuilder(
+                                builder: (context, constraints) {
+                                  return Text.rich(
+                                    TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: event.description.length > 100
+                                              ? "${event.description.substring(0, 100)}..."
+                                              : event.description,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium,
+                                        ),
+                                        if (event.description.length > 100)
+                                          WidgetSpan(
+                                            child: InkWell(
+                                              onTap: () {
+                                                // Navigate to Event Details Screen
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        EventDetailsPage(
+                                                            event: event),
+                                                  ),
+                                                );
+                                              },
+                                              child: Text(
+                                                " Read More",
+                                                style: TextStyle(
+                                                  color:
+                                                      AppColors.secondaryColor,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
+                                  );
+                                },
                               ),
                               const SizedBox(height: 8.0),
 

@@ -17,14 +17,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final List<String> images = [
     'assets/onboarding/1.png',
     'assets/onboarding/3.png',
-    'assets/onboarding/2.png',
   ];
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
-    // Preload all onboarding images
     for (var image in images) {
       precacheImage(AssetImage(image), context);
     }
@@ -42,8 +39,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             controller: controller.pageController,
             onPageChanged: (index) {
               controller.updatePageIndicator(index);
-
-              // Lazy preload the next image
               if (index + 1 < images.length) {
                 precacheImage(AssetImage(images[index + 1]), context);
               }
@@ -53,19 +48,16 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               final titles = [
                 'Tune in to the Suzanne Podcast',
                 'Curated Events Beyond Mainstream. Just for You',
-                'Discover, engage, and Empower',
               ];
 
               final highlightedTexts = [
                 'Suzanne',
                 'Just for You',
-                'Empower',
               ];
 
               final subtitles = [
                 'A podcast made in Prishtina telling the untold stories of women of Kosova and neighbourhoods they lived',
                 'Bringing you the daily recommendations and review of the best arts, culture, food, fashion from Kosova and beyond...',
-                'Your go-to platform for local events, podcasts, and creative industries.',
               ];
 
               return OnBoardingPage(
@@ -82,7 +74,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             top: 50,
             right: 20,
             child: TextButton(
-              onPressed: () => controller.skipPage(),
+              onPressed: () => controller.skipPage(context),
               child: const Text(
                 "Skip",
                 style: TextStyle(color: Colors.white),

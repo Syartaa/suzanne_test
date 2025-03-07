@@ -14,41 +14,43 @@ class EventNotifier extends StateNotifier<AsyncValue<List<Event>>> {
   List<Event>? _cachedEvents;
 
   // Try to load events faster, with caching mechanism
-  Future<void> _loadEvents() async {
-    if (_cachedEvents != null) {
-      // If events are cached, load them directly
+  Future<void> _loadEvents({bool forceRefresh = true}) async {
+    if (!forceRefresh && _cachedEvents != null) {
       state = AsyncValue.data(_cachedEvents!);
-    } else {
-      try {
-        // Fetch from API if no cached data
-        final events = await apiService.fetchEvents();
-        _cachedEvents = events; // Cache fetched events
-        state = AsyncValue.data(events);
-      } catch (e, stackTrace) {
-        state = AsyncValue.error(e, stackTrace);
-      }
+      return;
     }
+
+    try {
+      final events = await apiService.fetchEvents();
+      _cachedEvents = events; // Cache the fetched events
+      state = AsyncValue.data(events);
+    } catch (e, stackTrace) {
+      state = AsyncValue.error(e, stackTrace);
+    }
+  }
+
+  // Add refresh function
+  Future<void> refreshEvents() async {
+    state = const AsyncValue.loading(); // Force loading state
+    await _loadEvents(forceRefresh: true);
   }
 
   // Fetch events based on a schedule ID
   Future<void> loadEventsByScheduleId(int scheduleId) async {
-    if (_cachedEvents != null) {
-      // If events are cached, filter them directly
+    try {
+      // Fetch events from API if cache is null
+      if (_cachedEvents == null) {
+        _cachedEvents = await apiService.fetchEvents();
+      }
+
+      // Filter events based on scheduleId
       final filteredEvents = _cachedEvents!
           .where((event) => event.scheduleId == scheduleId)
           .toList();
+
       state = AsyncValue.data(filteredEvents);
-    } else {
-      try {
-        // Fetch all events from API
-        final events = await apiService.fetchEvents();
-        _cachedEvents = events; // Cache fetched events
-        final filteredEvents =
-            events.where((event) => event.scheduleId == scheduleId).toList();
-        state = AsyncValue.data(filteredEvents);
-      } catch (e, stackTrace) {
-        state = AsyncValue.error(e, stackTrace);
-      }
+    } catch (e, stackTrace) {
+      state = AsyncValue.error(e, stackTrace);
     }
   }
 }

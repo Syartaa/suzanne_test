@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 import 'package:url_launcher/url_launcher.dart'; // For launching URLs
 import 'package:suzanne_podcast_app/provider/banner_provider.dart'; // Import the banner provider
 
@@ -37,7 +38,10 @@ class BannerWidget extends ConsumerWidget {
               )
             : Center(child: Text("No $bannerType banner available"));
       },
-      loading: () => Center(child: CircularProgressIndicator()),
+      loading: () => Center(
+          child: CircularProgressIndicator(
+        color: AppColors.secondaryColor,
+      )),
       error: (error, stackTrace) => Center(child: Text("Error: $error")),
     );
   }
