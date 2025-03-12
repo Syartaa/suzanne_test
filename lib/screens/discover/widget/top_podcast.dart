@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:suzanne_podcast_app/l10n/app_localizations.dart';
 import 'package:suzanne_podcast_app/provider/podcast_provider.dart';
 import 'package:suzanne_podcast_app/screens/podcasts/podcast_details_screen.dart';
+import 'package:suzanne_podcast_app/utilis/constants/size.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
 class TopPodcastsWidget extends ConsumerWidget {
@@ -14,6 +15,8 @@ class TopPodcastsWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final podcastsAsyncValue = ref.watch(podcastProvider);
     final loc = AppLocalizations.of(context)!;
+    final textScaleFactor = ScreenSize.textScaler.textScaleFactor;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -25,7 +28,7 @@ class TopPodcastsWidget extends ConsumerWidget {
               loc.todaysTop5Podcasts,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w500,
-                fontSize: 24,
+                fontSize: 24 * textScaleFactor, // Scaled font size
                 color: Color(0xFFFFF8F0),
                 shadows: [
                   Shadow(
@@ -38,7 +41,8 @@ class TopPodcastsWidget extends ConsumerWidget {
             ),
           ],
         ),
-        const SizedBox(height: 20),
+        SizedBox(height: 20 * textScaleFactor), // Scaled spacing
+
         // Horizontal List of Podcasts
         podcastsAsyncValue.when(
           data: (podcasts) {
@@ -50,22 +54,27 @@ class TopPodcastsWidget extends ConsumerWidget {
             final topPodcasts = podcasts.take(5).toList();
 
             return SizedBox(
-              height: 300,
+              height: 300 *
+                  ScreenSize.height /
+                  800, // Adjust based on screen height
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: topPodcasts.length,
                 itemBuilder: (context, index) {
                   final podcast = topPodcasts[index];
                   return Padding(
-                    padding: const EdgeInsets.only(right: 16.0),
+                    padding: EdgeInsets.only(
+                        right: 16.0 * ScreenSize.width / 375), // Scaled padding
                     child: GestureDetector(
                       onTap: () {
                         // Navigate to the Podcast Details screen
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (ctx) =>
-                                    PodcastDetailsScreen(podcast: podcast)));
+                          context,
+                          MaterialPageRoute(
+                            builder: (ctx) =>
+                                PodcastDetailsScreen(podcast: podcast),
+                          ),
+                        );
                       },
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,33 +86,40 @@ class TopPodcastsWidget extends ConsumerWidget {
                                     podcast['thumbnail'].startsWith('http')
                                         ? podcast['thumbnail']
                                         : 'https://suzanne-podcast.laratest-app.com/${podcast['thumbnail']}',
-                                    width: 200,
-                                    height: 200,
+                                    width: 200 *
+                                        ScreenSize.width /
+                                        375, // Scaled width
+                                    height: 200 *
+                                        ScreenSize.height /
+                                        800, // Scaled height
                                     fit: BoxFit.cover,
                                   )
                                 : const Icon(Icons.podcasts, size: 50),
                           ),
-                          const SizedBox(height: 5),
                           SizedBox(
-                            width: 140,
+                              height: 5 * textScaleFactor), // Scaled spacing
+                          SizedBox(
+                            width: 140 * ScreenSize.width / 375, // Scaled width
                             child: Text(
                               podcast['title'] ?? 'No Title',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: Color(0xFFFFDBB5),
                                 fontWeight: FontWeight.bold,
-                                fontSize: 14,
+                                fontSize:
+                                    14 * textScaleFactor, // Scaled font size
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           SizedBox(
-                            width: 140,
+                            width: 140 * ScreenSize.width / 375, // Scaled width
                             child: Text(
                               podcast['host_name'] ?? 'Unknown',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: AppColors.secondaryColor,
-                                fontSize: 12,
+                                fontSize:
+                                    12 * textScaleFactor, // Scaled font size
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,

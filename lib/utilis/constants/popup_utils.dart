@@ -4,6 +4,7 @@ import 'package:suzanne_podcast_app/l10n/app_localizations.dart';
 import 'package:suzanne_podcast_app/provider/favorite_provider.dart';
 import 'package:suzanne_podcast_app/provider/playlist_provider.dart';
 import 'package:suzanne_podcast_app/provider/user_provider.dart';
+import 'package:suzanne_podcast_app/utilis/constants/size.dart';
 
 void showFavoritePlaylistPopup(
     BuildContext context, WidgetRef ref, String podcastId) {
@@ -26,7 +27,8 @@ void showFavoritePlaylistPopup(
           final isFavorited = favorites.contains(podcastId);
 
           return Container(
-            padding: const EdgeInsets.all(0.0),
+            padding:
+                EdgeInsets.all(ScreenSize.width * 0.05), // Responsive padding
             decoration: BoxDecoration(
               color: Colors.black,
               borderRadius: const BorderRadius.only(
@@ -42,12 +44,16 @@ void showFavoritePlaylistPopup(
                   leading: Icon(
                     isFavorited ? Icons.favorite : Icons.favorite_border,
                     color: Colors.white,
+                    size: ScreenSize.width * 0.08, // Responsive icon size
                   ),
                   title: Text(
                     isFavorited
                         ? AppLocalizations.of(context)!.remove_from_favorite
                         : AppLocalizations.of(context)!.add_to_favorite,
-                    style: const TextStyle(color: Colors.white),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: ScreenSize.width * 0.04, // Responsive text size
+                    ),
                   ),
                   onTap: () {
                     if (!isLoggedIn) {
@@ -65,9 +71,18 @@ void showFavoritePlaylistPopup(
                 ),
                 // "Add to Playlist" option
                 ListTile(
-                  leading: const Icon(Icons.playlist_add, color: Colors.white),
-                  title: Text(AppLocalizations.of(context)!.add_to_playlist,
-                      style: TextStyle(color: Colors.white)),
+                  leading: Icon(
+                    Icons.playlist_add,
+                    color: Colors.white,
+                    size: ScreenSize.width * 0.08, // Responsive icon size
+                  ),
+                  title: Text(
+                    AppLocalizations.of(context)!.add_to_playlist,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: ScreenSize.width * 0.04, // Responsive text size
+                    ),
+                  ),
                   onTap: () {
                     Navigator.of(context).pop(); // Close the modal first
                     if (!isLoggedIn) {
@@ -97,7 +112,8 @@ void showPlaylistPopup(BuildContext context, WidgetRef ref, String podcastId) {
           final playlistsState = ref.watch(playlistProvider);
 
           return Container(
-            padding: const EdgeInsets.all(0.0),
+            padding:
+                EdgeInsets.all(ScreenSize.width * 0.05), // Responsive padding
             decoration: const BoxDecoration(
               color: Colors.black,
               borderRadius: BorderRadius.only(
@@ -109,10 +125,14 @@ void showPlaylistPopup(BuildContext context, WidgetRef ref, String podcastId) {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: EdgeInsets.all(
+                      ScreenSize.width * 0.04), // Responsive padding
                   child: Text(
                     AppLocalizations.of(context)!.select_playlist,
-                    style: const TextStyle(color: Colors.white, fontSize: 18),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: ScreenSize.width * 0.05, // Responsive text size
+                    ),
                   ),
                 ),
 
@@ -121,10 +141,19 @@ void showPlaylistPopup(BuildContext context, WidgetRef ref, String podcastId) {
                   ...playlistsState.map((playlist) {
                     final playlistName = playlist['name'] ?? 'Unnamed Playlist';
                     return ListTile(
-                      leading: const Icon(Icons.playlist_add_check,
-                          color: Colors.white),
-                      title: Text(playlistName,
-                          style: const TextStyle(color: Colors.white)),
+                      leading: Icon(
+                        Icons.playlist_add_check,
+                        color: Colors.white,
+                        size: ScreenSize.width * 0.08, // Responsive icon size
+                      ),
+                      title: Text(
+                        playlistName,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize:
+                              ScreenSize.width * 0.04, // Responsive text size
+                        ),
+                      ),
                       onTap: () {
                         Future.delayed(Duration.zero, () {
                           if (context.mounted) {
@@ -139,16 +168,33 @@ void showPlaylistPopup(BuildContext context, WidgetRef ref, String podcastId) {
                     );
                   }).toList()
                 else
-                  Text(
-                    AppLocalizations.of(context)!.no_playlists,
-                    style: TextStyle(color: Colors.white70),
+                  Padding(
+                    padding: EdgeInsets.all(
+                        ScreenSize.width * 0.04), // Responsive padding
+                    child: Text(
+                      AppLocalizations.of(context)!.no_playlists,
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize:
+                            ScreenSize.width * 0.04, // Responsive text size
+                      ),
+                    ),
                   ),
 
                 // Always Show "Create New Playlist"
                 ListTile(
-                  leading: const Icon(Icons.add, color: Colors.white),
-                  title: Text(AppLocalizations.of(context)!.create_new_playlist,
-                      style: TextStyle(color: Colors.white)),
+                  leading: Icon(
+                    Icons.add,
+                    color: Colors.white,
+                    size: ScreenSize.width * 0.08, // Responsive icon size
+                  ),
+                  title: Text(
+                    AppLocalizations.of(context)!.create_new_playlist,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: ScreenSize.width * 0.04, // Responsive text size
+                    ),
+                  ),
                   onTap: () {
                     Navigator.of(context).pop();
                     _showCreatePlaylistDialog(context, ref, podcastId);
@@ -177,7 +223,10 @@ void _showCreatePlaylistDialog(
         backgroundColor: Colors.black,
         title: Text(
           AppLocalizations.of(context)!.create_new_playlist,
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: ScreenSize.width * 0.05, // Responsive text size
+          ),
         ),
         content: TextField(
           controller: controller,
@@ -194,7 +243,10 @@ void _showCreatePlaylistDialog(
             },
             child: Text(
               AppLocalizations.of(context)!.cancel,
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: ScreenSize.width * 0.04, // Responsive text size
+              ),
             ),
           ),
           TextButton(
@@ -216,7 +268,10 @@ void _showCreatePlaylistDialog(
             },
             child: Text(
               AppLocalizations.of(context)!.create,
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: ScreenSize.width * 0.04, // Responsive text size
+              ),
             ),
           ),
         ],

@@ -5,6 +5,7 @@ import 'package:suzanne_podcast_app/provider/favorite_provider.dart';
 import 'package:suzanne_podcast_app/provider/ratings_provider.dart';
 import 'package:suzanne_podcast_app/screens/podcasts/widget/rating_comments_widget.dart';
 import 'package:suzanne_podcast_app/utilis/constants/popup_utils.dart';
+import 'package:suzanne_podcast_app/utilis/constants/size.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -128,11 +129,11 @@ class _PodcastDetailsScreenState extends ConsumerState<PodcastDetailsScreen> {
           isFromPlaylist ? "Playing from Playlist" : widget.podcast['title'],
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w500,
-            fontSize: 20,
-            color: Color(0xFFFFF8F0),
+            fontSize: ScreenSize.textScaler.scale(20), // Responsive font size
+            color: const Color(0xFFFFF8F0),
             shadows: [
               Shadow(
-                color: Color(0xFFFFF1F1),
+                color: const Color(0xFFFFF1F1),
                 offset: Offset(1.0, 1.0),
                 blurRadius: 3.0,
               ),
@@ -143,15 +144,18 @@ class _PodcastDetailsScreenState extends ConsumerState<PodcastDetailsScreen> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding:
+              EdgeInsets.all(ScreenSize.width * 0.04), // Responsive padding
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(
+                    ScreenSize.width * 0.04), // Responsive padding
                 decoration: BoxDecoration(
                   color: Colors.red,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(
+                      ScreenSize.width * 0.04), // Responsive border radius
                 ),
                 child: Column(
                   children: [
@@ -159,12 +163,18 @@ class _PodcastDetailsScreenState extends ConsumerState<PodcastDetailsScreen> {
                       controller: _controller,
                       showVideoProgressIndicator: true,
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(
+                        height: ScreenSize.height * 0.02), // Responsive spacing
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(_formatDuration(_currentPosition),
-                            style: TextStyle(color: Colors.white)),
+                        Text(
+                          _formatDuration(_currentPosition),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: ScreenSize.textScaler
+                                  .scale(14)), // Responsive font size
+                        ),
                         Expanded(
                           child: _videoDuration != null &&
                                   _videoDuration!.inSeconds > 0
@@ -187,27 +197,35 @@ class _PodcastDetailsScreenState extends ConsumerState<PodcastDetailsScreen> {
                         ),
                         Text(
                           _formatDuration(_videoDuration),
-                          style: const TextStyle(color: Color(0xFFFFDBB5)),
+                          style: TextStyle(
+                            color: const Color(0xFFFFDBB5),
+                            fontSize: ScreenSize.textScaler
+                                .scale(14), // Responsive font size
+                          ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(
+                        height: ScreenSize.height * 0.02), // Responsive spacing
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         IconButton(
                           icon: const Icon(Icons.skip_previous,
                               color: Colors.white),
-                          iconSize: 40,
+                          iconSize:
+                              ScreenSize.width * 0.1, // Responsive icon size
                           onPressed: (widget.playlist != null &&
                                   widget.playlistIndex != null &&
                                   widget.playlistIndex! > 0)
                               ? _playPrevious
-                              : null, // Disable button when at the first podcast
+                              : null,
                         ),
                         IconButton(
                           icon: const Icon(Icons.replay_10),
                           color: Colors.white,
+                          iconSize:
+                              ScreenSize.width * 0.08, // Responsive icon size
                           onPressed: () {
                             final currentPosition =
                                 _currentPosition ?? Duration.zero;
@@ -222,7 +240,8 @@ class _PodcastDetailsScreenState extends ConsumerState<PodcastDetailsScreen> {
                                 : Icons.play_circle_fill,
                           ),
                           color: AppColors.secondaryColor,
-                          iconSize: 50,
+                          iconSize:
+                              ScreenSize.width * 0.12, // Responsive icon size
                           onPressed: () {
                             setState(() {
                               if (_controller.value.isPlaying) {
@@ -236,6 +255,8 @@ class _PodcastDetailsScreenState extends ConsumerState<PodcastDetailsScreen> {
                         IconButton(
                           icon: const Icon(Icons.forward_10),
                           color: Colors.white,
+                          iconSize:
+                              ScreenSize.width * 0.08, // Responsive icon size
                           onPressed: () {
                             final currentPosition =
                                 _currentPosition ?? Duration.zero;
@@ -246,19 +267,19 @@ class _PodcastDetailsScreenState extends ConsumerState<PodcastDetailsScreen> {
                         IconButton(
                           icon:
                               const Icon(Icons.skip_next, color: Colors.white),
-                          iconSize: 40,
+                          iconSize:
+                              ScreenSize.width * 0.1, // Responsive icon size
                           onPressed: (widget.playlist != null &&
                                   widget.playlistIndex != null &&
                                   widget.playlistIndex! <
                                       widget.playlist!.length - 1)
                               ? _playNext
-                              : null, // Disable button when at the last podcast
+                              : null,
                         ),
                       ],
                     ),
-
-                    const SizedBox(height: 16),
-                    // Favorite and Playlist Icons
+                    SizedBox(
+                        height: ScreenSize.height * 0.02), // Responsive spacing
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -271,18 +292,22 @@ class _PodcastDetailsScreenState extends ConsumerState<PodcastDetailsScreen> {
                                 ? AppColors.secondaryColor
                                 : Colors.white,
                           ),
-                          iconSize: 25,
+                          iconSize:
+                              ScreenSize.width * 0.06, // Responsive icon size
                           onPressed: () {
                             ref
                                 .read(favoriteProvider.notifier)
-                                .toggleFavorite(podcastId.toString());
+                                .toggleFavorite(podcastId);
                           },
                         ),
-                        const SizedBox(width: 5),
+                        SizedBox(
+                            width:
+                                ScreenSize.width * 0.02), // Responsive spacing
                         IconButton(
                           icon: const Icon(Icons.playlist_add),
                           color: Colors.white,
-                          iconSize: 25,
+                          iconSize:
+                              ScreenSize.width * 0.06, // Responsive icon size
                           onPressed: () {
                             showFavoritePlaylistPopup(context, ref, podcastId);
                           },
@@ -292,18 +317,19 @@ class _PodcastDetailsScreenState extends ConsumerState<PodcastDetailsScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: ScreenSize.height * 0.02), // Responsive spacing
               Column(
                 children: [
                   Text(
                     widget.podcast['title'],
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.w500,
-                      fontSize: 15,
-                      color: Color(0xFFFFF8F0),
+                      fontSize: ScreenSize.textScaler
+                          .scale(15), // Responsive font size
+                      color: const Color(0xFFFFF8F0),
                       shadows: [
                         Shadow(
-                          color: Color(0xFFFFF1F1),
+                          color: const Color(0xFFFFF1F1),
                           offset: Offset(1.0, 1.0),
                           blurRadius: 3.0,
                         ),
@@ -325,16 +351,17 @@ class _PodcastDetailsScreenState extends ConsumerState<PodcastDetailsScreen> {
                                   ? '${widget.podcast['long_description'].substring(0, 150)}... See more'
                                   : widget.podcast['long_description'])
                           : "No description available",
-                      style: const TextStyle(
-                        color: Color.fromARGB(207, 255, 255, 255),
-                        fontSize: 13,
+                      style: TextStyle(
+                        color: const Color.fromARGB(207, 255, 255, 255),
+                        fontSize: ScreenSize.textScaler
+                            .scale(13), // Responsive font size
                       ),
                       textAlign: TextAlign.start,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 32),
+              SizedBox(height: ScreenSize.height * 0.04), // Responsive spacing
               RatingCommentsWidget(podcastId: podcastId),
             ],
           ),

@@ -10,6 +10,7 @@ import 'package:suzanne_podcast_app/notifications/notification_service.dart';
 import 'package:suzanne_podcast_app/notifications/request_permission.dart';
 import 'package:suzanne_podcast_app/provider/locale_provider.dart';
 import 'package:suzanne_podcast_app/screens/onboarding/onboarding_screen.dart';
+import 'package:suzanne_podcast_app/utilis/constants/size.dart';
 import 'package:suzanne_podcast_app/utilis/theme/theme.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -89,6 +90,8 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    ScreenSize.init(context); // ✅ Initialize screen size and text scale factor
+
     final locale = ref.watch(localeProvider);
     print("\ud83c\udf0d Selected Language: \${locale.languageCode}");
 

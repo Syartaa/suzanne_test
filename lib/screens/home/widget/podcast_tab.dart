@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:suzanne_podcast_app/provider/podcast_provider.dart';
 import 'package:suzanne_podcast_app/screens/podcasts/podcast_details_screen.dart';
 import 'package:suzanne_podcast_app/utilis/constants/popup_utils.dart';
+import 'package:suzanne_podcast_app/utilis/constants/size.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
 class PodcastTab extends ConsumerWidget {
@@ -10,18 +11,21 @@ class PodcastTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ScreenSize.init(context);
     final podcastsAsyncValue = ref.watch(podcastProvider);
 
     return Container(
       color: Colors.red,
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(ScreenSize.width * 0.04),
       child: podcastsAsyncValue.when(
         data: (podcasts) {
           return podcasts.isEmpty
               ? Center(
                   child: Text(
                     "No podcasts available",
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: ScreenSize.textScaler.scale(16)),
                   ),
                 )
               : ListView.builder(
@@ -34,11 +38,7 @@ class PodcastTab extends ConsumerWidget {
                             builder: (_) =>
                                 PodcastDetailsScreen(podcast: podcast)));
                       },
-                      child: _buildPodcastTile(
-                        podcast,
-                        context,
-                        ref,
-                      ),
+                      child: _buildPodcastTile(podcast, context, ref),
                     );
                   },
                 );
@@ -55,7 +55,7 @@ class PodcastTab extends ConsumerWidget {
     WidgetRef ref,
   ) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: EdgeInsets.symmetric(vertical: ScreenSize.height * 0.01),
       child: Row(
         children: [
           ClipRRect(
@@ -65,8 +65,8 @@ class PodcastTab extends ConsumerWidget {
                     podcast['thumbnail'].startsWith('http')
                         ? podcast['thumbnail']
                         : 'https://suzanne-podcast.laratest-app.com/${podcast['thumbnail']}',
-                    width: 70,
-                    height: 70,
+                    width: ScreenSize.width * 0.18,
+                    height: ScreenSize.width * 0.18,
                     fit: BoxFit.cover,
                   )
                 : const Icon(
@@ -74,15 +74,15 @@ class PodcastTab extends ConsumerWidget {
                     size: 50,
                   ),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: ScreenSize.width * 0.04),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   podcast['title'],
-                  style: const TextStyle(
-                    fontSize: 15,
+                  style: TextStyle(
+                    fontSize: ScreenSize.textScaler.scale(15),
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
@@ -90,8 +90,8 @@ class PodcastTab extends ConsumerWidget {
                 ),
                 Text(
                   podcast['host_name'],
-                  style: const TextStyle(
-                    fontSize: 12,
+                  style: TextStyle(
+                    fontSize: ScreenSize.textScaler.scale(12),
                     color: AppColors.secondaryColor,
                   ),
                   overflow: TextOverflow.ellipsis,

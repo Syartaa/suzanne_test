@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:suzanne_podcast_app/provider/onboarding_provider.dart';
 import 'package:suzanne_podcast_app/screens/onboarding/widget/onboarding_next_button.dart';
 import 'package:suzanne_podcast_app/screens/onboarding/widget/onboarding_page.dart';
+import 'package:suzanne_podcast_app/utilis/constants/size.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
@@ -71,19 +72,27 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
           // Skip Button
           Positioned(
-            top: 50,
-            right: 20,
+            top: 50 * ScreenSize.height / 800, // Scaled position
+            right: 20 * ScreenSize.width / 375, // Scaled position
             child: TextButton(
               onPressed: () => controller.skipPage(context),
-              child: const Text(
+              child: Text(
                 "Skip",
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: ScreenSize.textScaler.scale(16), // Scaled font size
+                ),
               ),
             ),
           ),
 
           // Centered Next Button
-          const OnBoardingNextButton(),
+          Positioned(
+            bottom: 40 * ScreenSize.height / 800, // Scaled position
+            left: ScreenSize.width / 2 -
+                50 * ScreenSize.width / 375, // Centered horizontally
+            child: const OnBoardingNextButton(),
+          ),
         ],
       ),
     );

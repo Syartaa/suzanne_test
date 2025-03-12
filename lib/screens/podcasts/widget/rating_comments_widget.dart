@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:suzanne_podcast_app/provider/ratings_provider.dart';
+import 'package:suzanne_podcast_app/utilis/constants/size.dart';
 
 class RatingCommentsWidget extends ConsumerStatefulWidget {
   final String podcastId;
@@ -21,7 +22,8 @@ class _RatingCommentsWidgetState extends ConsumerState<RatingCommentsWidget> {
     final ratingsNotifier = ref.read(podcastRatingsProvider.notifier);
 
     return Container(
-      //padding: const EdgeInsets.all(16),
+      // padding:
+      //     EdgeInsets.all(ScreenSize.width > 600 ? 24 : 16), // Adjust padding
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
       ),
@@ -35,6 +37,7 @@ class _RatingCommentsWidgetState extends ConsumerState<RatingCommentsWidget> {
                 icon: Icon(
                   index < selectedRating ? Icons.star : Icons.star_border,
                   color: Colors.yellow,
+                  size: ScreenSize.width > 600 ? 40 : 30, // Adjust star size
                 ),
                 onPressed: () {
                   setState(() => selectedRating = index + 1);
@@ -51,8 +54,10 @@ class _RatingCommentsWidgetState extends ConsumerState<RatingCommentsWidget> {
               filled: true,
               fillColor: const Color.fromARGB(255, 245, 49, 49),
               hintText: "Leave a comment...",
-              hintStyle:
-                  const TextStyle(color: Color(0xFFFF8F80), fontSize: 15),
+              hintStyle: TextStyle(
+                color: const Color(0xFFFF8F80),
+                fontSize: ScreenSize.width > 600 ? 18 : 15, // Adjust font size
+              ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide: const BorderSide(color: Colors.red, width: 1),

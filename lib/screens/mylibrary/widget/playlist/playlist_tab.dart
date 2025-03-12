@@ -4,6 +4,7 @@ import 'package:suzanne_podcast_app/l10n/app_localizations.dart';
 import 'package:suzanne_podcast_app/provider/playlist_provider.dart';
 import 'package:suzanne_podcast_app/provider/user_provider.dart';
 import 'package:suzanne_podcast_app/screens/mylibrary/widget/playlist/playlist_details.dart';
+import 'package:suzanne_podcast_app/utilis/constants/size.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
 class PlaylistsTab extends ConsumerWidget {
@@ -33,11 +34,17 @@ class PlaylistsTab extends ConsumerWidget {
               ? Center(
                   child: Text(
                     loc.noPlaylistsAvailable,
-                    style: TextStyle(color: Colors.white70, fontSize: 16),
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: ScreenSize.textScaler
+                          .scale(16), // Responsive font size
+                    ),
                   ),
                 )
               : ListView.builder(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  padding: EdgeInsets.symmetric(
+                    vertical: ScreenSize.height * 0.02, // Responsive padding
+                  ),
                   itemCount: playlists.length,
                   itemBuilder: (context, index) {
                     final playlist = playlists[index];
@@ -52,47 +59,65 @@ class PlaylistsTab extends ConsumerWidget {
                         playlist['name'] as String? ?? "Unnamed Playlist";
 
                     return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      padding: EdgeInsets.symmetric(
+                        vertical:
+                            ScreenSize.height * 0.01, // Responsive padding
+                      ),
                       child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                        margin: EdgeInsets.symmetric(
+                          horizontal:
+                              ScreenSize.width * 0.02, // Responsive margin
+                        ),
                         decoration: BoxDecoration(
                           color: const Color.fromARGB(255, 231, 32, 32),
-                          borderRadius: BorderRadius.circular(12.0),
+                          borderRadius: BorderRadius.circular(
+                            ScreenSize.width * 0.03, // Responsive border radius
+                          ),
                         ),
                         child: ListTile(
-                          contentPadding: const EdgeInsets.all(10),
+                          contentPadding: EdgeInsets.all(
+                            ScreenSize.width * 0.03, // Responsive padding
+                          ),
                           leading: Container(
-                            width: 70,
-                            height: 70,
+                            width: ScreenSize.width * 0.15, // Responsive width
+                            height:
+                                ScreenSize.width * 0.15, // Responsive height
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(
+                                ScreenSize.width *
+                                    0.02, // Responsive border radius
+                              ),
                               color: AppColors.secondaryColor,
                             ),
-                            child: const Icon(
+                            child: Icon(
                               Icons.headset,
                               color: Colors.black,
-                              size: 30,
+                              size: ScreenSize.width *
+                                  0.07, // Responsive icon size
                             ),
                           ),
                           title: Text(
                             playlistName,
-                            style: const TextStyle(
-                              fontSize: 16,
+                            style: TextStyle(
+                              fontSize: ScreenSize.textScaler
+                                  .scale(16), // Responsive font size
                               fontWeight: FontWeight.bold,
-                              color: Color.fromARGB(242, 255, 248, 240),
+                              color: const Color.fromARGB(242, 255, 248, 240),
                             ),
                           ),
                           subtitle: Text(
                             '$podcastCount Podcasts',
-                            style: const TextStyle(
-                              fontSize: 12,
+                            style: TextStyle(
+                              fontSize: ScreenSize.textScaler
+                                  .scale(12), // Responsive font size
                               color: Colors.white70,
                             ),
                           ),
-                          trailing: const Icon(
+                          trailing: Icon(
                             Icons.arrow_forward_ios,
                             color: Colors.white70,
-                            size: 16,
+                            size: ScreenSize.textScaler
+                                .scale(16), // Responsive icon size
                           ),
                           onTap: () async {
                             final notifier =

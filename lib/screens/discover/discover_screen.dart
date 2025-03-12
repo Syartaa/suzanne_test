@@ -7,6 +7,7 @@ import 'package:suzanne_podcast_app/screens/discover/widget/top_podcast.dart';
 import 'package:suzanne_podcast_app/screens/podcasts/podcast_details_screen.dart';
 import 'package:suzanne_podcast_app/screens/schedules/schedule_details_screen.dart';
 import 'package:suzanne_podcast_app/screens/event/widget/event_details_page.dart';
+import 'package:suzanne_podcast_app/utilis/constants/size.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
 class DiscoverScreen extends ConsumerStatefulWidget {
@@ -35,7 +36,7 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
             "Discover",
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w600,
-              fontSize: 24,
+              fontSize: 24 * ScreenSize.textScaler.textScaleFactor,
               color: Color(0xFFFFF8F0),
               shadows: [
                 Shadow(
@@ -51,7 +52,8 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding:
+                EdgeInsets.all(16.0 * ScreenSize.textScaler.textScaleFactor),
             child: TextField(
               onChanged: (value) {
                 setState(() {
@@ -74,7 +76,8 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
           Expanded(
             child: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(
+                    16.0 * ScreenSize.textScaler.textScaleFactor),
                 child: Column(
                   children: [
                     // Display TopPodcast when search query is empty
@@ -94,11 +97,15 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
                               ? const SizedBox()
                               : Column(
                                   children: [
-                                    const Text('Podcasts',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold)),
+                                    Text(
+                                      'Podcasts',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18 *
+                                              ScreenSize
+                                                  .textScaler.textScaleFactor,
+                                          fontWeight: FontWeight.bold),
+                                    ),
                                     ListView.builder(
                                       shrinkWrap: true,
                                       physics:
@@ -131,12 +138,12 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
                                               : const Icon(Icons.podcasts),
                                           title: Text(
                                             podcast['title'] ?? 'No Title',
-                                            style: const TextStyle(
-                                                color: Colors.white),
+                                            style:
+                                                TextStyle(color: Colors.white),
                                           ),
                                           subtitle: Text(
                                             podcast['host_name'] ?? 'Unknown',
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                                 color: Colors.white70),
                                           ),
                                         );
@@ -155,7 +162,6 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
                     if (searchQuery.isNotEmpty)
                       events.when(
                         data: (eventData) {
-                          print("Event data loaded: $eventData");
                           final filteredEvents = eventData.where((event) {
                             final title = event.title.toLowerCase();
                             return title.contains(searchQuery);
@@ -165,11 +171,15 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
                               ? const SizedBox()
                               : Column(
                                   children: [
-                                    const Text('Events',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold)),
+                                    Text(
+                                      'Events',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18 *
+                                              ScreenSize
+                                                  .textScaler.textScaleFactor,
+                                          fontWeight: FontWeight.bold),
+                                    ),
                                     ListView.builder(
                                       shrinkWrap: true,
                                       physics:
@@ -180,17 +190,13 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
                                         return ListTile(
                                           title: Text(
                                             event.title,
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.w600),
-                                            overflow: TextOverflow
-                                                .ellipsis, // This will truncate the text and add "..."
-                                            maxLines:
-                                                1, // This ensures the text only spans one line
                                           ),
                                           subtitle: Text(
                                             event.eventDate,
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                                 color: Colors.white70),
                                           ),
                                           onTap: () {
@@ -206,12 +212,8 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
                                   ],
                                 );
                         },
-                        loading: () {
-                          // Check if it's stuck in the loading state
-                          print("Loading events...");
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        },
+                        loading: () =>
+                            const Center(child: CircularProgressIndicator()),
                         error: (error, stackTrace) =>
                             Center(child: Text("Error: ${error.toString()}")),
                       ),
@@ -230,11 +232,15 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
                               ? const SizedBox()
                               : Column(
                                   children: [
-                                    const Text('Monday Marks',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold)),
+                                    Text(
+                                      'Monday Marks',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18 *
+                                              ScreenSize
+                                                  .textScaler.textScaleFactor,
+                                          fontWeight: FontWeight.bold),
+                                    ),
                                     ListView.builder(
                                       shrinkWrap: true,
                                       physics:
@@ -246,13 +252,13 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
                                         return ListTile(
                                           title: Text(
                                             schedule.title,
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.w500),
                                           ),
                                           subtitle: Text(
                                             schedule.scheduleTypeName,
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                                 color: Colors.white70),
                                           ),
                                           onTap: () {

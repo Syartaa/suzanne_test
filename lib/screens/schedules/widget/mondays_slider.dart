@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:suzanne_podcast_app/provider/schedules_provider.dart';
+import 'package:suzanne_podcast_app/utilis/constants/size.dart';
 
 class MondaysSlider extends ConsumerWidget {
   const MondaysSlider({super.key});
@@ -14,30 +15,34 @@ class MondaysSlider extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 10),
+        // const SizedBox(height: 10),
         schedulesState.when(
           data: (schedules) => SizedBox(
-            height: 250,
+            height:
+                ScreenSize.height * 0.27, // Adjust height based on screen size
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: schedules.length,
               itemBuilder: (context, index) {
                 final schedule = schedules[index];
                 return Padding(
-                  padding: const EdgeInsets.only(right: 16.0),
+                  padding: EdgeInsets.only(
+                      right: ScreenSize.width * 0.02), // Responsive padding
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(15.0),
                     child: CachedNetworkImage(
                       imageUrl: schedule.images,
-                      width: 340,
-                      height: 230,
+                      width: ScreenSize.width * 0.87, // Responsive width
+                      height: ScreenSize.height * 0.25, // Responsive height
                       fit: BoxFit.cover,
                       placeholder: (context, url) => Shimmer.fromColors(
                         baseColor: Colors.grey[300]!,
                         highlightColor: Colors.grey[100]!,
                         child: Container(
-                          width: 340,
-                          height: 230,
+                          width: ScreenSize.width *
+                              0.89, // Responsive placeholder width
+                          height: ScreenSize.height *
+                              0.25, // Responsive placeholder height
                           decoration: BoxDecoration(
                             color: Colors.grey[300],
                             borderRadius: BorderRadius.circular(15.0),
@@ -55,18 +60,22 @@ class MondaysSlider extends ConsumerWidget {
             ),
           ),
           loading: () => SizedBox(
-            height: 250,
+            height:
+                ScreenSize.height * 0.25, // Adjust height based on screen size
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: 3, // Number of shimmer placeholders
               itemBuilder: (context, index) => Padding(
-                padding: const EdgeInsets.only(right: 16.0),
+                padding: EdgeInsets.only(
+                    right: ScreenSize.width * 0.04), // Responsive padding
                 child: Shimmer.fromColors(
                   baseColor: Colors.grey[300]!,
                   highlightColor: Colors.grey[100]!,
                   child: Container(
-                    width: 340,
-                    height: 230,
+                    width:
+                        ScreenSize.width * 0.85, // Responsive placeholder width
+                    height: ScreenSize.height *
+                        0.25, // Responsive placeholder height
                     decoration: BoxDecoration(
                       color: Colors.grey[300],
                       borderRadius: BorderRadius.circular(15.0),

@@ -12,6 +12,7 @@ import 'package:suzanne_podcast_app/screens/home/widget/tab_event_podcast.dart';
 import 'package:suzanne_podcast_app/screens/podcasts/podcast_screen.dart';
 import 'package:suzanne_podcast_app/screens/profile/profile_screen.dart';
 import 'package:suzanne_podcast_app/screens/schedules/monday_marks_screen.dart';
+import 'package:suzanne_podcast_app/utilis/constants/size.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -26,6 +27,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      ScreenSize.init(context);
       ref.read(schedulesNotifierProvider.notifier).loadSchedules();
     });
   }
@@ -33,7 +35,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final podcastsAsyncValue = ref.watch(podcastProvider);
-    final loc = AppLocalizations.of(context)!; // 🔹 Get translations
+    final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: AppColors.primaryColor,
@@ -41,12 +43,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         backgroundColor: const Color.fromARGB(198, 243, 18, 18),
         title: Center(
           child: Image(
-            image: AssetImage("assets/logo/logo2.png"),
-            width: 100,
+            image: const AssetImage("assets/logo/logo2.png"),
+            width: ScreenSize.width * 0.3,
           ),
         ),
         iconTheme: const IconThemeData(
-          color: Colors.white, // Change the back icon color to white
+          color: Colors.white,
         ),
         actions: [
           Stack(
@@ -66,7 +68,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         loading: () => 0,
                         error: (_, __) => 0,
                       );
-
                   return unreadCount > 0
                       ? Positioned(
                           right: 8,
@@ -94,15 +95,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       body: Stack(
         children: [
           SingleChildScrollView(
-            padding: const EdgeInsets.all(20.0),
+            padding: EdgeInsets.all(ScreenSize.width * 0.05),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Main Banner using BannerWidget
-                BannerWidget(bannerType: 'main'), // Specify banner type here
-                SizedBox(height: 35),
-
-                // Monday Marks Section
+                BannerWidget(bannerType: 'main'),
+                SizedBox(height: ScreenSize.height * 0.05),
                 ScheduledSlider(
                   title: loc.mondayMarks,
                   onSeeMorePressed: () {
@@ -110,33 +108,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         builder: (ctx) => MondayMarksScreen()));
                   },
                 ),
-                SizedBox(height: 35),
-                BannerWidget(
-                    bannerType: 'secondary'), // Specify banner type here
-                SizedBox(height: 20),
+                SizedBox(height: ScreenSize.height * 0.05),
+                BannerWidget(bannerType: 'secondary'),
+                SizedBox(height: ScreenSize.height * 0.03),
                 PodcastSliderWidget(
                   title: loc.featuredPodcasts,
                   seeMoreText: loc.seeMore,
                   routeBuilder: (ctx) => PodcastScreen(),
                   podcastsAsyncValue: podcastsAsyncValue,
                 ),
-                SizedBox(height: 20),
-                BannerWidget(bannerType: 'third'), // Specify banner type here
-                SizedBox(height: 20),
+                //SizedBox(height: ScreenSize.height * 0.02),
+                BannerWidget(bannerType: 'third'),
+                SizedBox(height: ScreenSize.height * 0.03),
                 PodcastsEventsTab(),
-                SizedBox(height: 50),
+                SizedBox(height: ScreenSize.height * 0.07),
               ],
             ),
           ),
-
-          // Info Icon at the Bottom
           Positioned(
             bottom: 20,
             right: 20,
             child: GestureDetector(
               onTap: () => _showInfoDialog(context),
               child: Container(
-                padding: EdgeInsets.all(8),
+                padding: EdgeInsets.all(ScreenSize.width * 0.02),
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.2),
                   shape: BoxShape.circle,
@@ -144,7 +139,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 child: Icon(
                   Icons.info_outline,
                   color: Colors.white,
-                  size: 30,
+                  size: ScreenSize.width * 0.07,
                 ),
               ),
             ),
@@ -161,9 +156,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         return AlertDialog(
           backgroundColor: AppColors.primaryColor,
           title: Text(AppLocalizations.of(context)!.infoTitle),
-          content: Text(
-            AppLocalizations.of(context)!.infoContent,
-          ),
+          content: Text(AppLocalizations.of(context)!.infoContent),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),

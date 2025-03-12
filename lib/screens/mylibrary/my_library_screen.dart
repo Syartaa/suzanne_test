@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:suzanne_podcast_app/l10n/app_localizations.dart';
 import 'package:suzanne_podcast_app/screens/mylibrary/widget/favorites_tab.dart';
 import 'package:suzanne_podcast_app/screens/mylibrary/widget/playlist/playlist_tab.dart';
+import 'package:suzanne_podcast_app/utilis/constants/size.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
 class MyLibraryScreen extends StatelessWidget {
@@ -23,7 +24,7 @@ class MyLibraryScreen extends StatelessWidget {
               loc.myLibrary,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w600,
-                fontSize: 24,
+                fontSize: ScreenSize.textScaler.scale(24), // Scaled font size
                 color: Color(0xFFFFF8F0),
                 shadows: [
                   Shadow(
@@ -53,7 +54,7 @@ class MyLibraryScreen extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 14),
+            SizedBox(height: 14 * ScreenSize.height / 800), // Scaled spacing
             // Expanded TabBarView
             Expanded(
               child: TabBarView(

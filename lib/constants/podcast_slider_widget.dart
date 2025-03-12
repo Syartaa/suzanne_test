@@ -5,6 +5,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:suzanne_podcast_app/screens/home/widget/featured_podcast.dart';
 import 'package:suzanne_podcast_app/screens/podcasts/podcast_details_screen.dart';
 import 'package:suzanne_podcast_app/utilis/constants/popup_utils.dart';
+import 'package:suzanne_podcast_app/utilis/constants/size.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
 class PodcastSliderWidget extends ConsumerWidget {
@@ -34,7 +35,7 @@ class PodcastSliderWidget extends ConsumerWidget {
               title,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w700,
-                fontSize: 22,
+                fontSize: ScreenSize.width * 0.06, // Dynamic font size
                 color: const Color(0xFFFFF8F0),
                 shadows: [
                   const Shadow(
@@ -59,7 +60,7 @@ class PodcastSliderWidget extends ConsumerWidget {
             ),
           ],
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 6), // Reduced space between title and list
         // Horizontal List of Podcasts
         podcastsAsyncValue.when(
           data: (podcasts) {
@@ -67,14 +68,16 @@ class PodcastSliderWidget extends ConsumerWidget {
               return const Center(child: Text("No Podcasts found"));
             }
             return SizedBox(
-              height: 230,
+              height: ScreenSize.height * 0.3, // Adjust height dynamically
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: podcasts.length,
                 itemBuilder: (context, index) {
                   final podcast = podcasts[index];
                   return Padding(
-                    padding: const EdgeInsets.only(right: 16.0),
+                    padding: EdgeInsets.only(
+                        right: ScreenSize.width *
+                            0.01), // Reduced space between items
                     child: GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
@@ -92,15 +95,17 @@ class PodcastSliderWidget extends ConsumerWidget {
                                       true
                                   ? podcast['thumbnail']
                                   : 'https://suzanne-podcast.laratest-app.com/${podcast['thumbnail']}',
-                              width: 140,
-                              height: 140,
+                              width: ScreenSize.width * 0.40, // Dynamic width
+                              height: ScreenSize.width * 0.35, // Dynamic height
                               fit: BoxFit.cover,
                               placeholder: (context, url) => Shimmer.fromColors(
                                 baseColor: AppColors.primaryColor,
                                 highlightColor: Colors.grey[100]!,
                                 child: Container(
-                                  width: 140,
-                                  height: 140,
+                                  width:
+                                      ScreenSize.width * 0.40, // Dynamic width
+                                  height:
+                                      ScreenSize.width * 0.35, // Dynamic height
                                   color: Colors.grey[300],
                                 ),
                               ),
@@ -110,24 +115,27 @@ class PodcastSliderWidget extends ConsumerWidget {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 3),
+                          const SizedBox(
+                              height: 3), // Reduced space after the image
                           SizedBox(
-                            width: 140,
+                            width: ScreenSize.width * 0.37, // Dynamic width
                             child: Text(
                               podcast['title'] ?? 'No Title',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: Color(0xFFFFDBB5),
                                 fontWeight: FontWeight.bold,
-                                fontSize: 14,
+                                fontSize: ScreenSize.width *
+                                    0.04, // Dynamic text size
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
+
                           Row(
                             children: [
                               SizedBox(
-                                width: 100,
+                                width: ScreenSize.width * 0.3, // Dynamic width
                                 child: Text(
                                   podcast['host_name'] ?? 'Unknown',
                                   style: const TextStyle(

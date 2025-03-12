@@ -4,12 +4,11 @@ import 'package:suzanne_podcast_app/provider/categories_provider.dart';
 import 'package:suzanne_podcast_app/provider/podcast_provider.dart';
 import 'package:suzanne_podcast_app/screens/podcasts/podcast_details_screen.dart';
 import 'package:suzanne_podcast_app/utilis/constants/popup_utils.dart';
+import 'package:suzanne_podcast_app/utilis/constants/size.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
 class CustomTabBarWidget extends ConsumerWidget {
-  const CustomTabBarWidget({Key? key}) : super(key: key);
-
-  // Function to show the popup menu
+  const CustomTabBarWidget({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -22,15 +21,17 @@ class CustomTabBarWidget extends ConsumerWidget {
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (error, stackTrace) => Center(child: Text('Error: $error')),
           data: (categoriesList) {
-            // Generate Tab widgets dynamically based on fetched categories
             final tabs = categoriesList.map((category) {
               return Tab(
                 child: Row(
                   children: [
-                    const SizedBox(width: 8), // Space between image and text
+                    const SizedBox(width: 8),
                     Text(
-                      category['name'], // Display category name in each Tab
-                      style: const TextStyle(fontSize: 16),
+                      category['name'],
+                      style: TextStyle(
+                        fontSize: ScreenSize.textScaler
+                            .scale(16), // Responsive font size
+                      ),
                     ),
                   ],
                 ),
@@ -42,17 +43,15 @@ class CustomTabBarWidget extends ConsumerWidget {
               child: Column(
                 children: [
                   TabBar(
-                    isScrollable:
-                        true, // Makes the TabBar horizontally scrollable
+                    isScrollable: true,
                     indicatorColor: AppColors.secondaryColor,
                     indicatorWeight: 3,
                     labelColor: AppColors.secondaryColor,
                     unselectedLabelColor: Colors.white,
-                    tabs: tabs, // Use the dynamically generated tabs here
+                    tabs: tabs,
                   ),
                   SizedBox(
-                    height: MediaQuery.of(context).size.height *
-                        0.6, // Adjust as needed
+                    height: ScreenSize.height * 0.6, // Responsive height
                     child: TabBarView(
                       children: categoriesList.map((category) {
                         return podcasts.when(
@@ -61,7 +60,6 @@ class CustomTabBarWidget extends ConsumerWidget {
                           error: (error, stackTrace) =>
                               Center(child: Text('Error: $error')),
                           data: (podcastList) {
-                            // Filter podcasts based on category
                             final filteredPodcasts = podcastList
                                 .where((podcast) =>
                                     podcast['category_id'] == category['id'])
@@ -73,8 +71,7 @@ class CustomTabBarWidget extends ConsumerWidget {
                                     const EdgeInsets.symmetric(vertical: 5.0),
                                 child: filteredPodcasts.isEmpty
                                     ? const Center(
-                                        child: Text("No podcasts found"),
-                                      )
+                                        child: Text("No podcasts found"))
                                     : Column(
                                         children:
                                             filteredPodcasts.map((podcast) {
@@ -84,10 +81,7 @@ class CustomTabBarWidget extends ConsumerWidget {
                                                 horizontal: 15.0),
                                             child: Card(
                                               color: const Color.fromARGB(
-                                                  234,
-                                                  218,
-                                                  29,
-                                                  29), // Background color
+                                                  234, 218, 29, 29),
                                               elevation: 5,
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
@@ -114,16 +108,19 @@ class CustomTabBarWidget extends ConsumerWidget {
                                                                     'thumbnail']
                                                                 : 'https://suzanne-podcast.laratest-app.com/${podcast['thumbnail']}')
                                                             : '',
-                                                        width: 80,
-                                                        height: 80,
+                                                        width: ScreenSize
+                                                                .width *
+                                                            0.2, // Responsive width
+                                                        height: ScreenSize
+                                                                .width *
+                                                            0.2, // Responsive height
                                                         fit: BoxFit.cover,
                                                         loadingBuilder: (context,
                                                             child,
                                                             loadingProgress) {
                                                           if (loadingProgress ==
-                                                              null) {
+                                                              null)
                                                             return child;
-                                                          }
                                                           return Center(
                                                             child:
                                                                 CircularProgressIndicator(
@@ -158,13 +155,15 @@ class CustomTabBarWidget extends ConsumerWidget {
                                                             _shortenTitle(
                                                                 podcast[
                                                                     'title']),
-                                                            style:
-                                                                const TextStyle(
-                                                              fontSize: 14,
+                                                            style: TextStyle(
+                                                              fontSize: ScreenSize
+                                                                  .textScaler
+                                                                  .scale(
+                                                                      14), // Responsive font size
                                                               fontWeight:
                                                                   FontWeight
                                                                       .w600,
-                                                              color: Color(
+                                                              color: const Color(
                                                                   0xFFFFF8F0),
                                                             ),
                                                           ),
@@ -177,21 +176,19 @@ class CustomTabBarWidget extends ConsumerWidget {
                                                             overflow:
                                                                 TextOverflow
                                                                     .ellipsis,
-                                                            style:
-                                                                const TextStyle(
-                                                              fontSize: 12,
-                                                              color: Color
-                                                                  .fromARGB(
-                                                                      179,
-                                                                      0,
-                                                                      255,
-                                                                      195),
+                                                            style: TextStyle(
+                                                              fontSize: ScreenSize
+                                                                  .textScaler
+                                                                  .scale(
+                                                                      12), // Responsive font size
+                                                              color: const Color
+                                                                  .fromARGB(179,
+                                                                  0, 255, 195),
                                                             ),
                                                           ),
                                                         ],
                                                       ),
                                                     ),
-
                                                     IconButton(
                                                       onPressed: () {
                                                         Navigator.push(
@@ -204,18 +201,20 @@ class CustomTabBarWidget extends ConsumerWidget {
                                                           ),
                                                         );
                                                       },
-                                                      icon: const Icon(
+                                                      icon: Icon(
                                                         Icons.play_circle_fill,
                                                         color: AppColors
                                                             .secondaryColor,
-                                                        size: 40,
+                                                        size: ScreenSize.width *
+                                                            0.1, // Responsive icon size
                                                       ),
                                                     ),
-                                                    // 3 Dots IconButton to show the popup
                                                     IconButton(
-                                                      icon: const Icon(
+                                                      icon: Icon(
                                                         Icons.more_vert,
                                                         color: Colors.white,
+                                                        size: ScreenSize.width *
+                                                            0.08, // Responsive icon size
                                                       ),
                                                       onPressed: () {
                                                         showFavoritePlaylistPopup(

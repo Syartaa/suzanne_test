@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:suzanne_podcast_app/provider/podcast_provider.dart';
+import 'package:suzanne_podcast_app/utilis/constants/size.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
 class PopularPodcastsWidget extends ConsumerWidget {
@@ -23,7 +24,7 @@ class PopularPodcastsWidget extends ConsumerWidget {
               "Most popular podcast",
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w500,
-                fontSize: 22,
+                fontSize: ScreenSize.width > 600 ? 24 : 22, // Adjust font size
                 color: Color(0xFFFFF8F0),
                 shadows: [
                   Shadow(
@@ -44,14 +45,19 @@ class PopularPodcastsWidget extends ConsumerWidget {
               return const Center(child: Text("No Featured Podcasts found"));
             }
             return SizedBox(
-              height: 200,
+              height: ScreenSize.width > 600
+                  ? 250
+                  : 200, // Adjust height for larger screens
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: podcasts.length,
                 itemBuilder: (context, index) {
                   final podcast = podcasts[index];
                   return Padding(
-                    padding: const EdgeInsets.only(right: 16.0),
+                    padding: EdgeInsets.only(
+                        right: ScreenSize.width > 600
+                            ? 24.0
+                            : 16.0), // Adjust padding
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -62,28 +68,38 @@ class PopularPodcastsWidget extends ConsumerWidget {
                                   podcast['thumbnail'].startsWith('http')
                                       ? podcast['thumbnail']
                                       : 'https://suzanne-podcast.laratest-app.com/${podcast['thumbnail']}',
-                                  width: 140,
-                                  height: 140,
+                                  width: ScreenSize.width > 600
+                                      ? 160
+                                      : 140, // Adjust image width
+                                  height: ScreenSize.width > 600
+                                      ? 160
+                                      : 140, // Adjust image height
                                   fit: BoxFit.cover,
                                 )
                               : const Icon(Icons.podcasts, size: 50),
                         ),
                         const SizedBox(height: 5),
                         SizedBox(
-                          width: 140,
+                          width: ScreenSize.width > 600
+                              ? 160
+                              : 140, // Adjust text width
                           child: Text(
                             podcast['title'] ?? 'No Title',
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: Color(0xFFFFF8F0),
                               fontWeight: FontWeight.bold,
-                              fontSize: 14,
+                              fontSize: ScreenSize.width > 600
+                                  ? 16
+                                  : 14, // Adjust text size
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         SizedBox(
-                          width: 140,
+                          width: ScreenSize.width > 600
+                              ? 160
+                              : 140, // Adjust text width
                           child: Text(
                             podcast['host_name'] ?? 'Unknown',
                             style: const TextStyle(

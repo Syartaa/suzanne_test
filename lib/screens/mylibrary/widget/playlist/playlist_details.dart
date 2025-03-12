@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:suzanne_podcast_app/provider/playlist_provider.dart';
 import 'package:suzanne_podcast_app/screens/podcasts/podcast_details_screen.dart';
+import 'package:suzanne_podcast_app/utilis/constants/size.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
 class PlaylistDetailScreen extends ConsumerWidget {
@@ -27,10 +28,10 @@ class PlaylistDetailScreen extends ConsumerWidget {
           playlistName,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w600,
-            fontSize: 24,
-            color: Color(0xFFFFF8F0),
+            fontSize: ScreenSize.textScaler.scale(24), // Responsive font size
+            color: const Color(0xFFFFF8F0),
             shadows: [
-              Shadow(
+              const Shadow(
                 color: Color(0xFFFFF1F1),
                 offset: Offset(1.0, 1.0),
                 blurRadius: 3.0,
@@ -43,46 +44,61 @@ class PlaylistDetailScreen extends ConsumerWidget {
         ),
       ),
       body: ListView.builder(
-        padding: const EdgeInsets.all(12),
+        padding: EdgeInsets.all(
+          ScreenSize.width * 0.03, // Responsive padding
+        ),
         itemCount: playlistPodcasts.length,
         itemBuilder: (context, index) {
           final podcast = playlistPodcasts[index];
           final podcastId = podcast['id'].toString();
 
           return Card(
-            margin: const EdgeInsets.symmetric(vertical: 8),
-            color: Color.fromARGB(255, 231, 32, 32),
+            margin: EdgeInsets.symmetric(
+              vertical: ScreenSize.height * 0.01, // Responsive margin
+            ),
+            color: const Color.fromARGB(255, 231, 32, 32),
             child: ListTile(
               leading: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(
+                  ScreenSize.width * 0.02, // Responsive border radius
+                ),
                 child: podcast['thumbnail'] != null
                     ? Image.network(
                         podcast['thumbnail'].startsWith('http')
                             ? podcast['thumbnail']
                             : 'https://suzanne-podcast.laratest-app.com/${podcast['thumbnail']}',
-                        width: 70,
-                        height: 70,
+                        width: ScreenSize.width * 0.15, // Responsive width
+                        height: ScreenSize.width * 0.15, // Responsive height
                         fit: BoxFit.cover,
                       )
-                    : const Icon(
+                    : Icon(
                         Icons.podcasts,
-                        size: 50,
+                        size: ScreenSize.width * 0.1, // Responsive icon size
                       ),
               ),
               title: Text(
                 podcast['title'],
-                style: const TextStyle(
-                  fontSize: 14,
+                style: TextStyle(
+                  fontSize:
+                      ScreenSize.textScaler.scale(14), // Responsive font size
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
               ),
               subtitle: Text(
                 podcast['host_name'],
-                style: const TextStyle(color: Colors.white70),
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize:
+                      ScreenSize.textScaler.scale(12), // Responsive font size
+                ),
               ),
               trailing: IconButton(
-                icon: const Icon(Icons.delete, color: Colors.white),
+                icon: Icon(
+                  Icons.delete,
+                  color: Colors.white,
+                  size: ScreenSize.textScaler.scale(20), // Responsive icon size
+                ),
                 onPressed: () async {
                   await _removePodcast(context, ref, playlistId, podcastId);
                 },

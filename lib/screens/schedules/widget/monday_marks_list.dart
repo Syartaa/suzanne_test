@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:suzanne_podcast_app/provider/schedules_provider.dart';
 import 'package:suzanne_podcast_app/screens/schedules/schedule_details_screen.dart';
+import 'package:suzanne_podcast_app/utilis/constants/size.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
 class MondayMarksList extends ConsumerWidget {
@@ -22,7 +23,9 @@ class MondayMarksList extends ConsumerWidget {
         itemBuilder: (context, index) {
           final schedule = schedules[index];
           return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            padding: EdgeInsets.symmetric(
+                vertical:
+                    ScreenSize.height * 0.02), // Responsive vertical padding
             child: Card(
               color: const Color.fromARGB(186, 252, 33, 33),
               elevation: 5,
@@ -30,7 +33,8 @@ class MondayMarksList extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(15),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: EdgeInsets.all(
+                    ScreenSize.width * 0.04), // Responsive padding
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -38,8 +42,10 @@ class MondayMarksList extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(10),
                       child: CachedNetworkImage(
                         imageUrl: schedule.images,
-                        width: 80,
-                        height: 80,
+                        width: ScreenSize.width *
+                            0.2, // Responsive width for image
+                        height: ScreenSize.width *
+                            0.2, // Responsive height for image
                         fit: BoxFit.cover,
                         placeholder: (context, url) => Center(
                           child: CircularProgressIndicator(),
@@ -50,17 +56,20 @@ class MondayMarksList extends ConsumerWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 10),
+                    SizedBox(
+                        width: ScreenSize.width *
+                            0.03), // Responsive spacing between image and text
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             schedule.title,
-                            style: const TextStyle(
-                              fontSize: 14,
+                            style: TextStyle(
+                              fontSize: ScreenSize.width *
+                                  0.04, // Responsive font size
                               fontWeight: FontWeight.bold,
-                              color: Color.fromARGB(221, 255, 255, 255),
+                              color: const Color.fromARGB(221, 255, 255, 255),
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -81,6 +90,7 @@ class MondayMarksList extends ConsumerWidget {
                       icon: Icon(
                         Icons.arrow_circle_right,
                         color: AppColors.secondaryColor,
+                        size: ScreenSize.width * 0.07, // Responsive icon size
                       ),
                     ),
                   ],
@@ -94,7 +104,9 @@ class MondayMarksList extends ConsumerWidget {
         itemCount: 6, // Number of shimmer placeholders
         itemBuilder: (context, index) {
           return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            padding: EdgeInsets.symmetric(
+                vertical:
+                    ScreenSize.height * 0.02), // Responsive vertical padding
             child: Card(
               color: Colors.grey[300],
               elevation: 2,
@@ -102,7 +114,8 @@ class MondayMarksList extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(15),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: EdgeInsets.all(
+                    ScreenSize.width * 0.04), // Responsive padding
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -111,15 +124,18 @@ class MondayMarksList extends ConsumerWidget {
                       baseColor: Colors.grey[300]!,
                       highlightColor: Colors.grey[100]!,
                       child: Container(
-                        width: 80,
-                        height: 80,
+                        width: ScreenSize.width *
+                            0.2, // Responsive width for image
+                        height: ScreenSize.width *
+                            0.2, // Responsive height for image
                         decoration: BoxDecoration(
                           color: Colors.grey[300],
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
                     ),
-                    const SizedBox(width: 10),
+                    SizedBox(
+                        width: ScreenSize.width * 0.03), // Responsive spacing
                     // Shimmer for text
                     Expanded(
                       child: Column(
@@ -129,19 +145,24 @@ class MondayMarksList extends ConsumerWidget {
                             baseColor: Colors.grey[300]!,
                             highlightColor: Colors.grey[100]!,
                             child: Container(
-                              height: 14,
+                              height: ScreenSize.height *
+                                  0.02, // Responsive height for text
                               color: Colors.grey[300],
                               width: double.infinity,
                             ),
                           ),
-                          const SizedBox(height: 5),
+                          SizedBox(
+                              height: ScreenSize.height *
+                                  0.01), // Responsive spacing
                           Shimmer.fromColors(
                             baseColor: Colors.grey[300]!,
                             highlightColor: Colors.grey[100]!,
                             child: Container(
-                              height: 12,
+                              height: ScreenSize.height *
+                                  0.018, // Responsive height for text
                               color: Colors.grey[300],
-                              width: 150,
+                              width: ScreenSize.width *
+                                  0.4, // Responsive width for text
                             ),
                           ),
                         ],
@@ -154,6 +175,7 @@ class MondayMarksList extends ConsumerWidget {
                       child: Icon(
                         Icons.arrow_circle_right,
                         color: Colors.grey[300],
+                        size: ScreenSize.width * 0.07, // Responsive icon size
                       ),
                     ),
                   ],

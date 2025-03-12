@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:suzanne_podcast_app/provider/onboarding_provider.dart';
+import 'package:suzanne_podcast_app/utilis/constants/size.dart';
 
 class OnBoardingNavigation extends ConsumerWidget {
   @override
@@ -8,8 +9,8 @@ class OnBoardingNavigation extends ConsumerWidget {
     final onboardingState = ref.watch(onboardingStateProvider);
 
     return Positioned(
-      bottom: 40,
-      left: 20,
+      bottom: ScreenSize.height * 0.05, // Responsive bottom position
+      left: ScreenSize.width * 0.05, // Responsive left position
       child: Row(
         children: List.generate(3, (index) {
           return GestureDetector(
@@ -18,14 +19,21 @@ class OnBoardingNavigation extends ConsumerWidget {
                 .dotNavigationClick(index),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 300),
-              margin: const EdgeInsets.symmetric(horizontal: 5),
-              height: 10,
-              width: onboardingState.currentPageIndex == index ? 20 : 10,
+              margin: EdgeInsets.symmetric(
+                horizontal: ScreenSize.width * 0.01, // Responsive margin
+              ),
+              height: ScreenSize.height * 0.01, // Responsive height
+              width: onboardingState.currentPageIndex == index
+                  ? ScreenSize.width * 0.06 // Responsive width for active dot
+                  : ScreenSize.width *
+                      0.03, // Responsive width for inactive dot
               decoration: BoxDecoration(
                 color: onboardingState.currentPageIndex == index
-                    ? Color(0xFFFC2221)
+                    ? const Color(0xFFFC2221)
                     : Colors.grey,
-                borderRadius: BorderRadius.circular(5),
+                borderRadius: BorderRadius.circular(
+                  ScreenSize.width * 0.015, // Responsive border radius
+                ),
               ),
             ),
           );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:suzanne_podcast_app/l10n/app_localizations.dart';
 import 'package:suzanne_podcast_app/screens/event/widget/event_details_page.dart';
+import 'package:suzanne_podcast_app/utilis/constants/size.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:suzanne_podcast_app/provider/events_provider.dart';
@@ -33,7 +34,7 @@ class _ScheduledLiveEventsState extends ConsumerState<ScheduledLiveEvents> {
             loc.scheduled_events,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w600,
-              fontSize: 24,
+              fontSize: ScreenSize.textScaler.scale(24), // Scaled font size
               color: Color(0xFFFFF8F0),
               shadows: [
                 Shadow(
@@ -55,11 +56,13 @@ class _ScheduledLiveEventsState extends ConsumerState<ScheduledLiveEvents> {
 
           return SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(
+                  16.0 * ScreenSize.width / 375), // Scaled padding
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: EdgeInsets.all(
+                        16.0 * ScreenSize.width / 375), // Scaled padding
                     child: TableCalendar(
                       focusedDay: _focusedDay,
                       firstDay: DateTime.utc(2025, 1, 1),
@@ -91,7 +94,8 @@ class _ScheduledLiveEventsState extends ConsumerState<ScheduledLiveEvents> {
                         formatButtonVisible: false,
                         titleCentered: true,
                         titleTextStyle: TextStyle(
-                          fontSize: 18,
+                          fontSize: ScreenSize.textScaler
+                              .scale(18), // Scaled font size
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -100,7 +104,8 @@ class _ScheduledLiveEventsState extends ConsumerState<ScheduledLiveEvents> {
                           if (_eventDates
                               .any((eventDate) => isSameDay(eventDate, day))) {
                             return Container(
-                              margin: EdgeInsets.all(4),
+                              margin: EdgeInsets.all(
+                                  4 * ScreenSize.width / 375), // Scaled margin
                               decoration: BoxDecoration(
                                 border: Border.all(
                                     color: AppColors.secondaryColor, width: 2),
@@ -123,10 +128,14 @@ class _ScheduledLiveEventsState extends ConsumerState<ScheduledLiveEvents> {
                   ),
                   if (_selectedDay == null)
                     Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: EdgeInsets.all(
+                          16.0 * ScreenSize.width / 375), // Scaled padding
                       child: Text(
                         loc.choose_events,
-                        style: TextStyle(fontSize: 18, color: Colors.white70),
+                        style: TextStyle(
+                            fontSize: ScreenSize.textScaler
+                                .scale(18), // Scaled font size
+                            color: Colors.white70),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -140,11 +149,15 @@ class _ScheduledLiveEventsState extends ConsumerState<ScheduledLiveEvents> {
 
                         if (filteredEvents.isEmpty) {
                           return Padding(
-                            padding: const EdgeInsets.all(16.0),
+                            padding: EdgeInsets.all(16.0 *
+                                ScreenSize.width /
+                                375), // Scaled padding
                             child: Text(
                               loc.no_events,
                               style: TextStyle(
-                                  fontSize: 18, color: Colors.white70),
+                                  fontSize: ScreenSize.textScaler
+                                      .scale(18), // Scaled font size
+                                  color: Colors.white70),
                               textAlign: TextAlign.center,
                             ),
                           );
@@ -184,7 +197,10 @@ class _ScheduledLiveEventsState extends ConsumerState<ScheduledLiveEvents> {
                                     },
                                   ),
                                 ),
-                                SizedBox(height: 15),
+                                SizedBox(
+                                    height: 15 *
+                                        ScreenSize.height /
+                                        800), // Scaled spacing
                               ],
                             );
                           },

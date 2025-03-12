@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:suzanne_podcast_app/provider/notifications_provider.dart';
 import 'package:suzanne_podcast_app/screens/podcasts/podcast_screen.dart';
 import 'package:suzanne_podcast_app/screens/schedules/monday_marks_screen.dart';
+import 'package:suzanne_podcast_app/utilis/constants/size.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 import 'package:suzanne_podcast_app/models/notification.dart';
 
@@ -23,7 +24,7 @@ class NotificationScreen extends ConsumerWidget {
           "Notifications ",
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w600,
-            fontSize: 24,
+            fontSize: ScreenSize.width > 600 ? 28 : 24, // Adjust font size
             color: const Color(0xFFFFF8F0),
             shadows: [
               const Shadow(
@@ -89,11 +90,14 @@ class NotificationScreen extends ConsumerWidget {
   /// **Build Section Title Widget**
   Widget _buildSectionTitle(String title) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+      padding: EdgeInsets.symmetric(
+        horizontal: ScreenSize.width > 600 ? 24.0 : 16.0, // Adjust padding
+        vertical: 10,
+      ),
       child: Text(
         title,
-        style: const TextStyle(
-          fontSize: 18,
+        style: TextStyle(
+          fontSize: ScreenSize.width > 600 ? 20 : 18, // Adjust font size
           fontWeight: FontWeight.bold,
           color: Colors.white70,
         ),
@@ -105,9 +109,13 @@ class NotificationScreen extends ConsumerWidget {
   Widget _buildNotificationTile(
       AppNotification notification, WidgetRef ref, BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
+      padding: EdgeInsets.symmetric(
+        vertical: ScreenSize.width > 600 ? 12.0 : 8.0, // Adjust padding
+        horizontal: ScreenSize.width > 600 ? 16.0 : 10.0,
+      ),
       child: Container(
-        padding: const EdgeInsets.all(12),
+        padding: EdgeInsets.all(
+            ScreenSize.width > 600 ? 16.0 : 12.0), // Adjust padding
         decoration: BoxDecoration(
           color: const Color.fromARGB(255, 231, 32, 32),
           borderRadius: BorderRadius.circular(12.0),
@@ -115,20 +123,20 @@ class NotificationScreen extends ConsumerWidget {
         child: ListTile(
           contentPadding: EdgeInsets.zero,
           leading: CircleAvatar(
-            radius: 20,
+            radius: ScreenSize.width > 600 ? 30 : 20, // Adjust avatar size
             backgroundColor: Colors.white24,
             child: Icon(
               Icons.notifications_active,
               color: AppColors.secondaryColor,
-              size: 24,
+              size: ScreenSize.width > 600 ? 30 : 24, // Adjust icon size
             ),
           ),
           title: Text(
             notification.title,
-            style: const TextStyle(
-              fontSize: 14,
+            style: TextStyle(
+              fontSize: ScreenSize.width > 600 ? 16 : 14, // Adjust font size
               fontWeight: FontWeight.bold,
-              color: Color.fromARGB(242, 255, 248, 240),
+              color: const Color.fromARGB(242, 255, 248, 240),
             ),
           ),
           subtitle: Column(
@@ -136,16 +144,18 @@ class NotificationScreen extends ConsumerWidget {
             children: [
               Text(
                 notification.body,
-                style: const TextStyle(
-                  fontSize: 12,
+                style: TextStyle(
+                  fontSize:
+                      ScreenSize.width > 600 ? 14 : 12, // Adjust font size
                   color: Colors.white70,
                 ),
               ),
               const SizedBox(height: 4),
               Text(
                 DateFormat('yyyy-MM-dd hh:mm a').format(notification.timestamp),
-                style: const TextStyle(
-                  fontSize: 12,
+                style: TextStyle(
+                  fontSize:
+                      ScreenSize.width > 600 ? 14 : 12, // Adjust font size
                   color: Colors.white54,
                 ),
               ),
@@ -165,14 +175,14 @@ class NotificationScreen extends ConsumerWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => PodcastScreen(),
+                  builder: (context) => const PodcastScreen(),
                 ),
               );
             } else if (notification.type == "monday mark") {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => MondayMarksScreen(),
+                  builder: (context) => const MondayMarksScreen(),
                 ),
               );
             }

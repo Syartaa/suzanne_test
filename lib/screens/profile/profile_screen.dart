@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:suzanne_podcast_app/constants/banner_widget.dart';
 import 'package:suzanne_podcast_app/l10n/app_localizations.dart';
 import 'package:suzanne_podcast_app/provider/locale_provider.dart';
 import 'package:suzanne_podcast_app/provider/notifications_provider.dart';
 import 'package:suzanne_podcast_app/provider/user_provider.dart';
 import 'package:suzanne_podcast_app/screens/authentification/login/login_screen.dart';
 import 'package:suzanne_podcast_app/screens/profile/notification_screen.dart';
+import 'package:suzanne_podcast_app/utilis/constants/size.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -27,7 +29,9 @@ class ProfileScreen extends ConsumerWidget {
           loc.profile,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w600,
-            fontSize: 24,
+            fontSize: ScreenSize.width > 600
+                ? 26
+                : 24, // Adjust font size based on screen width
             color: const Color(0xFFFFF8F0),
             shadows: [
               const Shadow(
@@ -44,8 +48,7 @@ class ProfileScreen extends ConsumerWidget {
         actions: [
           PopupMenuButton<String>(
             icon: const Icon(Iconsax.global, color: Colors.white),
-            color: const Color.fromARGB(
-                255, 32, 32, 32), // Change background color
+            color: const Color.fromARGB(255, 32, 32, 32),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15),
             ),
@@ -73,7 +76,10 @@ class ProfileScreen extends ConsumerWidget {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          padding: EdgeInsets.symmetric(
+            horizontal:
+                ScreenSize.width > 600 ? 24 : 16.0, // Adjust horizontal padding
+          ),
           child: userState.when(
             data: (user) {
               if (user != null) {
@@ -89,14 +95,18 @@ class ProfileScreen extends ConsumerWidget {
                     children: [
                       Icon(
                         Icons.person_outline,
-                        size: 100,
+                        size: ScreenSize.width > 600
+                            ? 120
+                            : 100, // Adjust icon size
                         color: Colors.white.withOpacity(0.7),
                       ),
                       const SizedBox(height: 20),
                       Text(
                         loc.user_not_found,
-                        style: const TextStyle(
-                          fontSize: 24,
+                        style: TextStyle(
+                          fontSize: ScreenSize.width > 600
+                              ? 26
+                              : 24, // Adjust text size
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
@@ -147,10 +157,15 @@ class ProfileScreen extends ConsumerWidget {
                     Row(
                       children: [
                         CircleAvatar(
-                          radius: 50,
+                          radius: ScreenSize.width > 600
+                              ? 60
+                              : 50, // Adjust avatar size
                           backgroundColor: Colors.white,
                           child: Icon(Icons.person,
-                              size: 50, color: AppColors.primaryColor),
+                              size: ScreenSize.width > 600
+                                  ? 60
+                                  : 50, // Adjust icon size
+                              color: AppColors.primaryColor),
                         ),
                         const SizedBox(width: 20),
                         Column(
@@ -161,8 +176,10 @@ class ProfileScreen extends ConsumerWidget {
                                       user.lastName.isNotEmpty)
                                   ? "${user.firstName} ${user.lastName}"
                                   : "Username",
-                              style: const TextStyle(
-                                fontSize: 20,
+                              style: TextStyle(
+                                fontSize: ScreenSize.width > 600
+                                    ? 24
+                                    : 20, // Adjust text size
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
                               ),
@@ -180,15 +197,7 @@ class ProfileScreen extends ConsumerWidget {
                       ],
                     ),
                     const SizedBox(height: 20),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(15.0),
-                      child: Image.asset(
-                        "assets/images/banner.jpg",
-                        width: double.infinity,
-                        height: 180,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                    BannerWidget(bannerType: 'main'),
                     const SizedBox(height: 20),
                     SizedBox(
                       width: double.infinity,

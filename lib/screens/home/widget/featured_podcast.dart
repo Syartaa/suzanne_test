@@ -5,21 +5,21 @@ import 'package:shimmer/shimmer.dart';
 import 'package:suzanne_podcast_app/provider/podcast_provider.dart';
 import 'package:suzanne_podcast_app/screens/podcasts/podcast_details_screen.dart';
 import 'package:suzanne_podcast_app/screens/podcasts/podcast_screen.dart';
+import 'package:suzanne_podcast_app/utilis/constants/size.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
 class FeaturedPodcastsWidget extends ConsumerWidget {
-  const FeaturedPodcastsWidget({
-    super.key,
-  });
+  const FeaturedPodcastsWidget({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final podcastsAsyncValue = ref.watch(podcastProvider);
+    final double itemWidth = ScreenSize.width * 0.4;
+    final double itemHeight = ScreenSize.height * 0.25;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Header Row
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -27,21 +27,21 @@ class FeaturedPodcastsWidget extends ConsumerWidget {
               "Featured Podcasts",
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w700,
-                fontSize: 24,
-                color: Color(0xFFFFF8F0),
+                fontSize: ScreenSize.textScaler.scale(24),
+                color: const Color(0xFFFFF8F0),
                 shadows: [
-                  Shadow(
-                    color: Color(0xFFFFF1F1), // Drop shadow color (light pink)
-                    offset: Offset(1.0, 1.0), // Shadow position
-                    blurRadius: 3.0, // Blur effect for the shadow
+                  const Shadow(
+                    color: Color(0xFFFFF1F1),
+                    offset: Offset(1.0, 1.0),
+                    blurRadius: 3.0,
                   ),
                 ],
               ),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (ctx) => PodcastScreen()));
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (ctx) => const PodcastScreen()));
               },
               child: Text(
                 "See more",
@@ -53,14 +53,13 @@ class FeaturedPodcastsWidget extends ConsumerWidget {
           ],
         ),
         const SizedBox(height: 10),
-        // Horizontal List of Podcasts
         podcastsAsyncValue.when(
           data: (podcasts) {
             if (podcasts.isEmpty) {
               return const Center(child: Text("No Featured Podcasts found"));
             }
             return SizedBox(
-              height: 200,
+              height: itemHeight,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: podcasts.length,
@@ -85,15 +84,15 @@ class FeaturedPodcastsWidget extends ConsumerWidget {
                                       true
                                   ? podcast['thumbnail']
                                   : 'https://suzanne-podcast.laratest-app.com/${podcast['thumbnail']}',
-                              width: 140,
-                              height: 140,
+                              width: itemWidth,
+                              height: itemWidth,
                               fit: BoxFit.cover,
                               placeholder: (context, url) => Shimmer.fromColors(
                                 baseColor: AppColors.primaryColor,
                                 highlightColor: Colors.grey[100]!,
                                 child: Container(
-                                  width: 140,
-                                  height: 140,
+                                  width: itemWidth,
+                                  height: itemWidth,
                                   color: Colors.grey[300],
                                 ),
                               ),
@@ -105,25 +104,25 @@ class FeaturedPodcastsWidget extends ConsumerWidget {
                           ),
                           const SizedBox(height: 5),
                           SizedBox(
-                            width: 140,
+                            width: itemWidth,
                             child: Text(
                               podcast['title'] ?? 'No Title',
-                              style: const TextStyle(
-                                color: Color(0xFFFFDBB5),
+                              style: TextStyle(
+                                color: const Color(0xFFFFDBB5),
                                 fontWeight: FontWeight.bold,
-                                fontSize: 14,
+                                fontSize: ScreenSize.textScaler.scale(14),
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           SizedBox(
-                            width: 140,
+                            width: itemWidth,
                             child: Text(
                               podcast['host_name'] ?? 'Unknown',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: AppColors.secondaryColor,
-                                fontSize: 12,
+                                fontSize: ScreenSize.textScaler.scale(12),
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -152,11 +151,13 @@ class FeaturedPodcastsSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ScreenSize.init(context);
+    final double itemWidth = ScreenSize.width * 0.4;
     return SizedBox(
-      height: 200,
+      height: ScreenSize.height * 0.25,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: 5, // Skeleton placeholders count
+        itemCount: 5,
         itemBuilder: (context, index) => Padding(
           padding: const EdgeInsets.only(right: 16.0),
           child: Shimmer.fromColors(
@@ -165,8 +166,8 @@ class FeaturedPodcastsSkeleton extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(15.0),
               child: Container(
-                width: 140,
-                height: 140,
+                width: itemWidth,
+                height: itemWidth,
                 color: Colors.grey[300],
               ),
             ),

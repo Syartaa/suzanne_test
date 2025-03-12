@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:suzanne_podcast_app/l10n/app_localizations.dart';
 import 'package:suzanne_podcast_app/provider/locale_provider.dart';
 import 'package:suzanne_podcast_app/screens/onboarding/choose_interest_screen.dart';
+import 'package:suzanne_podcast_app/utilis/constants/size.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
 class LanguageSelectionScreen extends ConsumerWidget {
@@ -11,44 +12,47 @@ class LanguageSelectionScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      backgroundColor:
-          AppColors.primaryColor, // Match the image background color
+      backgroundColor: AppColors.primaryColor,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const Spacer(),
+          // Logo
           Center(
             child: ClipRRect(
               child: Image(
                 image: AssetImage("assets/logo/logo2.png"),
-                width: 170,
+                width: 170 * ScreenSize.width / 375, // Scaled width
               ),
             ),
           ),
-          const SizedBox(height: 30),
+          SizedBox(height: 30 * ScreenSize.height / 800), // Scaled height
+          // Title Text
           Text(
             AppLocalizations.of(context)!.selectLanguage,
-            style: const TextStyle(
-              fontSize: 20,
+            style: TextStyle(
+              fontSize: 20 * ScreenSize.textScaler.scale(1), // Scaled font size
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16 * ScreenSize.height / 800), // Scaled height
+          // Subtitle Text
           Text(
             AppLocalizations.of(context)!.change_language,
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 14 * ScreenSize.textScaler.scale(1), // Scaled font size
               color: Colors.white.withOpacity(0.8),
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 30),
+          SizedBox(height: 30 * ScreenSize.height / 800), // Scaled height
+          // Language Buttons
           _buildLanguageButton(context, ref,
               languageCode: 'en', languageName: 'English'),
-          const SizedBox(height: 16),
+          SizedBox(height: 16 * ScreenSize.height / 800), // Scaled height
           _buildLanguageButton(context, ref,
               languageCode: 'sq', languageName: 'Shqip'),
           const Spacer(),
@@ -66,11 +70,17 @@ class LanguageSelectionScreen extends ConsumerWidget {
       },
       style: OutlinedButton.styleFrom(
         foregroundColor: Colors.white,
-        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 32),
+        padding: EdgeInsets.symmetric(
+          vertical: 14 * ScreenSize.height / 800, // Scaled padding
+          horizontal: 32 * ScreenSize.width / 375, // Scaled padding
+        ),
       ),
       child: Text(
         languageName,
-        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+        style: TextStyle(
+          fontSize: 18 * ScreenSize.textScaler.scale(1), // Scaled font size
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }

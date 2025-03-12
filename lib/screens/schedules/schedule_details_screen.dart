@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:suzanne_podcast_app/models/schedule.dart';
 import 'package:suzanne_podcast_app/provider/events_provider.dart';
 import 'package:suzanne_podcast_app/screens/event/widget/event_details_page.dart';
+import 'package:suzanne_podcast_app/utilis/constants/size.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
 class ScheduleDetailsScreen extends ConsumerStatefulWidget {
@@ -38,11 +39,11 @@ class _ScheduleDetailsScreenState extends ConsumerState<ScheduleDetailsScreen> {
           widget.schedule.title,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w600,
-            fontSize: 24,
-            color: Color(0xFFFFF8F0),
+            fontSize: ScreenSize.textScaler.scale(24), // Responsive font size
+            color: const Color(0xFFFFF8F0),
             shadows: [
               Shadow(
-                color: Color(0xFFFFF1F1),
+                color: const Color(0xFFFFF1F1),
                 offset: Offset(1.0, 1.0),
                 blurRadius: 3.0,
               ),
@@ -53,65 +54,79 @@ class _ScheduleDetailsScreenState extends ConsumerState<ScheduleDetailsScreen> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding:
+              EdgeInsets.all(ScreenSize.width * 0.04), // Responsive padding
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // ** Schedule Image **
               if (widget.schedule.images.isNotEmpty)
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(
+                      ScreenSize.width * 0.02), // Responsive border radius
                   child: Image.network(
                     widget.schedule.images,
-                    height: 200,
+                    height: ScreenSize.height * 0.25, // Responsive height
                     width: double.infinity,
                     fit: BoxFit.cover,
                   ),
                 ),
-              const SizedBox(height: 16.0),
+              SizedBox(height: ScreenSize.height * 0.02), // Responsive spacing
 
               // ** Schedule Title **
               Text(
                 widget.schedule.title,
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.w500,
-                  fontSize: 20,
-                  color: Color(0xFFFFF8F0),
+                  fontSize:
+                      ScreenSize.textScaler.scale(20), // Responsive font size
+                  color: const Color(0xFFFFF8F0),
                   shadows: [
                     Shadow(
-                      color: Color(0xFFFFF1F1),
+                      color: const Color(0xFFFFF1F1),
                       offset: Offset(1.0, 1.0),
                       blurRadius: 3.0,
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 8.0),
+              SizedBox(height: ScreenSize.height * 0.01), // Responsive spacing
 
               // ** Schedule Description **
-              Text(widget.schedule.description,
-                  style: Theme.of(context).textTheme.bodyMedium),
-              const SizedBox(height: 16.0),
+              Text(
+                widget.schedule.description,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontSize: ScreenSize.textScaler
+                          .scale(14), // Responsive font size
+                    ),
+              ),
+              SizedBox(height: ScreenSize.height * 0.02), // Responsive spacing
 
               // ** Events Section **
               Text(
                 'Events:',
-                style: Theme.of(context).textTheme.titleLarge,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontSize: ScreenSize.textScaler
+                          .scale(18), // Responsive font size
+                    ),
               ),
-              const SizedBox(height: 8.0),
+              SizedBox(height: ScreenSize.height * 0.01), // Responsive spacing
 
               // ** Handle Loading, Data, and Error States **
-
               eventsState.when(
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (error, _) =>
                     Center(child: Text("Error loading events: $error")),
                 data: (events) {
                   if (events.isEmpty) {
-                    return const Center(
+                    return Center(
                       child: Text(
                         "No events available for this schedule",
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: ScreenSize.textScaler
+                              .scale(14), // Responsive font size
+                        ),
                       ),
                     );
                   }
@@ -120,32 +135,41 @@ class _ScheduleDetailsScreenState extends ConsumerState<ScheduleDetailsScreen> {
                     children: events.map((event) {
                       return Card(
                         color: const Color.fromARGB(136, 252, 33, 33),
-                        margin: const EdgeInsets.symmetric(vertical: 8.0),
+                        margin: EdgeInsets.symmetric(
+                            vertical:
+                                ScreenSize.height * 0.01), // Responsive margin
                         child: Padding(
-                          padding: const EdgeInsets.all(16.0),
+                          padding: EdgeInsets.all(
+                              ScreenSize.width * 0.04), // Responsive padding
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               // ** Event Image **
                               if (event.image.isNotEmpty)
                                 ClipRRect(
-                                  borderRadius: BorderRadius.circular(8.0),
+                                  borderRadius: BorderRadius.circular(
+                                      ScreenSize.width *
+                                          0.02), // Responsive border radius
                                   child: Image.network(
                                     event.image,
-                                    height: 150,
+                                    height: ScreenSize.height *
+                                        0.2, // Responsive height
                                     width: double.infinity,
                                     fit: BoxFit.cover,
                                     errorBuilder: (context, error, stackTrace) {
                                       return Image.asset(
                                         'assets/images/placeholder.png',
-                                        height: 150,
+                                        height: ScreenSize.height *
+                                            0.2, // Responsive height
                                         width: double.infinity,
                                         fit: BoxFit.cover,
                                       );
                                     },
                                   ),
                                 ),
-                              const SizedBox(height: 8.0),
+                              SizedBox(
+                                  height: ScreenSize.height *
+                                      0.01), // Responsive spacing
 
                               // ** Event Title **
                               Text(
@@ -155,18 +179,21 @@ class _ScheduleDetailsScreenState extends ConsumerState<ScheduleDetailsScreen> {
                                     .titleLarge
                                     ?.copyWith(
                                   fontWeight: FontWeight.w600,
-                                  fontSize: 16,
-                                  color: Color(0xFFFFF8F0),
+                                  fontSize: ScreenSize.textScaler
+                                      .scale(16), // Responsive font size
+                                  color: const Color(0xFFFFF8F0),
                                   shadows: [
                                     Shadow(
-                                      color: Color(0xFFFFF1F1),
+                                      color: const Color(0xFFFFF1F1),
                                       offset: Offset(1.0, 1.0),
                                       blurRadius: 3.0,
                                     ),
                                   ],
                                 ),
                               ),
-                              const SizedBox(height: 8.0),
+                              SizedBox(
+                                  height: ScreenSize.height *
+                                      0.01), // Responsive spacing
 
                               // ** Event Description with "Read More" Button **
                               LayoutBuilder(
@@ -180,7 +207,12 @@ class _ScheduleDetailsScreenState extends ConsumerState<ScheduleDetailsScreen> {
                                               : event.description,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyMedium,
+                                              .bodyMedium
+                                              ?.copyWith(
+                                                fontSize: ScreenSize.textScaler
+                                                    .scale(
+                                                        14), // Responsive font size
+                                              ),
                                         ),
                                         if (event.description.length > 100)
                                           WidgetSpan(
@@ -202,6 +234,10 @@ class _ScheduleDetailsScreenState extends ConsumerState<ScheduleDetailsScreen> {
                                                   color:
                                                       AppColors.secondaryColor,
                                                   fontWeight: FontWeight.bold,
+                                                  fontSize: ScreenSize
+                                                      .textScaler
+                                                      .scale(
+                                                          14), // Responsive font size
                                                 ),
                                               ),
                                             ),
@@ -213,33 +249,55 @@ class _ScheduleDetailsScreenState extends ConsumerState<ScheduleDetailsScreen> {
                                   );
                                 },
                               ),
-                              const SizedBox(height: 8.0),
+                              SizedBox(
+                                  height: ScreenSize.height *
+                                      0.01), // Responsive spacing
 
                               // ** Event Date & Time **
                               Row(
                                 children: [
                                   Icon(Icons.calendar_today,
-                                      size: 16, color: Colors.white),
-                                  const SizedBox(width: 4),
+                                      size: ScreenSize.width *
+                                          0.04, // Responsive icon size
+                                      color: Colors.white),
+                                  SizedBox(
+                                      width: ScreenSize.width *
+                                          0.02), // Responsive spacing
                                   Text(
                                     "${event.eventDate} at ${event.eventTime}",
-                                    style:
-                                        Theme.of(context).textTheme.bodyMedium,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                          fontSize: ScreenSize.textScaler.scale(
+                                              14), // Responsive font size
+                                        ),
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 8.0),
+                              SizedBox(
+                                  height: ScreenSize.height *
+                                      0.01), // Responsive spacing
 
                               // ** Event Location **
                               Row(
                                 children: [
                                   Icon(Icons.location_on,
-                                      size: 16, color: Colors.white),
-                                  const SizedBox(width: 4),
+                                      size: ScreenSize.width *
+                                          0.04, // Responsive icon size
+                                      color: Colors.white),
+                                  SizedBox(
+                                      width: ScreenSize.width *
+                                          0.02), // Responsive spacing
                                   Text(
                                     event.location,
-                                    style:
-                                        Theme.of(context).textTheme.bodyMedium,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                          fontSize: ScreenSize.textScaler.scale(
+                                              14), // Responsive font size
+                                        ),
                                   ),
                                 ],
                               ),

@@ -5,6 +5,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:suzanne_podcast_app/l10n/app_localizations.dart';
 import 'package:suzanne_podcast_app/provider/schedules_provider.dart';
 import 'package:suzanne_podcast_app/screens/schedules/schedule_details_screen.dart';
+import 'package:suzanne_podcast_app/utilis/constants/size.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
 class ScheduledSlider extends ConsumerWidget {
@@ -33,9 +34,10 @@ class ScheduledSlider extends ConsumerWidget {
               title,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w700,
-                fontSize: 24,
-                color: Color(0xFFFFF8F0),
-                shadows: [
+                fontSize:
+                    ScreenSize.textScaler.scale(24), // ✅ Proper text scaling
+                color: const Color(0xFFFFF8F0),
+                shadows: const [
                   Shadow(
                     color: Color(0xFFFFF1F1),
                     offset: Offset(1.0, 1.0),
@@ -49,16 +51,19 @@ class ScheduledSlider extends ConsumerWidget {
               child: Text(
                 AppLocalizations.of(context)!.seeMore,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontSize: ScreenSize.textScaler
+                          .scale(14), // ✅ Proper text scaling
                       color: AppColors.secondaryColor,
                     ),
               ),
             ),
           ],
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: ScreenSize.height * 0.01), // ✅ Responsive height
+
         schedulesState.when(
           data: (schedules) => SizedBox(
-            height: sliderHeight,
+            height: sliderHeight, // ✅ No need to scale height directly
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: schedules.length,
@@ -75,13 +80,14 @@ class ScheduledSlider extends ConsumerWidget {
                     );
                   },
                   child: Padding(
-                    padding: const EdgeInsets.only(right: 16.0),
+                    padding: EdgeInsets.only(
+                        right: ScreenSize.width * 0.04), // ✅ Scaled padding
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(15.0),
                       child: CachedNetworkImage(
                         imageUrl: schedule.images,
-                        width: 300,
-                        height: sliderHeight,
+                        width: ScreenSize.width * 0.8, // ✅ Responsive width
+                        height: sliderHeight, // ✅ Keeps height constant
                         fit: BoxFit.cover,
                         errorWidget: (context, url, error) =>
                             const Icon(Icons.broken_image, size: 50),
@@ -98,13 +104,14 @@ class ScheduledSlider extends ConsumerWidget {
               scrollDirection: Axis.horizontal,
               itemCount: 3,
               itemBuilder: (context, index) => Padding(
-                padding: const EdgeInsets.only(right: 16.0),
+                padding: EdgeInsets.only(
+                    right: ScreenSize.width * 0.04), // ✅ Scaled padding
                 child: Shimmer.fromColors(
                   baseColor: AppColors.primaryColor,
                   highlightColor: Colors.grey[100]!,
                   child: Container(
-                    width: 300,
-                    height: sliderHeight,
+                    width: ScreenSize.width * 0.8, // ✅ Responsive width
+                    height: sliderHeight, // ✅ Consistent height
                     decoration: BoxDecoration(
                       color: Colors.grey[300],
                       borderRadius: BorderRadius.circular(15.0),
@@ -117,7 +124,11 @@ class ScheduledSlider extends ConsumerWidget {
           error: (error, stackTrace) => Center(
             child: Text(
               'Oops! Could not load schedules.',
-              style: TextStyle(color: Colors.red),
+              style: TextStyle(
+                color: Colors.red,
+                fontSize:
+                    ScreenSize.textScaler.scale(16), // ✅ Proper text scaling
+              ),
             ),
           ),
         ),

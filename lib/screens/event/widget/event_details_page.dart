@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:suzanne_podcast_app/models/events.dart';
+import 'package:suzanne_podcast_app/utilis/constants/size.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
 class EventDetailsPage extends StatelessWidget {
@@ -17,7 +18,7 @@ class EventDetailsPage extends StatelessWidget {
           "Event",
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w600,
-            fontSize: 24,
+            fontSize: ScreenSize.textScaler.scale(24), // Scaled font size
             color: Color(0xFFFFF8F0),
             shadows: [
               Shadow(
@@ -34,7 +35,8 @@ class EventDetailsPage extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding:
+              EdgeInsets.all(16.0 * ScreenSize.width / 375), // Scaled padding
           child: Column(
             children: [
               ClipRRect(
@@ -42,13 +44,13 @@ class EventDetailsPage extends StatelessWidget {
                 child: Image(image: NetworkImage(event.image)),
               ),
               SizedBox(
-                height: 20,
+                height: 20 * ScreenSize.height / 800, // Scaled height
               ),
               Text(
                 event.title,
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.w500,
-                  fontSize: 20,
+                  fontSize: ScreenSize.textScaler.scale(20), // Scaled font size
                   color: Color(0xFFFFF8F0),
                   shadows: [
                     Shadow(
@@ -61,17 +63,26 @@ class EventDetailsPage extends StatelessWidget {
               ),
               const SizedBox(height: 8.0),
               // ** Schedule Description **
-              Text(event.description,
-                  style: Theme.of(context).textTheme.bodyMedium),
+              Text(
+                event.description,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontSize:
+                        ScreenSize.textScaler.scale(16), // Scaled font size
+                    color: Colors.white70),
+              ),
               const SizedBox(height: 16.0),
 
               Row(
                 children: [
-                  Icon(Icons.calendar_today, size: 16, color: Colors.white),
+                  Icon(Icons.calendar_today,
+                      size: 16 * ScreenSize.width / 375, color: Colors.white),
                   const SizedBox(width: 4),
                   Text(
                     "${event.eventDate} at ${event.eventTime}",
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontSize:
+                            ScreenSize.textScaler.scale(16), // Scaled font size
+                        color: Colors.white70),
                   ),
                 ],
               ),
@@ -80,11 +91,15 @@ class EventDetailsPage extends StatelessWidget {
               // ** Event Location **
               Row(
                 children: [
-                  Icon(Icons.location_on, size: 16, color: Colors.white),
+                  Icon(Icons.location_on,
+                      size: 16 * ScreenSize.width / 375, color: Colors.white),
                   const SizedBox(width: 4),
                   Text(
                     event.location,
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontSize:
+                            ScreenSize.textScaler.scale(16), // Scaled font size
+                        color: Colors.white70),
                   ),
                 ],
               ),

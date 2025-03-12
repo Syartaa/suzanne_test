@@ -1,8 +1,7 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables
-
 import 'package:flutter/material.dart';
 import 'package:suzanne_podcast_app/screens/schedules/widget/monday_marks_list.dart';
 import 'package:suzanne_podcast_app/screens/schedules/widget/mondays_slider.dart';
+import 'package:suzanne_podcast_app/utilis/constants/size.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
 class MondayMarksScreen extends StatelessWidget {
@@ -21,7 +20,8 @@ class MondayMarksScreen extends StatelessWidget {
             "Monday Marks",
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w600,
-              fontSize: 24,
+              fontSize: ScreenSize.width *
+                  0.06, // Dynamic font size based on screen width
               color: Color(0xFFFFF8F0),
               shadows: [
                 Shadow(
@@ -38,12 +38,14 @@ class MondayMarksScreen extends StatelessWidget {
         ),
         body: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.all(15.0),
+            padding: EdgeInsets.all(
+                ScreenSize.width * 0.04), // Dynamic padding based on width
             child: Column(
               children: [
                 // Monday Slider
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: EdgeInsets.all(
+                      ScreenSize.width * 0.02), // Dynamic padding for slider
                   child: MondaysSlider(),
                 ),
                 MondayMarksList(),

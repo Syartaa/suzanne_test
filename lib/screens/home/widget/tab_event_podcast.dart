@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:suzanne_podcast_app/screens/home/widget/evet_tab.dart';
 import 'package:suzanne_podcast_app/screens/home/widget/podcast_tab.dart';
+import 'package:suzanne_podcast_app/utilis/constants/size.dart';
 import 'package:suzanne_podcast_app/utilis/theme/custom_themes/appbar_theme.dart';
 
 class PodcastsEventsTab extends StatefulWidget {
@@ -34,9 +35,9 @@ class _PodcastsEventsTabState extends State<PodcastsEventsTab>
             Tab(text: "Events"),
           ],
         ),
-        SizedBox(height: 15),
+        SizedBox(height: ScreenSize.height * 0.02),
         SizedBox(
-          height: 400, // Adjust height as needed
+          height: ScreenSize.height * 0.5, // Adjust height dynamically
           child: TabBarView(
             controller: _tabController,
             children: [
